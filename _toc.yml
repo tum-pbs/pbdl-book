@@ -1,0 +1,15 @@
+# Table of content
+# Learn more at https://jupyterbook.org/customize/toc.html
+#
+- file: intro
+- file: overview
+- file: supervised
+- file: physicalloss
+  sections:
+    - file: physicalloss-code
+- file: diffphys
+- file: jupyter-book-reference
+  sections:
+    - file: markdown
+    - file: notebooks
+- file: references
