@@ -5,17 +5,62 @@ The following "book" of targets _"Physics-Based Deep Learning"_ techniques
 (PBDL), i.e., the field of methods with combinations of physical modeling and
 deep learning (DL) techniques. Here, DL will typically refer to methods based
 on artificial neural networks. The general direction of PBDL represents a very
-active, quickly growing and exciting field of research. As such, this collection 
-of materials is a living document, and will grow and change over time. Feel free
-to contribute 😀
-
-[TUM Physics-based Simulation Group](https://ge.in.tum.de).
-
-[Link collection](https://github.com/thunil/Physics-Based-Deep-Learning)
+active, quickly growing and exciting field of research. 
 
 ## Motivation
 
-....
+From weather forecasts (? ) to quantum physics (? ),
+... more ...
+using numerical analysis to obtain solutions for physical models has
+become an integral part of science.
+
+Among others, GPT-3
+has recently demonstrated that learning models can
+achieve astounding accuracy for processing natural language.
+Also: AlphaGO, closer to physics: protein folding...
+This is a vibrant, quickly developing field with vast possibilities.
+
+At the same time, machine
+learning technologies and deep neural networks in particular,
+have given rise to concerns that this technology has the poten-
+tial to replace the traditional, simulation-driven approach to
+science. Instead of relying on models that are carefully crafted
+from first principles, can data collections of sufficient size
+be processed to provide the correct answers instead?
+
+Very clear advantages of data-driven approaches would lead
+to a "yes" here ... but that's not where we stand as of this writing.
+Given the current state of the art, these clear breakthroughs
+are outstanding, the proposed techniques are novel,
+sometimes difficult to apply, and
+significant difficulties combing physics and DL persist.
+Also, many
+fundamental theoretical questions remain unaddressed, most importantly
+regarding data efficienty and generalization.
+
+Over the course of the last decades,
+highly specialized and accurate discretization schemes have
+been developed to solve fundamental model equations such
+as the Navier-Stokes, Maxwell’s, or Schroedinger’s equations.
+Seemingly trivial changes to the discretization can determine
+whether key phenomena are visible in the solutions or not.
+
+```{admonition} Goal of this document
+:class: tip
+Thus, a key aspect that we want to address in the following in the following is:
+- explain how to use DL,
+- and how to combine it with existing knowledge of physics and simulations,
+- **without throwing away** all existing numerical knowledeg and techniques!
+```
+
+Rather, we want to build on all the neat techniques that we have
+at our disposal, and use them as
+much as possible. I.e., our goal is to _reconcile_ the data-centered
+viewpoint and the physical simuation viewpoint.
+
+Also interesting: from a math standpoint ...
+''just'' non-linear optimization ...
+
 
 ## Categorization
 
@@ -66,4 +111,39 @@ starting points with code examples, and illustrate pros and cons of the
 different approaches. In particular, it's important to know in which scenarios 
 each of the different techniques is particularly useful.
 
+## Deep Learning and Neural Networks
 
+Very brief intro, basic equations... approximate $f(x)=y$ with NN ...
+
+Details in [Deep Learning book](https://www.deeplearningbook.org)
+
+
+## Notation and Abbreviations
+
+Unify notation... TODO ...
+
+Math notation:
+
+| Symbol | Meaning |
+| --- | --- |
+| $x$ | NN input |
+| $y$ | NN output |
+| $\theta$ | NN params |
+
+Quick summary of the most important abbreviations:
+
+| ABbreviation | Meaning |
+| --- | --- |
+| CNN | Convolutional neural network |
+| DL | Deep learning |
+| NN | Neural network |
+| PBDL | Physics-based deep learning |
+
+
+
+test table formatting 
+
+|    | Sentence #  | Word    | POS   | Tag   |
+|---:|:-------------|:-----------|:------|:------|
+| 1 | Sentence: 1  | They       | PRP   | O     |
+| 2 | Sentence: 1  | marched    | VBD   | O     |
