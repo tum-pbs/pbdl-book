@@ -2,14 +2,19 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 #
 - file: intro
-- file: overview
+- file: overview.md
+  sections:
+    - file: overview-burgers-forw.ipynb
 - file: supervised
   sections:
-    - file: supervised-airfoils
+    - file: supervised-airfoils.ipynb
 - file: physicalloss
   sections:
-    - file: physicalloss-code
+    - file: physicalloss-code.ipynb
 - file: diffphys
+  sections:
+    - file: diffphys-code-gradient.ipynb
+    - file: diffphys-code-tf.ipynb
 - file: jupyter-book-reference
   sections:
     - file: markdown
