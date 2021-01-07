@@ -9,14 +9,15 @@ As much as possible, the algorithms will come with hands-on code examples to qui
 Beyond standard _supervised_ learning from data, we'll look at loss constraints, and 
 more tightly coupled learning algorithms with differentiable simulations.
 
-
-```{figure} ./resources/teaser.png
+```{figure} resources/teaser.png
 ---
 height: 220px
 name: pbdl-teaser
 ---
 Some examples ... preview teaser ...
 ```
+% Teaser, simple version:
+% ![Teaser, simple version](resources/teaser.png)
 
 
 As a _sneak preview_, in the next chapters we'll show:
@@ -82,6 +83,7 @@ a b c
 See also... Test link: {doc}`supervised`
 ```
 
+✅  Do this , ❌  Don't do this
 
 % ----------------
 ---

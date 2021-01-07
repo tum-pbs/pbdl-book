@@ -4,6 +4,8 @@
 - file: intro
 - file: overview
 - file: supervised
+  sections:
+    - file: supervised-airfoils
 - file: physicalloss
   sections:
     - file: physicalloss-code

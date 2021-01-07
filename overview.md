@@ -1,29 +1,31 @@
 Overview
 ============================
 
-The following "book" of targets _"Physics-Based Deep Learning"_ techniques
-(PBDL), i.e., the field of methods with combinations of physical modeling and
-deep learning (DL) techniques. Here, DL will typically refer to methods based
-on artificial neural networks. The general direction of PBDL represents a very
+The following "book" of targets _"Physics-Based Deep Learning"_ techniques, 
+i.e., methods that combine physical modeling and numerical simulations with
+deep learning (DL). Here, DL will typically refer to methods based
+on artificial neural networks. The general direction of 
+Physics-Based Deep Learning represents a very
 active, quickly growing and exciting field of research. 
 
 ## Motivation
 
-From weather forecasts (? ) to quantum physics (? ),
+From weather forecasts (? ) over X, Y, 
 ... more ...
+to quantum physics (? ),
 using numerical analysis to obtain solutions for physical models has
 become an integral part of science.
 
+At the same time, machine learning technologies and deep neural networks in particular,
+have led to impressive achievements in a variety of field.
 Among others, GPT-3
 has recently demonstrated that learning models can
 achieve astounding accuracy for processing natural language.
 Also: AlphaGO, closer to physics: protein folding...
 This is a vibrant, quickly developing field with vast possibilities.
 
-At the same time, machine
-learning technologies and deep neural networks in particular,
-have given rise to concerns that this technology has the poten-
-tial to replace the traditional, simulation-driven approach to
+The successes of DL approaches have given rise to concerns that this technology has 
+the potential to replace the traditional, simulation-driven approach to
 science. Instead of relying on models that are carefully crafted
 from first principles, can data collections of sufficient size
 be processed to provide the correct answers instead?
@@ -34,8 +36,7 @@ Given the current state of the art, these clear breakthroughs
 are outstanding, the proposed techniques are novel,
 sometimes difficult to apply, and
 significant difficulties combing physics and DL persist.
-Also, many
-fundamental theoretical questions remain unaddressed, most importantly
+Also, many fundamental theoretical questions remain unaddressed, most importantly
 regarding data efficienty and generalization.
 
 Over the course of the last decades,
@@ -110,6 +111,19 @@ ordered in terms of growing tightness of the integration, give practical
 starting points with code examples, and illustrate pros and cons of the 
 different approaches. In particular, it's important to know in which scenarios 
 each of the different techniques is particularly useful.
+
+## A brief history of PBDL in the context of Fluids
+
+First:
+
+Tompson, seminal...
+
+Chu, descriptors, early but not used
+
+Ling et al. isotropic turb, small FC, unused?
+
+PINNs ... and more ...
+
 
 ## Deep Learning and Neural Networks
 
