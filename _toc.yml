@@ -5,6 +5,7 @@
 - file: overview.md
   sections:
     - file: overview-burgers-forw.ipynb
+    - file: overview-ns-forw.ipynb
 - file: supervised
   sections:
     - file: supervised-airfoils.ipynb
