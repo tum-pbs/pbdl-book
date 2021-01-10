@@ -1,11 +1,15 @@
 Physical Loss Terms
 =======================
 
+
 Using the equations now, but no numerical methods!
 
 Still interesting, leverages analytic derivatives of NNs, but lots of problems
 
+
+
 ---
+
 
 % \newcommand{\pde}{\mathcal{P}}         % PDE ops
 % \newcommand{\pdec}{\pde_{s}}

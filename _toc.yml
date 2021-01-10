@@ -16,6 +16,7 @@
   sections:
     - file: diffphys-code-gradient.ipynb
     - file: diffphys-code-tf.ipynb
+    - file: diffphys-discuss.md
     - file: diffphys-code-ns.ipynb
 - file: jupyter-book-reference
   sections:

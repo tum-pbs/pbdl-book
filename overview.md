@@ -112,6 +112,17 @@ starting points with code examples, and illustrate pros and cons of the
 different approaches. In particular, it's important to know in which scenarios 
 each of the different techniques is particularly useful.
 
+```{admonition} Skip ahead if...
+:class: tip
+
+- you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The _Supervised Learning_ chapter is a good starting point then.
+
+- On the other hand, if you're already deep into ANNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the _Physical Loss Terms_ chapter, which lays the foundations for the next chapters.
+
+A brief look at our _Notation_ won't hurt in both cases, though!
+```
+
+
 ## A brief history of PBDL in the context of Fluids
 
 First:
@@ -155,7 +166,7 @@ Quick summary of the most important abbreviations:
 
 
 
-test table formatting 
+test table formatting in markdown
 
 |    | Sentence #  | Word    | POS   | Tag   |
 |---:|:-------------|:-----------|:------|:------|
