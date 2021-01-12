@@ -1,12 +1,14 @@
 Overview
 ============================
 
-The following "book" of targets _"Physics-Based Deep Learning"_ techniques, 
-i.e., methods that combine physical modeling and numerical simulations with
-deep learning (DL). Here, DL will typically refer to methods based
-on artificial neural networks. The general direction of 
-Physics-Based Deep Learning represents a very
-active, quickly growing and exciting field of research. 
+The following collection of digital documents, i.e. "book", 
+targets _Physics-Based Deep Learning_ techniques.
+By that we mean combining physical modeling and numerical simulations with
+methods based on artificial neural networks. 
+The general direction of Physics-Based Deep Learning represents a very
+active, quickly growing and exciting field of research -- we want to provide 
+a starting point for new researchers as well as a hands-on introduction into
+state-of-the-art resarch topics. 
 
 ## Motivation
 
@@ -50,8 +52,8 @@ whether key phenomena are visible in the solutions or not.
 :class: tip
 Thus, a key aspect that we want to address in the following in the following is:
 - explain how to use DL,
-- and how to combine it with existing knowledge of physics and simulations,
-- **without throwing away** all existing numerical knowledeg and techniques!
+- how to combine it with existing knowledge of physics and simulations,
+- **without throwing away** all existing numerical knowledge and techniques!
 ```
 
 Rather, we want to build on all the neat techniques that we have
@@ -112,7 +114,7 @@ starting points with code examples, and illustrate pros and cons of the
 different approaches. In particular, it's important to know in which scenarios 
 each of the different techniques is particularly useful.
 
-```{admonition} Skip ahead if...
+```{admonition} You can skip ahead if...
 :class: tip
 
 - you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The _Supervised Learning_ chapter is a good starting point then.
@@ -138,37 +140,13 @@ PINNs ... and more ...
 
 ## Deep Learning and Neural Networks
 
-Very brief intro, basic equations... approximate $f(x)=y$ with NN ...
+Very brief intro, basic equations... approximate $f^*(x)=y$ with NN $f(x;\theta)$ ...
 
-Details in [Deep Learning book](https://www.deeplearningbook.org)
+learn via GD, $\partial f / \partial \theta$ 
 
+Read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
+especially about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and 
+"Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
 
-## Notation and Abbreviations
-
-Unify notation... TODO ...
-
-Math notation:
-
-| Symbol | Meaning |
-| --- | --- |
-| $x$ | NN input |
-| $y$ | NN output |
-| $\theta$ | NN params |
-
-Quick summary of the most important abbreviations:
-
-| ABbreviation | Meaning |
-| --- | --- |
-| CNN | Convolutional neural network |
-| DL | Deep learning |
-| NN | Neural network |
-| PBDL | Physics-based deep learning |
-
-
-
-test table formatting in markdown
-
-|    | Sentence #  | Word    | POS   | Tag   |
-|---:|:-------------|:-----------|:------|:------|
-| 1 | Sentence: 1  | They       | PRP   | O     |
-| 2 | Sentence: 1  | marched    | VBD   | O     |
+**Note:** Classic distinction between _classification_ and _regression_ problems not so important here,
+we only deal with _regression_ problems in the following.

@@ -1,134 +1,98 @@
 Physical Loss Terms
 =======================
 
+The supervised setting of the previous sections can quickly 
+yield approximate solutions with a fairly simple training process, but what's
+quite sad to see here is that we only use physical models and numerics
+as an "external" tool to produce a big pile of data 😢.
 
-Using the equations now, but no numerical methods!
+## Using Physical Models
 
-Still interesting, leverages analytic derivatives of NNs, but lots of problems
+We can improve this setting by trying to bring the model equations (or parts thereof)
+into the training process. E.g., given a PDE for $\mathbf{u}(x,t)$ with a time evolution, 
+we can typically express it in terms of a function $\mathcal F$ of the derivatives 
+of $\mathbf{u}$ via  
+$
+  \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{x..x})
+$,
+where the $_{x}$ subscripts denote spatial derivatives of higher order.
+
+In this context we can employ DL by approxmating the unknown $\mathbf{u}$ itself 
+with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
+naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
+$
+  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{x..x}) = 0
+$
+
+This nicely integrates with the objective for training a neural network: similar to before
+we can collect sample solutions 
+$[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(x)=y$. 
+This is typically important, as most practical PDEs we encounter do not have unique solutions
+unless initial and boundary conditions are specified. Hence, if we only consider $R$ we might
+get solutions with random offset or other undesirable components. Hence the supervised sample points
+help to _pin down_ the solution in certain places.
+Now our training objective becomes
+
+$\text{arg min}_{\theta} \ \alpha_0 \sum_i (f(x_i ; \theta)-y_i)^2 + \alpha_1 R(x_i) $,
+
+where $\alpha_{0,1}$ denote hyper parameters that scale the contribution of the supervised term and 
+the residual term, respectively. We could of course add additional residual terms with suitable scaling factors here.
+
+Note that, similar to the data samples used for supervised training, we have no guarantees that the
+residual terms $R$ will actually reach zero during training. The non-linear optimization of the training process
+will minimize the supervised and residual terms as much as possible, but worst case, large non-zero residual 
+contributions can remain. We'll look at this in more detail in the upcoming code example, for now it's important 
+to remember that physical constraints in this way only represent _soft-constraints_, without guarantees
+of minimizing these constraints.
+
+## Neural network derivatives
+
+In order to compute the residuals at training time, it would be possible to store 
+the unknowns of $\mathbf{u}$ on a computational mesh, e.g., a grid, and discretize the equations of
+$R$ there. This has a fairly long "tradition" in DL, and was proposed by Tompson et al. {cite}`tompson2017` early on.
+
+Instead, a more widely used variant of employing physical soft-constraints {cite}`raissi2018hiddenphys`
+uses fully connected NNs to represent $\mathbf{u}$. This has some interesting pros and cons that we'll outline in the following.
+Due to the popularity of the version, we'll also focus on it in the following code examples and comparisons.
+
+The central idea here is that the aforementioned general function $f$ that we're after in our learning problems
+can be seen as a representation of a physical field we're after. Thus, the $\mathbf{u}(x)$ will 
+be turned into $\mathbf{u}(x, \theta)$ where we choose $\theta$ such that the solution to $\mathbf{u}$ is 
+represented as precisely as possible.
+
+One nice side effect of this viewpoint is that NN representations inherently support the calculation of derivatives. 
+The derivative $\partial f / \partial \theta$ was a key building block for learning via gradient descent, as explained 
+in {doc}`overview`. Here, we can use the same tools to compute spatial derivatives such as $\partial \mathbf{u} / \partial x$,
+Note that above for $R$ we've written this derivative in the shortened notation as $\mathbf{u}_{x}$.
+For functions over time this of course also works for $\partial \mathbf{u} / \partial t$, i.e. $\mathbf{u}_{t}$ in the notation above.
+
+Thus, for some generic $R$, made up of $\mathbf{u}_t$ and $\mathbf{u}_{x}$ terms, we can rely on the back-propagation algorithm
+of DL frameworks to compute these derivatives once we have a NN that represents $\mathbf{u}$. Essentially, this gives us a 
+function (the NN) that receives space and time coordinates to produce a solution for $\mathbf{u}$. Hence, the input is typically
+quite low-dimensional, e.g., 3+1 values for a 3D case over time, and often produces a scalar value or a spatial vector.
+Due to the lack of explicit spatial sampling points, an MLP, i.e., fully-connected NN is the architecture of choice here.
+
+To pick a simple example, Burgers equation in 1D,
+$\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ , we can directly
+formulate a loss term $R = \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} - \nu \frac{\partial^2 u}{\partial x^2} u$ that should be minimized as much as possible at training time. For each of the terms, e.g. $\frac{\partial u}{\partial x}$,
+we can simply query the DL framework that realizes $u$ to obtain the corresponding derivative. 
+For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we can typically simply query the derivative function of the framework twice. In the following section, we'll give a specific example of how that works in tensorflow.
 
 
+## Summary so far
 
+This gives us a method to include physical equations into DL learning as a soft-constraint.
+Typically, this setup is suitable for _inverse_ problems, where we have certain measurements or observations
+that we wish to find a solution of a model PDE for. Because of the high expense of the reconstruction (to be 
+demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
+to capture a wide range of solutions, such as the previous supervised airfoil example, in this way.
+
+```{figure} resources/placeholder.png
 ---
-
-
-% \newcommand{\pde}{\mathcal{P}}         % PDE ops
-% \newcommand{\pdec}{\pde_{s}}
-% \newcommand{\manifsrc}{\mathscr{S}}    % coarse / "source"
-% \newcommand{\pder}{\pde_{R}}
-% \newcommand{\manifref}{\mathscr{R}}
-
-% vc - coarse solutions
-% \renewcommand{\vc}[1]{\vs_{#1}}            % plain coarse state at time t
-% \newcommand{\vcN}{\vs}                     % plain coarse state without time 
-% vc - coarse solutions, modified by correction
-% \newcommand{\vct}[1]{\tilde{\vs}_{#1}}     % modified / over time at time t
-% \newcommand{\vctN}{\tilde{\vs}}            % modified / over time without time
-% vr - fine/reference solutions
-% \renewcommand{\vr}[1]{\mathbf{r}_{#1}}            % fine / reference state at time t , never modified
-% \newcommand{\vrN}{\mathbf{r}}                     % plain coarse state without time 
-
-% \newcommand{\project}{\mathcal{T}}           % transfer operator fine <> coarse
-% \newcommand{\loss}{\mathcal{L}}              % generic loss function
-% \newcommand{\nn}{f_{\theta}}
-% \newcommand{\dt}{\Delta t}                   % timestep
-% \newcommand{\corrPre}{\mathcal{C}_{\text{pre}}}            % analytic correction , "pre computed"
-% \newcommand{\corr}{\mathcal{C}}                         % just C for now...
-% \newcommand{\nnfunc}{F} % {\text{NN}}
-
-
-Some notation from SoL, move with parts from overview into "appendix"?
-
-
-
-We typically solve a discretized PDE $\mathcal{P}$ by performing discrete time steps of size $\Delta t$. 
-Each subsequent step can depend on any number of previous steps,
-$\mathbf{u}(\mathbf{x},t+\Delta t) = \mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t-\Delta t),...)$, 
-where
-$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ for the domain $\Omega$ in $d$
-dimensions, and $t \in \mathbb{R}^{+}$.
-
-Numerical methods yield approximations of a smooth function such as $\mathbf{u}$ in a discrete
-setting and invariably introduce errors. These errors can be measured in terms
-of the deviation from the exact analytical solution.
-For discrete simulations of
-PDEs, these errors are typically expressed as a function of the truncation, $O(\Delta t^k)$ 
-for a given step size $\Delta t$ and an exponent $k$ that is discretization dependent.
-
-The following PDEs typically work with a continuous
-velocity field $\mathbf{u}$ with $d$ dimensions and components, i.e.,
-$\mathbf{u}(\mathbf{x},t): \mathbb{R}^d \rightarrow \mathbb{R}^d $.
-For discretized versions below, $d_{i,j}$ will denote the dimensionality
-of a field such as the velocity,
-with domain size $d_{x},d_{y},d_{z}$ for source and reference in 3D.
-
-% with $i \in \{s,r\}$ denoting source/inference manifold and reference manifold, respectively.
-%This yields $\vc{} \in \mathbb{R}^{d \times d_{s,x} \times d_{s,y} \times d_{s,z} }$ and $\vr{} \in \mathbb{R}^{d \times d_{r,x} \times d_{r,y} \times d_{r,z} }$
-%Typically, $d_{r,i} > d_{s,i}$ and $d_{z}=1$ for $d=2$.
-
-For all PDEs, we use non-dimensional parametrizations as outlined below,
-and the components of the velocity vector are typically denoted by $x,y,z$ subscripts, i.e.,
-$\mathbf{u} = (u_x,u_y,u_z)^T$ for $d=3$.
-
-Burgers' equation in 2D. It represents a well-studied advection-diffusion PDE:
-
-$\frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x =
-  \nu \nabla\cdot \nabla u_x + g_x(t), 
-  \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y =
-  \nu \nabla\cdot \nabla u_y + g_y(t)
-$, 
-
-where $\nu$ and $\mathbf{g}$ denote diffusion constant and external forces, respectively.
-
-Burgers' equation in 1D without forces with $u_x = u$:
-%\begin{eqnarray}
-$\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ .
-
+height: 220px
+name: pinn-training
 ---
-
-Later on, additional equations...
-
-
-
-Navier-Stokes, in 2D:
-
-$
-    \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x =
-    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
-    \\
-    \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y =
-    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
-    \\
-    \text{subject to} \quad \nabla \cdot \mathbf{u} = 0
-$
+TODO, visual overview of PINN training
+```
 
 
-
-Navier-Stokes, in 2D with Boussinesq:
-
-%$\frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x$
-%$ -\frac{1}{\rho} \nabla p $
-
-$
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x = - \frac{1}{\rho} \nabla p 
-  \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y = - \frac{1}{\rho} \nabla p + \eta d
-  \\
-  \text{subject to} \quad \nabla \cdot \mathbf{u} = 0,
-  \\
-  \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d = 0 
-$
-
-
-
-Navier-Stokes, in 3D:
-
-$
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
-  \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
-  \\
-  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
-  \\
-  \text{subject to} \quad \nabla \cdot \mathbf{u} = 0.
-$

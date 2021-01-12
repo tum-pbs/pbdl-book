@@ -73,8 +73,14 @@ The contents of the following files would not have been possible without the hel
 - Ms. y
 - ...
 
-% tests...
 
+
+
+
+
+% some markdown tests follow ...
+
+---
 
 a b c
 
@@ -86,6 +92,7 @@ See also... Test link: {doc}`supervised`
 ✅  Do this , ❌  Don't do this
 
 % ----------------
+
 ---
 
 
@@ -152,6 +159,6 @@ time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020l
 _Misc jupyter book TODOs_
 
 - Fix latex PDF output
-- How to include links in references?
+- How to include links to papers in the bibtex references?
 
 

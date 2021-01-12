@@ -29,7 +29,7 @@ For the PINN representation with fully-connected networks on the other hand, we 
 
 The following table summarizes these findings:
 
-| Method   |  Pro   |  Con  |
+| Method   |  ✅ Pro   |  ❌ Con  |
 |----------|-------------|------------|
 | **PINN** | - Analytic derivatives via back-propagation  | - Expensive evaluation of NN, as well as derivative calculations | 
 |          | - Simple to implement  | - Incompatible with existing numerical methods     | 

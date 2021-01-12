@@ -1,9 +1,9 @@
-# Table of content
-# Learn more at https://jupyterbook.org/customize/toc.html
+# PBDL Table of content (cf https://jupyterbook.org/customize/toc.html)
 #
 - file: intro
 - file: overview.md
   sections:
+    - file: overview-equations.md
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
 - file: supervised
@@ -12,6 +12,7 @@
 - file: physicalloss
   sections:
     - file: physicalloss-code.ipynb
+    - file: physicalloss-discuss.md
 - file: diffphys
   sections:
     - file: diffphys-code-gradient.ipynb
@@ -23,3 +24,4 @@
     - file: markdown
     - file: notebooks
 - file: references
+- file: notation
