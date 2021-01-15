@@ -22,7 +22,7 @@ by adjusting weights $\theta$ of our representation with $f$ such that
 $\text{arg min}_{\theta} \sum_i (f(x_i ; \theta)-y_i)^2$.
 
 This will give us $\theta$ such that $f(x;\theta) \approx y$ as accurately as possible given
-our choice of $f$ and the hyper parameters for training. Note that above we've assumed 
+our choice of $f$ and the hyperparameters for training. Note that above we've assumed 
 the simplest case of an $L^2$ loss. A more general version would use an error metric $e(x,y)$
 to be minimized via $\text{arg min}_{\theta} \sum_i e( f(x_i ; \theta) , y_i) )$. The choice
 of a suitable metric is topic we will get back to later on.

@@ -9,24 +9,25 @@ as an "external" tool to produce a big pile of data 😢.
 ## Using Physical Models
 
 We can improve this setting by trying to bring the model equations (or parts thereof)
-into the training process. E.g., given a PDE for $\mathbf{u}(x,t)$ with a time evolution, 
+into the training process. E.g., given a PDE for $\mathbf{u}(\mathbf{x},t)$ with a time evolution, 
 we can typically express it in terms of a function $\mathcal F$ of the derivatives 
 of $\mathbf{u}$ via  
 $
-  \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{x..x})
+  \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx, ... \mathbf{u}_{xx...x} )
 $,
-where the $_{x}$ subscripts denote spatial derivatives of higher order.
+where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
+of higher and higher order (this can of course also include derivatives with repsect to different axes).
 
-In this context we can employ DL by approxmating the unknown $\mathbf{u}$ itself 
+In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
 with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
 naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
 $
-  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{x..x}) = 0
+  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx, ... \mathbf{u}_{xx...x} ) = 0
 $
 
 This nicely integrates with the objective for training a neural network: similar to before
 we can collect sample solutions 
-$[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(x)=y$. 
+$[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(\mathbf{x})=y$. 
 This is typically important, as most practical PDEs we encounter do not have unique solutions
 unless initial and boundary conditions are specified. Hence, if we only consider $R$ we might
 get solutions with random offset or other undesirable components. Hence the supervised sample points
@@ -35,7 +36,7 @@ Now our training objective becomes
 
 $\text{arg min}_{\theta} \ \alpha_0 \sum_i (f(x_i ; \theta)-y_i)^2 + \alpha_1 R(x_i) $,
 
-where $\alpha_{0,1}$ denote hyper parameters that scale the contribution of the supervised term and 
+where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 
 the residual term, respectively. We could of course add additional residual terms with suitable scaling factors here.
 
 Note that, similar to the data samples used for supervised training, we have no guarantees that the
@@ -56,8 +57,8 @@ uses fully connected NNs to represent $\mathbf{u}$. This has some interesting pr
 Due to the popularity of the version, we'll also focus on it in the following code examples and comparisons.
 
 The central idea here is that the aforementioned general function $f$ that we're after in our learning problems
-can be seen as a representation of a physical field we're after. Thus, the $\mathbf{u}(x)$ will 
-be turned into $\mathbf{u}(x, \theta)$ where we choose $\theta$ such that the solution to $\mathbf{u}$ is 
+can be seen as a representation of a physical field we're after. Thus, the $\mathbf{u}(\mathbf{x})$ will 
+be turned into $\mathbf{u}(\mathbf{x}, \theta)$ where we choose $\theta$ such that the solution to $\mathbf{u}$ is 
 represented as precisely as possible.
 
 One nice side effect of this viewpoint is that NN representations inherently support the calculation of derivatives. 

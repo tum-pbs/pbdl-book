@@ -16,6 +16,17 @@ And while the setup is realtively simple, it is generally difficult to control. 
 has flexibility to refine the solution by itself, but at the same time, tricks are necessary
 when it doesn't pick the right regions of the solution.
 
+## Is it "Machine Learning"
+
+TODO, discuss - more akin to classical optimization:
+we test for space/time positions at training time, and are interested in the  
+solution there afterwards.
+
+hence, no real generalization, or test data with different distribution.
+more similar to inverse problem that solves single state e.g. via BFGS or Newton.
+
+## Summary
+
 In general, a fundamental drawback of this approach is that it does combine with traditional
 numerical techniques well. E.g., learned representation is not suitable to be refined with 
 a classical iterative solver such as the conjugate gradient method. This means many
