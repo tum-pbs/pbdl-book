@@ -21,8 +21,8 @@ into the training process. E.g., given a PDE for $\mathbf{u}(\mathbf{x},t)$ with
 we can typically express it in terms of a function $\mathcal F$ of the derivatives 
 of $\mathbf{u}$ via  
 $
-  \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx, ... \mathbf{u}_{xx...x} )
-$,
+  \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) ,
+$
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
 of higher and higher order (this can of course also include derivatives with repsect to different axes).
 
@@ -30,8 +30,8 @@ In this context we can employ DL by approximating the unknown $\mathbf{u}$ itsel
 with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
 naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
 $
-  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx, ... \mathbf{u}_{xx...x} ) = 0
-$
+  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) = 0
+$.
 
 This nicely integrates with the objective for training a neural network: similar to before
 we can collect sample solutions 
@@ -90,7 +90,7 @@ For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we ca
 
 ## Summary so far
 
-This gives us a method to include physical equations into DL learning as a soft-constraint.
+The approach above gives us a method to include physical equations into DL learning as a soft-constraint.
 Typically, this setup is suitable for _inverse_ problems, where we have certain measurements or observations
 that we wish to find a solution of a model PDE for. Because of the high expense of the reconstruction (to be 
 demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
