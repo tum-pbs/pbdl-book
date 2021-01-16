@@ -1,7 +1,6 @@
 Differentiable Physics
 =======================
 
-%... are much more powerful ...
 As a next step towards a tighter and more generic combination of deep learning
 methods and deep learning we will target incorporating _differentiable physical 
 simulations_ into the learning process. In the following, we'll shorten
@@ -15,6 +14,14 @@ information from from a simulator into an NN and vice versa. This has numerous
 advantages such as improved learning feedback and generalization, as we'll outline below.
 In contrast to physics-informed loss functions, it also enables handling more complex
 solution manifolds instead of single inverse problems.
+
+```{figure} resources/placeholder.png
+---
+height: 220px
+name: dp-training
+---
+TODO, visual overview of DP training
+```
 
 ## Differentiable Operators
 
@@ -99,6 +106,7 @@ $
     \ 
     \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} }|_{\mathbf{u}^n}
 $,
+
 which is just the vector valued version of the "classic" chain rule
 $f(g(x))' = f'(g(x)) g'(x)$, and directly extends for larger numbers of composited functions, i.e. $i>2$.
 
@@ -168,76 +176,126 @@ Note that to simplify things, we assume that $\mathbf{u}$ is only a function in 
 i.e. constant over time. We'll bring back the time evolution of $\mathbf{u}$ later on.
 %
 [TODO, write out simple finite diff approx?]
+[denote discrete d as $\mathbf{d}$ below?]
 %
-Let's denote this re-formulation as $\mathcal P$ that maps a state of $d(t)$ into a 
+Let's denote this re-formulation as $\mathcal P$. It maps a state of $d(t)$ into a 
 new state at an evoled time, i.e.:
 
 $$
-    d(t+\Delta t) = \mathcal P ( d(t), \mathbf{u}, t+\Delta t) 
+    d(t+\Delta t) = \mathcal P ( ~ d(t), \mathbf{u}, t+\Delta t) 
 $$
 
-As a simple optimization and learning task, let's consider the problem of
-finding an unknown motion $\mathbf{u}$ such that starting with a given initial state $d^{~0}$ at $t=t^0$,
-the time evolved scalar density at time $t=t^e$ has a certain shape or configuration $d^{\text{target}}$.
+As a simple example of an optimization and learning task, let's consider the problem of
+finding an motion $\mathbf{u}$ such that starting with a given initial state $d^{~0}$ at $t^0$,
+the time evolved scalar density at time $t^e$ has a certain shape or configuration $d^{\text{target}}$.
 Informally, we'd like to find a motion that deforms $d^{~0}$ into a target state.
-The simplest way to express this goal is via an $L^2$ loss between the two states, hence we want
-to minimize $|d(t^e) - d^{\text{target}}|^2$. 
+The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
+to minimize the loss function $F=|d(t^e) - d^{\text{target}}|^2$. 
+
 Note that as described here this is a pure optimization task, there's no NN involved,
-and our goal is $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
+and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
 as would be custom in a real learning task.
 
 The final state of our marker density $d(t^e)$ is fully determined by the evolution 
-of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization as overall goal:
+of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem as overall goal:
 
 $$
-    \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2
+    \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e - t^0 ) - d^{\text{target}}|^2
 $$
 
 We'd now like to find the minimizer for this objective by
-gradient descent (as the most straight-forward starting point), where the 
-gradient is determined by the differentiable physics approach described above.
-As the velocity field $\mathbf{u}$ contains our degrees of freedom,
-what we're looking for is the Jacobian 
-$\partial \mathcal P / \partial \mathbf{u}$, which we luckily don't need as a full
-matrix, but instead only mulitplied by the vector obtained from the derivative of the 
-$L^2$ loss $L= |d(t^e) - d^{\text{target}}|^2$, thus
-$\partial L / \partial d$
+_gradient descent_ (GD), where the 
+gradient is determined by the differentiable physics approach described earlier in this chapter.
+Once things are working with GD, we can relatively easily switch to better optimizers or bring
+an NN into the picture, hence it's always a good starting point.
 
-TODO, introduce L earlier
-P gives us d, next pd / du -> udpate u
+As the discretized velocity field $\mathbf{u}$ contains all our degrees of freedom,
+what we need to update the velocity by an amount 
+$\Delta \mathbf{u} = \partial L / \partial \mathbf{u}$, 
+which can be decomposed into 
+$\Delta \mathbf{u} = 
+\frac{ \partial d }{ \partial \mathbf{u}}
+\frac{ \partial L }{ \partial d}
+$.
+And as the evolution of $d$ is given by our discretized physical model $P$,
+what we're acutally looking for is the Jacobian 
+$\partial \mathcal P / \partial \mathbf{u}$ to
+compute 
+$\Delta \mathbf{u} = 
+ \frac{ \partial \mathcal P }{ \partial \mathbf{u}}
+ \frac{ \partial L }{ \partial d}$. 
+We luckily don't need $\partial \mathcal P / \partial \mathbf{u}$ as a full
+matrix, but instead only mulitplied by the vector obtained from the derivative of our scalar 
+loss function $L$.
 
-...to obtain an explicit update of the form
-$d(t+\Delta t) = A d(t)$,
-where the matrix $A$ represents the discretized advection step of size $\Delta t$ for $\mathbf{u}$.
+%the $L^2$ loss $L= |d(t^e) - d^{\text{target}}|^2$, thus
 
-E.g., for a simple first order upwinding scheme on a Cartesian grid we'll get a matrix that essentially encodes
-linear interpolation coefficients for positions $\mathbf{x} + \Delta t \mathbf{u}$. For a grid of 
-size $d_x \times d_y$ we'd have a 
+So what are the actual Jacobians here:
+the one for $L$ is simple enough, we simply get a column vector with entries of the form
+$2(d(t^e)_i - d^{\text{target}})_i$ for one component $i$.
+$\partial \mathcal P / \partial \mathbf{u}$ is more interesting:
+here we'll get derivatives of the chosen advection operator w.r.t. each component of the 
+velocities.
 
-simplest example, advection step of passive scalar
-turn into matrix, mult by transpose 
-matrix free
+%...to obtain an explicit update of the form $d(t+\Delta t) = A d(t)$, where the matrix $A$ represents the discretized advection step of size $\Delta t$ for $\mathbf{u}$. ... we'll get a matrix that essentially encodes linear interpolation coefficients for positions $\mathbf{x} + \Delta t \mathbf{u}$. For a grid of size $d_x \times d_y$ we'd have a 
 
+```{figure} resources/placeholder.png
+---
+height: 100px
+name: advection-upwing
+---
+TODO, small sketch of 1D advection
+```
+
+E.g., for a simple [first order upwinding scheme](https://en.wikipedia.org/wiki/Upwind_scheme) 
+on a Cartesian grid in 1D, with marker density and velocity $d_i$ and $u_i$ for cell $i$
+(superscripts for time $t$ are omitted for brevity), 
+we get 
+
+$$ \begin{aligned}
+    & d_i^{~t+\Delta t} = d_i - u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \text{ with }  \\
+    & u_i^+ = \text{max}(u_i \Delta t / \Delta x,0) \\
+    & u_i^- = \text{min}(u_i \Delta t / \Delta x,0)
+\end{aligned} $$
+
+E.g., for a positive $u_i$ we have 
+$d_i^{~t+\Delta t} = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}$
+and hence 
+$\partial \mathcal P / \partial u_i$ from cell $i$ would be $1 + \frac{u_i \Delta t }{ \Delta x}$.
+For the full gradient we'd need to add 
+the potential contributions from cells $i+1$ and $i-1$, depending on the sign of their velocities.
+
+In practice this step is similar to evaluating a transposed matrix multiplication.
+If we rewrite the calculation above as 
+$d^{~t+\Delta t} = A \mathbf{u}$, then $\partial \mathcal P / \partial \mathbf{u} = A^T$.
+In many practical cases, a matrix free implementation of this multiplication might 
+be preferable to actually constructing $A$.
+
+## A (slightly) more complex example
+
+[TODO]
 more complex, matrix inversion, eg Poisson solve
 dont backprop through all CG steps (available in phiflow though)
 rather, re-use linear solver to compute multiplication by inverse matrix
 
-note - time can be "virtual" , solving for steady state
-only assumption: some iterative procedure, not just single eplicit step - then things simplify.
+[note 1: essentialy yields implicit derivative, cf implicit function theorem & co]
 
-## Summary of Differentiable Physics
+[note 2: time can be "virtual" , solving for steady state
+only assumption: some iterative procedure, not just single eplicit step - then things simplify.]
 
-This gives us a method to include physical equations into DL learning as a soft-constraint.
-Typically, this setup is suitable for _inverse_ problems, where we have certain measurements or observations
-that we wish to find a solution of a model PDE for. Because of the high expense of the reconstruction (to be 
-demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
-to capture a wide range of solutions, such as the previous supervised airfoil example, in this way.
+## Summary of Differentiable Physics so far
 
-```{figure} resources/placeholder.png
----
-height: 220px
-name: dp-training
----
-TODO, visual overview of DP training
-```
+To summarize, using differentiable physical simulations 
+gives us a tool to include phsyical equations with a chosen discretization into DL learning.
+In contrast to the residual constraints of the previous chapter,
+this makes it possible to left NNs seamlessly interact with physical solvers.
 
+We'd previously fully discard our physical model and solver
+once the NN is trained: in the example from {doc}`physicalloss-code` 
+the NN gives us the solution directly, bypassing
+any solver or model equation. With the DP approach we can train an NN alongside
+a numerical solver, and thus we can make use of the physical model (as represented by 
+the solver) later on at inference time. This allows us to move beyond solving single
+inverse problems, and can yield NNs that quite robustly generalize to new inputs.
+
+Let's revisit the sample problem from {doc}`physicalloss-code` in the context of DPs.

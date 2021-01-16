@@ -16,11 +16,10 @@ And while the setup is realtively simple, it is generally difficult to control. 
 has flexibility to refine the solution by itself, but at the same time, tricks are necessary
 when it doesn't pick the right regions of the solution.
 
-## Is it "Machine Learning"
+## Is it "Machine Learning"?
 
 TODO, discuss - more akin to classical optimization:
-we test for space/time positions at training time, and are interested in the  
-solution there afterwards.
+we test for space/time positions at training time, and are interested in the solution there afterwards.
 
 hence, no real generalization, or test data with different distribution.
 more similar to inverse problem that solves single state e.g. via BFGS or Newton.

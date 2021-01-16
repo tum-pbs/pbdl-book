@@ -6,6 +6,14 @@ yield approximate solutions with a fairly simple training process, but what's
 quite sad to see here is that we only use physical models and numerics
 as an "external" tool to produce a big pile of data 😢.
 
+```{figure} resources/placeholder.png
+---
+height: 220px
+name: pinn-training
+---
+TODO, visual overview of PINN training
+```
+
 ## Using Physical Models
 
 We can improve this setting by trying to bring the model equations (or parts thereof)
@@ -87,13 +95,5 @@ Typically, this setup is suitable for _inverse_ problems, where we have certain 
 that we wish to find a solution of a model PDE for. Because of the high expense of the reconstruction (to be 
 demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
 to capture a wide range of solutions, such as the previous supervised airfoil example, in this way.
-
-```{figure} resources/placeholder.png
----
-height: 220px
-name: pinn-training
----
-TODO, visual overview of PINN training
-```
 
 
