@@ -151,6 +151,9 @@ $$
 $$
 
 introduce scalar loss, always(!) scalar...
+  (also called *cost* or *objective* function)
+
+distuingish: training, validation and (out of distribution!) test sets.
 
 Read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
 especially about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and 

@@ -18,17 +18,40 @@ when it doesn't pick the right regions of the solution.
 
 ## Is it "Machine Learning"?
 
-TODO, discuss - more akin to classical optimization:
-we test for space/time positions at training time, and are interested in the solution there afterwards.
+One question that might also come to mind at this point is: _can we really call it machine learning_?
+Of course, such denomination questions are mostly superficial - if an algorithm is useful, it doesn't matter
+what name it has. However, here the question helps to highlight some important properties
+that are typically associated with algorithms from fields like machine learning or optimization.
 
-hence, no real generalization, or test data with different distribution.
-more similar to inverse problem that solves single state e.g. via BFGS or Newton.
+One main reason _not_ to call these physical constraints machine learning (ML), is that the
+positions where we test and constrain the solution are the final positions we are interested in.
+As such, there is no real distinction between training, validation and (out of distribution) test sets.
+Computing the solution for a known and given set of samples is much more akin to classical optimization,
+where inverse problems like the previous Burgers example stem from.
+
+For machine learning, we typically work under the assumption that the final performance of our 
+model will be evaluated on a different, potentially unknown set of inputs. The _test data_
+should usually capture such out of distribution (OOD) behavior, so that we can make estimates
+about how well our model will generalize to "real-world" cases that we will encounter when 
+we deploy it into an application.
+
+In contrast, for the PINN training as described here, we reconstruct a single solution in a known 
+and given space-time time. As such, any samples from this domain follow the same distribution
+and hence don't really represent test or OOD sampes. As the NN directly encodes the solution,
+there is also little hope that it will yield different solutions, or perform well outside
+of the training distribution. If we're interested in a different solution, we most likely 
+have to start training the NN from scratch.
 
 ## Summary
 
-In general, a fundamental drawback of this approach is that it does combine with traditional
-numerical techniques well. E.g., learned representation is not suitable to be refined with 
-a classical iterative solver such as the conjugate gradient method. This means many
+Thus, the physical soft constraints allow us to encode solutions to 
+PDEs with the tools of NNs.
+An inherent drawback of this approach is that it yields single solutions,
+and that it does not combine with traditional numerical techniques well. 
+E.g., learned representation is not suitable to be refined with 
+a classical iterative solver such as the conjugate gradient method. 
+
+This means many
 powerful techniques that were developed in the past decades cannot be used in this context.
 Bringing these numerical methods back into the picture will be one of the central
 goals of the next sections.
