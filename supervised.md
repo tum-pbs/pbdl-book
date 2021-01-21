@@ -1,16 +1,18 @@
-Supervised Learning
+Supervised Training
 =======================
 
 _Supervised_ here essentially means: "doing things the old fashioned way". Old fashioned in the context of 
-deep learning (DL), of course, so it's still fairly new, and old fashioned of course also doesn't always mean bad.
-In a way this viewpoint is a starting point for all projects one would encounter in the context of DL, and
+deep learning (DL), of course, so it's still fairly new. Also, "old fashioned" of course also doesn't always mean bad
+- it's just that we'll be able to do better than simple supervised training later on. 
+
+In a way, the viewpoint of "supervised training" is a starting point for all projects one would encounter in the context of DL, and
 hence is worth studying. And although it typically yields inferior results to approaches that more tightly 
 couple with physics, it nonetheless can be the only choice in certain application scenarios where no good
 model equations exist.
 
 ## Problem Setting
 
-For supervised learning, we're faced with an 
+For supervised training, we're faced with an 
 unknown function $f^*(x)=y$, collect lots of pairs of data $[x_0,y_0], ...[x_n,y_n]$ (the training data set)
 and directly train a NN to represent an approximation of $f^*$ denoted as $f$, such
 that $f(x)=y$.
@@ -53,33 +55,8 @@ name: supervised-training
 TODO, visual overview of supervised training
 ```
 
-## Applications
+## Show me some code!
 
-Let's directly look at an example with a fairly complicated context:
-we have a turbulent airflow around wing profiles, and we'd like to know the average motion 
-and pressure distribution around this airfoil for different Reynolds numbers and angles of attack.
-Thus, given an airfoil shape, Reynolds numbers, and angle of attack, we'd like to obtain 
-a velocity field $\mathbf{u}$ and a pressure field $p$ in a computational domain $\Omega$ 
-around the airfoil in the center of $\Omega$.
-
-This is classically approximated with _Reynolds-Averaged Navier Stokes_ (RANS) models, and this 
-setting is still one of the most widely used applications of Navier-Stokes solver in industry.
-However, instead of relying on traditional numerical methods to solve the RANS equations,
-we know aim for training a neural network that completely bypasses the numerical solver,
-and produces the solution in terms of $\mathbf{u}$ and $p$.
-
-## Discussion
-
-TODO , add as separate section after code?
-TODO , discuss pros / cons of supervised learning
-TODO , CNNs powerful, graphs & co likewise possible
-
-Pro: 
-- very fast output and training
-
-Con: 
-- lots of data needed
-- undesirable averaging / inaccuracies due to direct loss
-
-Outlook: interactions with external "processes" (such as embedding into a solver) very problematic, see DP later on...
+Let's directly look at an implementation within a more complicated context:
+_turbulent flows around airfoils_ from {cite}`thuerey2020deepFlowPred`.
 

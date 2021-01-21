@@ -9,6 +9,7 @@
 - file: supervised
   sections:
     - file: supervised-airfoils.ipynb
+    - file: supervised-discuss.md
 - file: physicalloss
   sections:
     - file: physicalloss-code.ipynb
@@ -19,6 +20,7 @@
     - file: diffphys-code-tf.ipynb
     - file: diffphys-discuss.md
     - file: diffphys-code-ns.ipynb
+    - file: diffphys-code-sol.ipynb
 - file: jupyter-book-reference
   sections:
     - file: markdown

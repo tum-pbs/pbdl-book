@@ -21,7 +21,7 @@ become an integral part of science.
 At the same time, machine learning technologies and deep neural networks in particular,
 have led to impressive achievements in a variety of field.
 Among others, GPT-3
-has recently demonstrated that learning models can
+has recently demonstrated that learning methods can
 achieve astounding accuracy for processing natural language.
 Also: AlphaGO, closer to physics: protein folding...
 This is a vibrant, quickly developing field with vast possibilities.
