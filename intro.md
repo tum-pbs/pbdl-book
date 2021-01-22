@@ -102,6 +102,8 @@ Loose collection of notes and TODOs:
 
 General physics & dl , intro & textual overview
 
+- 	Intro phys loss example, notebook patrick
+
 Supervised? Airfoils? Liwei, simple example? app: optimization, shape opt w surrogates
 
 -    AIAA supervised learning , idp_weissenov/201019-upd-arxiv-v2/  {cite}`thuerey2020deepFlowPred`
@@ -120,9 +122,10 @@ vs. PINNs [alt.: neural ODEs , PDE net?] , all using GD (optional, PINNs could u
 Diff phys, start with overview of idea: gradients via autodiff, then run GD
         (TODO include squared func Patrick?)
 
+-    illustrate and discuss gradients -> mult. for chain rule; (later: more general PG chain w func composition)
+
 -    Differentiable Physics (w/o network) , {cite}`holl2019pdecontrol` 
         -> phiflow colab notebook good start, but needs updates (see above Jan2)
-    illustrate and discuss gradients -> mult. for chain rule; (later: more general PG chain w func composition)
 
 -    SOL_201019-finals_Solver-in-the-Loop-Main-final.pdf , {cite}`um2020sol` 
         numerical errors, how to include in jupyter / colab?
@@ -136,10 +139,10 @@ beyond GD: re-cap newton & co
 Phys grad (PGs) as fundamental improvement, PNAS case; add more complex one?
         PG update of poisson eq? see PNAS-template-main.tex.bak01-poissonUpdate , explicitly lists GD and PG updates
 
-PGa 2020 Sept, content: ML & opt
+- PGa 2020 Sept, content: ML & opt
     Gradients.pdf, -> overleaf-physgrad/ 
 
-PGb 201002-beforeVac, content: v1,v2,old - more PG focused
+- PGb 201002-beforeVac, content: v1,v2,old - more PG focused
     -> general intro versions
 
 TODO, for version 2.x add: 

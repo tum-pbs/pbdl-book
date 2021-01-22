@@ -146,10 +146,6 @@ learn via GD, $\partial f / \partial \theta$
 
 general goal, minimize E for e(x,y) ... cf. eq. 8.1 from DLbook
 
-$$
-  test \~ \approx eq \ \RR
-$$
-
 introduce scalar loss, always(!) scalar...
   (also called *cost* or *objective* function)
 
@@ -163,4 +159,5 @@ especially about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and
 we only deal with _regression_ problems in the following.
 
 maximum likelihood estimation
+
 

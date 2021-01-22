@@ -2,10 +2,20 @@ Model Equations
 ============================
 
 overview of PDE models to be used later on ...
+continuous pde $\mathcal P^*$
 
-domain $\Omega$, boundary $\Gamma$
+$\vx \in \Omega \subseteq \mathbb{R}^d$ 
+for the domain $\Omega$ in $d$ dimensions,
+ time $t \in \mathbb{R}^{+}$.
+
+boundary $\Gamma$ , for specifying BCs
 
 continuous functions, but few assumptions about continuity for now...
+
+Numerical methods yield approximations of a smooth function such as $\mathcal P^*$ via discretization and invariably introduce errors. 
+These errors can be measured in terms of the deviation from the exact analytical solution, 
+and for discrete simulations of PDEs, they are typically expressed as a function of the truncation error 
+$O( \Delta x^k )$, where $\Delta x$ denotes a step size of the discretization.
 
 ```{admonition} Notation and abbreviations
 :class: seealso
