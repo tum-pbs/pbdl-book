@@ -9,6 +9,7 @@ As much as possible, the algorithms will come with hands-on code examples to qui
 Beyond standard _supervised_ learning from data, we'll look at loss constraints, and 
 more tightly coupled learning algorithms with differentiable simulations.
 
+
 ```{figure} resources/teaser.png
 ---
 height: 220px
@@ -51,9 +52,9 @@ immediately see what happens -- give it a try...
 Oh, and it's great because it's [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
 ```
 
-## Specifically
+## More Specifically
 
-To be a bit more specific, _physics_ is a huge field, we can't cover everything... 
+To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
 
 ```{note}
 For now our focus is:
@@ -69,16 +70,13 @@ For now our focus is:
 
 The contents of the following files would not have been possible without the help of many people. Here's an alphabetical list. Big kudos to everyone 🙏
 
-- Mr. X
-- Ms. y
-- ...
+- [Li-wei Chen](https://ge.in.tum.de/about/dr-liwei-chen/)
+- [Philipp Holl](https://ge.in.tum.de/about/)
+- [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
+- [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
+- [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
-
-
-
-
-
-% some markdown tests follow ...
+<!-- % some markdown tests follow ...
 
 ---
 
@@ -91,26 +89,30 @@ See also... Test link: {doc}`supervised`
 
 ✅  Do this , ❌  Don't do this
 
-% ----------------
+% ---------------- -->
 
 ---
 
 
-## Planned content
+## TODOs , Planned content
 
 Loose collection of notes and TODOs:
 
 General physics & dl , intro & textual overview
 
-- 	Intro phys loss example, notebook patrick
+- 	Intro phys loss example, parabola example
 
-Supervised? Airfoils? Liwei, simple example? app: optimization, shape opt w surrogates
+Supervised simple starting point
 
 -    AIAA supervised learning , idp_weissenov/201019-upd-arxiv-v2/  {cite}`thuerey2020deepFlowPred`
     skepticism? , started colab -> https://colab.research.google.com/drive/11KUe5Ybuprd7_qmNTe1nvQVUz3W6gRUo
     torch version 1.7 [upd from Liwei?]
 
-vs. PINNs [alt.: neural ODEs , PDE net?] , all using GD (optional, PINNs could use BFGS)
+- surrogates, shape opt?
+
+Physical losses 
+
+- vs. PINNs [alt.: neural ODEs , PDE net?] , all using GD (optional, PINNs could use BFGS)
     [PINNs], phiflow example -> convert to colab
 
 -    PINNs -> are unsupervised a la tompson; all DL NNs are "supervised" during learning, unsup just means not precomputed and goes through function
@@ -120,7 +122,6 @@ vs. PINNs [alt.: neural ODEs , PDE net?] , all using GD (optional, PINNs could u
 -    discuss CG solver, tompson as basic ''unsupervisedd'' example?
 
 Diff phys, start with overview of idea: gradients via autodiff, then run GD
-        (TODO include squared func Patrick?)
 
 -    illustrate and discuss gradients -> mult. for chain rule; (later: more general PG chain w func composition)
 
@@ -163,5 +164,4 @@ _Misc jupyter book TODOs_
 
 - Fix latex PDF output
 - How to include links to papers in the bibtex references?
-
 

@@ -10,34 +10,46 @@ active, quickly growing and exciting field of research -- we want to provide
 a starting point for new researchers as well as a hands-on introduction into
 state-of-the-art resarch topics. 
 
+
+```{figure} resources/overview-pano.jpg
+---
+height: 240px
+name: overview-pano
+---
+Understanding our environment, and predicting how it will evolve is one of the key challenges of humankind.
+```
+
 ## Motivation
 
-From weather forecasts (? ) over X, Y, 
-... more ...
-to quantum physics (? ),
+From weather and climate forecasts {cite}`stocker2014climate`,
+over quantum physics {cite}`o2016scalable`,
+to the control of plasma fusion {cite}`maingi2019fesreport`,
 using numerical analysis to obtain solutions for physical models has
 become an integral part of science.
 
 At the same time, machine learning technologies and deep neural networks in particular,
-have led to impressive achievements in a variety of field.
-Among others, GPT-3
-has recently demonstrated that learning methods can
-achieve astounding accuracy for processing natural language.
-Also: AlphaGO, closer to physics: protein folding...
-This is a vibrant, quickly developing field with vast possibilities.
+have led to impressive achievements in a variety of fields:
+from image classification {cite}`krizhevsky2012` over
+natural language processing {cite}`radford2019language`, 
+and more recently also for protein folding {cite}`alquraishi2019alphafold`.
+The field is very vibrant, and quickly developing, with the promise of vast possibilities.
 
-The successes of DL approaches have given rise to concerns that this technology has 
+At the same time, the successes of deep learning (DL) approaches 
+has given rise to concerns that this technology has 
 the potential to replace the traditional, simulation-driven approach to
 science. Instead of relying on models that are carefully crafted
 from first principles, can data collections of sufficient size
 be processed to provide the correct answers instead?
+In short: this concern is unfounded. As we'll show in the next chapters,
+it is crucial to bring together both worlds: _classical numerical techniques_
+and _deep learning_.
 
-Very clear advantages of data-driven approaches would lead
-to a "yes" here ... but that's not where we stand as of this writing.
-Given the current state of the art, these clear breakthroughs
-are outstanding, the proposed techniques are novel,
+One central reason for the importance of this combination is
+that DL approaches are simply not powerful enough by themselves.
+Given the current state of the art, the clear breakthroughs of DL
+in physical applications are outstanding, the proposed techniques are novel,
 sometimes difficult to apply, and
-significant difficulties combing physics and DL persist.
+significant practical difficulties combing physics and DL persist.
 Also, many fundamental theoretical questions remain unaddressed, most importantly
 regarding data efficienty and generalization.
 
@@ -47,22 +59,23 @@ been developed to solve fundamental model equations such
 as the Navier-Stokes, Maxwell’s, or Schroedinger’s equations.
 Seemingly trivial changes to the discretization can determine
 whether key phenomena are visible in the solutions or not.
+Rather than discarding the powerful methods that have been
+carefully developed in the field of numerical mathematics, it 
+is highly beneficial for DL to use them as much as possible.
 
-```{admonition} Goal of this document
+```{admonition} Goals of this document
 :class: tip
-Thus, a key aspect that we want to address in the following in the following is:
+Thus, the key aspects that we want to address in the following are:
 - explain how to use DL,
-- how to combine it with existing knowledge of physics and simulations,
-- **without throwing away** all existing numerical knowledge and techniques!
+- and how to combine it with existing knowledge of physics and simulations,
+- **without throwing away** all existing numerical knowledge and techniques.
 ```
 
-Rather, we want to build on all the neat techniques that we have
-at our disposal, and use them as
-much as possible. I.e., our goal is to _reconcile_ the data-centered
+Thus, we want to build on all the powerful techniques that we have
+at our disposal, and use them wherever we can.
+I.e., our goal is to _reconcile_ the data-centered
 viewpoint and the physical simuation viewpoint.
 
-Also interesting: from a math standpoint ...
-''just'' non-linear optimization ...
 
 
 ## Categorization
@@ -124,8 +137,9 @@ each of the different techniques is particularly useful.
 A brief look at our _Notation_ won't hurt in both cases, though!
 ```
 
+---
 
-## A brief history of PBDL in the context of Fluids
+<!-- ## A brief history of PBDL in the context of Fluids
 
 First:
 
@@ -135,7 +149,7 @@ Chu, descriptors, early but not used
 
 Ling et al. isotropic turb, small FC, unused?
 
-PINNs ... and more ...
+PINNs ... and more ... -->
 
 
 ## Deep Learning and Neural Networks
@@ -160,4 +174,5 @@ we only deal with _regression_ problems in the following.
 
 maximum likelihood estimation
 
+Also interesting: from a math standpoint ''just'' non-linear optimization ...
 
