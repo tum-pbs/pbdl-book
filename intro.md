@@ -15,11 +15,12 @@ more tightly coupled learning algorithms with differentiable simulations.
 height: 220px
 name: pbdl-teaser
 ---
-Some examples ... preview teaser ...
+Some visual examples of hybrid solvers, i.e. numerical simulators that are enhanced by trained neural networks.
 ```
 % Teaser, simple version:
 % ![Teaser, simple version](resources/teaser.png)
 
+## Coming up
 
 As a _sneak preview_, in the next chapters we'll show:
 
@@ -37,10 +38,7 @@ If you find mistakes, please also let us know! We're aware that this document is
 and we're eager to improve it. Thanks in advance!
 
 This collection of materials is a living document, and will grow and change over time. 
-Feel free to contribute 😀
-
-[TUM Physics-based Simulation Group](https://ge.in.tum.de).
-
+Feel free to contribute 😀 
 We also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
 
 ```{admonition} Code, executable, right here, right now
@@ -52,16 +50,6 @@ immediately see what happens -- give it a try...
 Oh, and it's great because it's [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
 ```
 
-## More Specifically
-
-To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
-
-```{note}
-For now our focus is:
-- field-based simulations , less Lagrangian
-- simulations, not experiments
-- combination with _deep learning_ (plenty of other interesting ML techniques)
-```
 
 ---
 

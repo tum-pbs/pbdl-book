@@ -1,10 +1,12 @@
 Model Equations
 ============================
 
-overview of PDE models to be used later on ...
+TODO
+
+give an overview of PDE models to be used later on ...
 continuous pde $\mathcal P^*$
 
-$\vx \in \Omega \subseteq \mathbb{R}^d$ 
+$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ 
 for the domain $\Omega$ in $d$ dimensions,
  time $t \in \mathbb{R}^{+}$.
 
@@ -47,10 +49,7 @@ and the abbreviations used inn: {doc}`notation`, at the bottom of the left panel
 % \newcommand{\corr}{\mathcal{C}}                         % just C for now...
 % \newcommand{\nnfunc}{F} % {\text{NN}}
 
-
 Some notation from SoL, move with parts from overview into "appendix"?
-
-
 
 We typically solve a discretized PDE $\mathcal{P}$ by performing discrete time steps of size $\Delta t$. 
 Each subsequent step can depend on any number of previous steps,
@@ -83,12 +82,13 @@ $\mathbf{u} = (u_x,u_y,u_z)^T$ for $d=3$.
 
 Burgers' equation in 2D. It represents a well-studied advection-diffusion PDE:
 
-$\frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x =
+$\begin{aligned}
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
   \nu \nabla\cdot \nabla u_x + g_x(t), 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y =
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &=
   \nu \nabla\cdot \nabla u_y + g_y(t)
-$, 
+\end{aligned}$, 
 
 where $\nu$ and $\mathbf{g}$ denote diffusion constant and external forces, respectively.
 
@@ -104,15 +104,15 @@ Later on, additional equations...
 
 Navier-Stokes, in 2D:
 
-$
-    \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x =
+$\begin{aligned}
+    \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
     - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
     \\
-    \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y =
+    \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &=
     - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
     \\
-    \text{subject to} \quad \nabla \cdot \mathbf{u} = 0
-$
+    \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
+\end{aligned}$
 
 
 
@@ -121,28 +121,29 @@ Navier-Stokes, in 2D with Boussinesq:
 %$\frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x$
 %$ -\frac{1}{\rho} \nabla p $
 
-$
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x = - \frac{1}{\rho} \nabla p 
+$\begin{aligned}
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y = - \frac{1}{\rho} \nabla p + \eta d
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \eta d
   \\
-  \text{subject to} \quad \nabla \cdot \mathbf{u} = 0,
+  \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0,
   \\
-  \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d = 0 
-$
-
+  \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d &= 0 
+\end{aligned}$
 
 
 Navier-Stokes, in 3D:
 
 $
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
+\begin{aligned}
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
   \\
-  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z = - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
+  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
   \\
-  \text{subject to} \quad \nabla \cdot \mathbf{u} = 0.
+  \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0.
+\end{aligned}
 $
 
 

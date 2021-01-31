@@ -11,6 +11,8 @@ a starting point for new researchers as well as a hands-on introduction into
 state-of-the-art resarch topics. 
 
 
+
+
 ```{figure} resources/overview-pano.jpg
 ---
 height: 240px
@@ -127,6 +129,21 @@ starting points with code examples, and illustrate pros and cons of the
 different approaches. In particular, it's important to know in which scenarios 
 each of the different techniques is particularly useful.
 
+
+## More Specifically
+
+To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
+
+```{note}
+For now our focus are:
+- _field-based simulations_ (no Lagrangian methods)
+- combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
+- experiments as _outlook_ (replace synthetic data with real)
+```
+
+It's also worth noting that we're starting to build the methods from some very
+fundamental steps. Here are some considerations for skipping ahead to the later chapters.
+
 ```{admonition} You can skip ahead if...
 :class: tip
 
@@ -138,6 +155,9 @@ A brief look at our _Notation_ won't hurt in both cases, though!
 ```
 
 ---
+<br>
+<br>
+<br>
 
 <!-- ## A brief history of PBDL in the context of Fluids
 
@@ -153,6 +173,8 @@ PINNs ... and more ... -->
 
 
 ## Deep Learning and Neural Networks
+
+TODO
 
 Very brief intro, basic equations... approximate $f^*(x)=y$ with NN $f(x;\theta)$ ...
 

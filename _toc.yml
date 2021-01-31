@@ -1,6 +1,8 @@
 # PBDL Table of content (cf https://jupyterbook.org/customize/toc.html)
 #
-- file: intro
+- file: intro.md
+  sections:
+    - file: intro-teaser.ipynb
 - file: overview.md
   sections:
     - file: overview-equations.md
@@ -21,6 +23,7 @@
     - file: diffphys-discuss.md
     - file: diffphys-code-ns.ipynb
     - file: diffphys-code-sol.ipynb
+    - file: diffphys-outlook.md
 - file: jupyter-book-reference
   sections:
     - file: markdown
