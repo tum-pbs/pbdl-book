@@ -151,5 +151,4 @@ time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020l
 _Misc jupyter book TODOs_
 
 - Fix latex PDF output
-- How to include links to papers in the bibtex references?
 

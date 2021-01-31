@@ -26,7 +26,7 @@
     - file: diffphys-outlook.md
 - file: jupyter-book-reference
   sections:
-    - file: markdown
-    - file: notebooks
+    - file: jupyter-book-reference-markdown
+    - file: jupyter-book-reference-notebooks
 - file: references
 - file: notation
