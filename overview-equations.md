@@ -1,5 +1,56 @@
-Model Equations
+Models and Equations
 ============================
+
+Below we'll give a _very_ (really very!) brief intro to deep learning, primarily to introduce the notation.
+In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
+
+## Deep Learning and Neural Networks
+
+There are lots of great introductions to deep learning - hence, we'll keep it short:
+our goal is to approximate $f^*(x)=y$ with an NN $f(x;\theta)$,
+given some formulation for an error $e(y,y^*)$ with $y=f(x;\theta)$ being the output
+of the NN, and $y^*$ denoting a reference or ground truth value.
+This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
+
+We typically optimize, i.e. _train_, 
+with some variant of a stochastic gradient descent (SGD) optimizer.
+We'll rely on auto-diff to compute the gradient w.r.t. weights, $\partial f / \partial \theta$,
+We will also assume that $e$ denotes a _scalar_ error function (also
+called cost, or objective function sometimes).
+This is crucial for the efficient calculation of gradients.
+
+<!-- general goal, minimize E for e(x,y) ... cf. eq. 8.1 from DLbook 
+introduce scalar loss, always(!) scalar...  (also called *cost* or *objective* function) -->
+
+For training we distinguish: the **training** data set drawn from some distribution, 
+the **validation** set (from the same distribution, but different data),
+and **test** data sets with _some_ different distribution than the training one.
+The latter distinction is important! For the test set we want 
+_out of distribution_ (OOD) data to check how well our trained model generalizes.
+Note that this gives a huge range of difficulties: from tiny changes that will certainly work
+up to completely different inputs that are essentially guaranteeed to fail. Hence,
+test data should be generated with care.
+
+Enough for now - if all the above wasn't totally obvious for you, we very strongly recommend to 
+read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
+especially the sections about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and 
+"Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
+
+```{admonition} Note: Classification vs Regression
+:class: tip
+
+The classic ML distinction between _classification_ and _regression_ problems is not so important here:
+we only deal with _regression_ problems in the following.
+
+```
+
+<!--
+maximum likelihood estimation
+Also interesting: from a math standpoint ''just'' non-linear optimization ...
+-->
+
+## Partial Differential Equations as Physical Models
+
 
 TODO
 
@@ -98,9 +149,10 @@ $\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ .
 
 ---
 
+## Some PDEs we'll use later on
+
+
 Later on, additional equations...
-
-
 
 Navier-Stokes, in 2D:
 

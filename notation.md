@@ -23,10 +23,13 @@
 
 | ABbreviation | Meaning |
 | --- | --- |
-| CNN | Convolutional neural network |
-| DL | Deep learning |
-| NN | Neural network |
-| PBDL | Physics-based deep learning |
+| CNN  | Convolutional Neural Network |
+| DL   | Deep Learning |
+| GD   | (steepest) Gradient Descent|
+| NN   | Neural Network |
+| PDE  | Partial Differential Equation |
+| PBDL | Physics-Based Deep Learning |
+| SGD  | Stochastic Gradient Descent|
 
 
 

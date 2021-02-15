@@ -24,13 +24,13 @@ Some visual examples of hybrid solvers, i.e. numerical simulators that are enhan
 
 As a _sneak preview_, in the next chapters we'll show:
 
-- How to train networks to infer fluid flow solutions around shapes like airfoils in one go, i.e., without needing a simulator.
+- How to train networks to infer fluid flows around shapes like airfoils in one go, i.e., a _surrogate model_ that replaces a traditional numerical simulation.
 
-- We'll show how to use model equations as residual to train networks that represent solutions, and how to improve upon this behavior by using differentiable simulations.
+- We'll show how to use model equations as residual to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
 
-- Even more tightly coupling a full _rough_ simulator for control problems is another topic. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
+- How to more tightly interact with a full simulator for _control problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
 
-This _book_, where book stands for a collection of text, equations, images and code examples,
+This _book_, where "book" stands for a collection of texts, equations, images and code examples,
 is maintained by the
 [TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us via
 [old fashioned email](mailto:i15ge@cs.tum.edu) if you have any comments. 
@@ -41,7 +41,7 @@ This collection of materials is a living document, and will grow and change over
 Feel free to contribute 😀 
 We also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
 
-```{admonition} Code, executable, right here, right now
+```{admonition} Executable code, right here, right now
 :class: tip
 We focus on jupyter notebooks, a key advantage of which is that all code examples
 can be executed _on the spot_, out of a browser. You can modify things and 

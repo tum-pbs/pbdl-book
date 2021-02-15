@@ -6,6 +6,8 @@
 - file: overview.md
   sections:
     - file: overview-equations.md
+    - file: overview-burgers-forw-v2.ipynb
+    - file: overview-ns-forw-v2.ipynb
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
 - file: supervised
@@ -21,6 +23,7 @@
     - file: diffphys-code-gradient.ipynb
     - file: diffphys-code-tf.ipynb
     - file: diffphys-discuss.md
+    - file: diffphys-code-ns-v2.ipynb
     - file: diffphys-code-ns.ipynb
     - file: diffphys-code-sol.ipynb
     - file: diffphys-outlook.md

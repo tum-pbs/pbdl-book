@@ -134,17 +134,16 @@ each of the different techniques is particularly useful.
 
 To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
 
-```{note}
-For now our focus are:
-- _field-based simulations_ (no Lagrangian methods)
-- combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
-- experiments as _outlook_ (replace synthetic data with real)
+```{note} The focus of this book is on...
+- _Field-based simulations_ (no Lagrangian methods)
+- Combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
+- Experiments as _outlook_ (replace synthetic data with real)
 ```
 
 It's also worth noting that we're starting to build the methods from some very
 fundamental steps. Here are some considerations for skipping ahead to the later chapters.
 
-```{admonition} You can skip ahead if...
+```{admonition} Hint: You can skip ahead if...
 :class: tip
 
 - you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The _Supervised Learning_ chapter is a good starting point then.
@@ -170,31 +169,4 @@ Chu, descriptors, early but not used
 Ling et al. isotropic turb, small FC, unused?
 
 PINNs ... and more ... -->
-
-
-## Deep Learning and Neural Networks
-
-TODO
-
-Very brief intro, basic equations... approximate $f^*(x)=y$ with NN $f(x;\theta)$ ...
-
-learn via GD, $\partial f / \partial \theta$ 
-
-general goal, minimize E for e(x,y) ... cf. eq. 8.1 from DLbook
-
-introduce scalar loss, always(!) scalar...
-  (also called *cost* or *objective* function)
-
-distuingish: training, validation and (out of distribution!) test sets.
-
-Read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
-especially about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and 
-"Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
-
-**Note:** Classic distinction between _classification_ and _regression_ problems not so important here,
-we only deal with _regression_ problems in the following.
-
-maximum likelihood estimation
-
-Also interesting: from a math standpoint ''just'' non-linear optimization ...
 
