@@ -8,8 +8,6 @@
     - file: overview-equations.md
     - file: overview-burgers-forw-v2.ipynb
     - file: overview-ns-forw-v2.ipynb
-    - file: overview-burgers-forw.ipynb
-    - file: overview-ns-forw.ipynb
 - file: supervised
   sections:
     - file: supervised-airfoils.ipynb
@@ -23,10 +21,14 @@
     - file: diffphys-code-gradient.ipynb
     - file: diffphys-code-tf.ipynb
     - file: diffphys-discuss.md
-    - file: diffphys-code-ns-v2.ipynb
-    - file: diffphys-code-ns.ipynb
+    - file: diffphys-code-ns-v2a.ipynb
     - file: diffphys-code-sol.ipynb
     - file: diffphys-outlook.md
+- file: old-phiflow1.md
+  sections:
+    - file: overview-burgers-forw.ipynb
+    - file: overview-ns-forw.ipynb
+    - file: diffphys-code-ns.ipynb
 - file: jupyter-book-reference
   sections:
     - file: jupyter-book-reference-markdown

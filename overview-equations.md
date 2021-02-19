@@ -1,7 +1,7 @@
 Models and Equations
 ============================
 
-Below we'll give a _very_ (really very!) brief intro to deep learning, primarily to introduce the notation.
+Below we'll give a very (really _very_!) brief intro to deep learning, primarily to introduce the notation.
 In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
 
 ## Deep Learning and Neural Networks
@@ -33,8 +33,8 @@ test data should be generated with care.
 
 Enough for now - if all the above wasn't totally obvious for you, we very strongly recommend to 
 read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
-especially the sections about [MLPs]https://www.deeplearningbook.org/contents/mlp.html and 
-"Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
+especially the sections about [MLPs](https://www.deeplearningbook.org/contents/mlp.html) 
+and "Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
 
 ```{admonition} Note: Classification vs Regression
 :class: tip
@@ -51,24 +51,29 @@ Also interesting: from a math standpoint ''just'' non-linear optimization ...
 
 ## Partial Differential Equations as Physical Models
 
+The following section will give a brief outlook for the model equations
+we'll be using later on in the DL examples.
+We typically target continuous PDEs denoted by $\mathcal P^*$
+whole solutions is of interest in a spatial domain $\Omega$ in $d$ dimensions, i.e.
+for positions $\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$.
+In addition, wo often consider a time evolution for $t \in \mathbb{R}^{+}$.
 
-TODO
+To obtain unique solutions for $\mathcal P^*$ we need to specify suitable
+initial conditions, typically for all quantities of interest at $t=0$,
+and boundary conditions for the boundary or $\Omega$, denoted by $\Gamma$ in 
+the following.
 
-give an overview of PDE models to be used later on ...
-continuous pde $\mathcal P^*$
+$\mathcal P^*$ denotes
+a continuous formulation, where we make mild assumptions about
+its continuity, we will typically assume that first and second derivatives exist.
 
-$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ 
-for the domain $\Omega$ in $d$ dimensions,
- time $t \in \mathbb{R}^{+}$.
-
-boundary $\Gamma$ , for specifying BCs
-
-continuous functions, but few assumptions about continuity for now...
-
-Numerical methods yield approximations of a smooth function such as $\mathcal P^*$ via discretization and invariably introduce errors. 
+We can then use numerical methods to obtain approximations 
+of a smooth function such as $\mathcal P^*$ via discretization. 
+This invariably introduce discretization errors, which we'd like to keep as small as possible.
 These errors can be measured in terms of the deviation from the exact analytical solution, 
 and for discrete simulations of PDEs, they are typically expressed as a function of the truncation error 
-$O( \Delta x^k )$, where $\Delta x$ denotes a step size of the discretization.
+$O( \Delta x^k )$, where $\Delta x$ denotes the spatial step size of the discretization.
+Likewise, we typically have a temporal disceretization via a time step $\Delta t$.
 
 ```{admonition} Notation and abbreviations
 :class: seealso
@@ -100,38 +105,41 @@ and the abbreviations used inn: {doc}`notation`, at the bottom of the left panel
 % \newcommand{\corr}{\mathcal{C}}                         % just C for now...
 % \newcommand{\nnfunc}{F} % {\text{NN}}
 
-Some notation from SoL, move with parts from overview into "appendix"?
-
-We typically solve a discretized PDE $\mathcal{P}$ by performing discrete time steps of size $\Delta t$. 
-Each subsequent step can depend on any number of previous steps,
-$\mathbf{u}(\mathbf{x},t+\Delta t) = \mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t-\Delta t),...)$, 
-where
-$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ for the domain $\Omega$ in $d$
-dimensions, and $t \in \mathbb{R}^{+}$.
-
-Numerical methods yield approximations of a smooth function such as $\mathbf{u}$ in a discrete
-setting and invariably introduce errors. These errors can be measured in terms
-of the deviation from the exact analytical solution.
-For discrete simulations of
-PDEs, these errors are typically expressed as a function of the truncation, $O(\Delta t^k)$ 
-for a given step size $\Delta t$ and an exponent $k$ that is discretization dependent.
-
-The following PDEs typically work with a continuous
-velocity field $\mathbf{u}$ with $d$ dimensions and components, i.e.,
-$\mathbf{u}(\mathbf{x},t): \mathbb{R}^d \rightarrow \mathbb{R}^d $.
-For discretized versions below, $d_{i,j}$ will denote the dimensionality
-of a field such as the velocity,
-with domain size $d_{x},d_{y},d_{z}$ for source and reference in 3D.
-
+% discretized versions below, $d_{i,j}$ will denote the dimensionality, domain size $d_{x},d_{y},d_{z}$ for source and reference in 3D.
 % with $i \in \{s,r\}$ denoting source/inference manifold and reference manifold, respectively.
 %This yields $\vc{} \in \mathbb{R}^{d \times d_{s,x} \times d_{s,y} \times d_{s,z} }$ and $\vr{} \in \mathbb{R}^{d \times d_{r,x} \times d_{r,y} \times d_{r,z} }$
 %Typically, $d_{r,i} > d_{s,i}$ and $d_{z}=1$ for $d=2$.
 
-For all PDEs, we use non-dimensional parametrizations as outlined below,
-and the components of the velocity vector are typically denoted by $x,y,z$ subscripts, i.e.,
+We typically solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
+For a quantitiy of interest $\mathbf{u}$, e.g., representing a velocity field
+in $d$ dimensions via $\mathbf{u}(\mathbf{x},t): \mathbb{R}^d \rightarrow \mathbb{R}^d $.
+The components of the velocity vector are typically denoted by $x,y,z$ subscripts, i.e.,
 $\mathbf{u} = (u_x,u_y,u_z)^T$ for $d=3$.
 
-Burgers' equation in 2D. It represents a well-studied advection-diffusion PDE:
+The solution can be expressed as a function of $\mathbf{u}$ and its derivatives:
+$\mathbf{u}(\mathbf{x},t+\Delta t) = 
+\mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t-\Delta t)',\mathbf{u}(\mathbf{x},t-\Delta t)'',...)$, 
+where
+$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ for the domain $\Omega$ in $d$
+dimensions, and $t \in \mathbb{R}^{+}$.
+
+For all PDEs, we will assume non-dimensional parametrizations as outlined below,
+which could be re-scaled to real world quantities with suitable scaling factors.
+Next, we'll give an overview of the model equations, before getting started
+with actual simulations and implementation examples on the next page.
+
+---
+
+## Some PDEs that we'll use later on
+
+### Burgers
+
+We'll often consider Burgers' equation 
+in 1D or 2D as a starting point. 
+It represents a well-studied advection-diffusion PDE, which (unlike Navier-Stokes)
+does not include any additional constraits such as conservation of mass. Hence,
+it leads to interesting shock formations.
+In 2D, it is given by:
 
 $\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
@@ -143,18 +151,21 @@ $\begin{aligned}
 
 where $\nu$ and $\mathbf{g}$ denote diffusion constant and external forces, respectively.
 
-Burgers' equation in 1D without forces with $u_x = u$:
+A simpler variants of Burgers' equation in 1D without forces, i.e. with $u_x = u$
+is given by:
 %\begin{eqnarray}
 $\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ .
 
----
+### Navier-Stokes
 
-## Some PDEs we'll use later on
+An interesting next step in terms of complexity is given by the
+Navier-Stokes equations, which are a well-established model for fluids.
+In addition to an equation for the conservation of momentum (similar to Burgers),
+they include an equation for the conservation of mass. This prevents the 
+formation of shock waves, but introduces a new challenge for numerical methods
+in the form of a hard-constraint for divergence free motions.
 
-
-Later on, additional equations...
-
-Navier-Stokes, in 2D:
+In 2D, the Navier-Stokes equations without any external forces can be written as:
 
 $\begin{aligned}
     \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
@@ -166,12 +177,12 @@ $\begin{aligned}
     \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
 \end{aligned}$
 
+where, like before, $\nu$ denotes a diffusion constant for viscosity, respectively.
 
-
-Navier-Stokes, in 2D with Boussinesq:
-
-%$\frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x$
-%$ -\frac{1}{\rho} \nabla p $
+An interesting variant is obtained by including the Boussinesq approximation
+for varying densities, e.g., for simple temperature changes of the fluid.
+With a marker field $d$, e.g., representing indicating regions of high temperature,
+this yields the following set of equations:
 
 $\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
@@ -184,7 +195,7 @@ $\begin{aligned}
 \end{aligned}$
 
 
-Navier-Stokes, in 3D:
+And finally, we'll also consider 3D cases with the Navier-Stokes model, i.e.:
 
 $
 \begin{aligned}
@@ -198,4 +209,6 @@ $
 \end{aligned}
 $
 
+### More to come...
 
+In the future, we'll include some other model equations as well. Stay tuned...
