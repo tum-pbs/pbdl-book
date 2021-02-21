@@ -7,10 +7,18 @@ In addition we'll discuss some _model equations_ below. Note that we won't use _
 ## Deep Learning and Neural Networks
 
 There are lots of great introductions to deep learning - hence, we'll keep it short:
-our goal is to approximate $f^*(x)=y$ with an NN $f(x;\theta)$,
-given some formulation for an error $e(y,y^*)$ with $y=f(x;\theta)$ being the output
-of the NN, and $y^*$ denoting a reference or ground truth value.
+our goal is to approximate an unknown function
+
+$f^*(x) = y^*$ , 
+
+where $y^*$ denotes reference or "ground truth" solutions.
+$f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
+with the help of some formulation of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
+of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
+In the simplest case, we can use an $L^2$ error, giving
+
+$\text{min}_{\theta} || f(x;\theta) - y^* ||_2^2$
 
 We typically optimize, i.e. _train_, 
 with some variant of a stochastic gradient descent (SGD) optimizer.
@@ -177,7 +185,7 @@ $\begin{aligned}
     \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
 \end{aligned}$
 
-where, like before, $\nu$ denotes a diffusion constant for viscosity, respectively.
+where, like before, $\nu$ denotes a diffusion constant for viscosity.
 
 An interesting variant is obtained by including the Boussinesq approximation
 for varying densities, e.g., for simple temperature changes of the fluid.
@@ -187,13 +195,14 @@ this yields the following set of equations:
 $\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \eta d
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \xi d
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0,
   \\
   \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d &= 0 
 \end{aligned}$
 
+where $\xi$ denotes the strength of the buoyancy force.
 
 And finally, we'll also consider 3D cases with the Navier-Stokes model, i.e.:
 
