@@ -19,7 +19,6 @@
 - file: diffphys
   sections:
     - file: diffphys-code-gradient.ipynb
-    - file: diffphys-code-tf.ipynb
     - file: diffphys-discuss.md
     - file: diffphys-code-ns-v2a.ipynb
     - file: diffphys-code-sol.ipynb
@@ -29,6 +28,8 @@
     - file: overview-burgers-forw-v1.ipynb
     - file: overview-ns-forw-v1.ipynb
     - file: diffphys-code-ns.ipynb
+    - file: diffphys-code-gradient-v1.ipynb
+    - file: diffphys-code-tf.ipynb
 - file: jupyter-book-reference
   sections:
     - file: jupyter-book-reference-markdown

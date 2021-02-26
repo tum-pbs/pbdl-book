@@ -82,6 +82,12 @@ See also... Test link: {doc}`supervised`
 ---
 
 
+## TODOs , include
+
+- general motivation: repeated solves in classical solvers -> potential for ML
+- PINNs: often need weighting of added loss terms for different parts
+
+
 ## TODOs , Planned content
 
 Loose collection of notes and TODOs:

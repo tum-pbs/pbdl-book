@@ -25,7 +25,7 @@ TODO, visual overview of DP training
 
 ## Differentiable Operators
 
-With this direction we build on existing numerical solvers. I.e., 
+With the DP direction we build on existing numerical solvers. I.e., 
 the approach is strongly relying on the algorithms developed in the larger field 
 of computational methods for a vast range of physical effects in our world.
 To start with we need a continuous formulation as model for the physical effect that we'd like 
@@ -35,7 +35,7 @@ method for discretization of the equation.
 
 Let's assume we have a continuous formulation $\mathcal P^*(\mathbf{x}, \nu)$ of the physical quantity of 
 interest $\mathbf{u}(\mathbf{x}, t): \mathbb R^d \times \mathbb R^+ \rightarrow \mathbb R^d$,
-with a model parameter $\nu$ (e.g., a diffusion or viscosity constant).
+with model parameters $\nu$ (e.g., diffusion, viscosity, or conductivity constants).
 The component of $\mathbf{u}$ will be denoted by a numbered subscript, i.e.,
 $\mathbf{u} = (u_1,u_2,\dots,u_d)^T$.
 %and a corresponding discrete version that describes the evolution of this quantity over time: $\mathbf{u}_t = \mathcal P(\mathbf{x}, \mathbf{u}, t)$.
@@ -54,9 +54,11 @@ $\partial \mathcal P_i / \partial \mathbf{u}$.
 
 Note that we typically don't need derivatives 
 for all parameters of $\mathcal P$, e.g. we omit $\nu$ in the following, assuming that this is a 
-given model parameter, with which the NN should not interact. Naturally, it can vary, 
-by $\nu$ will not be the output of a NN representation. If this is the case, we can omit
-providing $\partial \mathcal P_i / \partial \nu$ in our solver. 
+given model parameter, with which the NN should not interact. 
+Naturally, it can vary within the solution manifold that we're interested in, 
+but $\nu$ will not be the output of a NN representation. If this is the case, we can omit
+providing $\partial \mathcal P_i / \partial \nu$ in our solver. However, the following learning process
+natuarlly transfers to including $\nu$ as a degree of freedom.
 
 ## Jacobians
 
@@ -93,7 +95,7 @@ this would cause huge memory overheads and unnecessarily slow down training.
 Instead, for backpropagation, we can provide faster operations that compute products
 with the Jacobian transpose because we always have a scalar loss function at the end of the chain.
 
-[TODO check transpose of Jacobians in equations]
+**[TODO check transpose of Jacobians in equations]**
 
 Given the formulation above, we need to resolve the derivatives
 of the chain of function compositions of the $\mathcal P_i$ at some current state $\mathbf{u}^n$ via the chain rule.
@@ -121,7 +123,7 @@ as this [nice survey by Baydin et al.](https://arxiv.org/pdf/1502.05767.pdf).
 
 ## Learning via DP Operators 
 
-Thus, long story short, once the operators of our simulator support computations of the Jacobian-vector 
+Thus, once the operators of our simulator support computations of the Jacobian-vector 
 products, we can integrate them into DL pipelines just like you would include a regular fully-connected layer
 or a ReLU activation.
 
@@ -175,9 +177,6 @@ procedure for a _forward_ solve.
 Note that to simplify things, we assume that $\mathbf{u}$ is only a function in space,
 i.e. constant over time. We'll bring back the time evolution of $\mathbf{u}$ later on.
 %
-[TODO, write out simple finite diff approx?]
-[denote discrete d as $\mathbf{d}$ below?]
-%
 Let's denote this re-formulation as $\mathcal P$. It maps a state of $d(t)$ into a 
 new state at an evoled time, i.e.:
 
@@ -186,7 +185,7 @@ $$
 $$
 
 As a simple example of an optimization and learning task, let's consider the problem of
-finding an motion $\mathbf{u}$ such that starting with a given initial state $d^{~0}$ at $t^0$,
+finding a motion $\mathbf{u}$ such that starting with a given initial state $d^{~0}$ at $t^0$,
 the time evolved scalar density at time $t^e$ has a certain shape or configuration $d^{\text{target}}$.
 Informally, we'd like to find a motion that deforms $d^{~0}$ into a target state.
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
@@ -273,8 +272,9 @@ be preferable to actually constructing $A$.
 
 ## A (slightly) more complex example
 
-[TODO]
-more complex, matrix inversion, eg Poisson solve
+**[TODO]**
+
+a bit more complex, matrix inversion, eg Poisson solve
 dont backprop through all CG steps (available in phiflow though)
 rather, re-use linear solver to compute multiplication by inverse matrix
 
