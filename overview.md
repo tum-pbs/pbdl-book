@@ -150,7 +150,7 @@ fundamental steps. Here are some considerations for skipping ahead to the later 
 
 - On the other hand, if you're already deep into ANNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the _Physical Loss Terms_ chapter, which lays the foundations for the next chapters.
 
-A brief look at our _Notation_ won't hurt in both cases, though!
+A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both cases, though!
 ```
 
 ---
