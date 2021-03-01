@@ -18,7 +18,7 @@
     - file: physicalloss-discuss.md
 - file: diffphys
   sections:
-    - file: diffphys-code-gradient.ipynb
+    - file: diffphys-code-burgers.ipynb
     - file: diffphys-discuss.md
     - file: diffphys-code-ns.ipynb
     - file: diffphys-code-sol.ipynb
