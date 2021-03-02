@@ -13,20 +13,20 @@ model equations exist.
 ## Problem Setting
 
 For supervised training, we're faced with an 
-unknown function $f^*(x)=y$, collect lots of pairs of data $[x_0,y_0], ...[x_n,y_n]$ (the training data set)
+unknown function $f^*(x)=y^*$, collect lots of pairs of data $[x_0,y^*_0], ...[x_n,y^*_n]$ (the training data set)
 and directly train a NN to represent an approximation of $f^*$ denoted as $f$, such
-that $f(x)=y$.
+that $f(x)=y \approx y^*$.
 
 The $f$ we can obtain is typically not exact, 
 but instead we obtain it via a minimization problem:
 by adjusting weights $\theta$ of our representation with $f$ such that
 
-$\text{arg min}_{\theta} \sum_i (f(x_i ; \theta)-y_i)^2$.
+$\text{arg min}_{\theta} \sum_i (f(x_i ; \theta)-y^*_i)^2$.
 
 This will give us $\theta$ such that $f(x;\theta) \approx y$ as accurately as possible given
 our choice of $f$ and the hyperparameters for training. Note that above we've assumed 
 the simplest case of an $L^2$ loss. A more general version would use an error metric $e(x,y)$
-to be minimized via $\text{arg min}_{\theta} \sum_i e( f(x_i ; \theta) , y_i) )$. The choice
+to be minimized via $\text{arg min}_{\theta} \sum_i e( f(x_i ; \theta) , y^*_i) )$. The choice
 of a suitable metric is topic we will get back to later on.
 
 Irrespective of our choice of metric, this formulation
@@ -47,12 +47,13 @@ which need to be kept small enough for a chosen application. As these topics are
 for classical simulations, the existing knowledge can likewise be leveraged to
 set up DL training tasks.
 
-```{figure} resources/placeholder.png
+```{figure} resources/supervised-training.jpg
 ---
 height: 220px
 name: supervised-training
 ---
-TODO, visual overview of supervised training
+A visual overview of supervised training. Quite simple overall, but it's good to keep this
+in mind in comparison to the more complex variants we'll encounter later on.
 ```
 
 ## Show me some code!

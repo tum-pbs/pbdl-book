@@ -95,8 +95,6 @@ this would cause huge memory overheads and unnecessarily slow down training.
 Instead, for backpropagation, we can provide faster operations that compute products
 with the Jacobian transpose because we always have a scalar loss function at the end of the chain.
 
-**[TODO check transpose of Jacobians in equations]**
-
 Given the formulation above, we need to resolve the derivatives
 of the chain of function compositions of the $\mathcal P_i$ at some current state $\mathbf{u}^n$ via the chain rule.
 E.g., for two of them

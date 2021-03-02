@@ -24,6 +24,10 @@
     - file: diffphys-code-sol.ipynb
     - file: diffphys-dpvspinn.md
     - file: diffphys-outlook.md
+- file: physgrad
+  sections:
+    - file: physgrad-comparison.ipynb
+    - file: physgrad-discuss.md
 - file: old-phiflow1.md
   sections:
     - file: overview-burgers-forw-v1.ipynb

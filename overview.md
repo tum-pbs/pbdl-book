@@ -36,7 +36,7 @@ natural language processing {cite}`radford2019language`,
 and more recently also for protein folding {cite}`alquraishi2019alphafold`.
 The field is very vibrant, and quickly developing, with the promise of vast possibilities.
 
-At the same time, the successes of deep learning (DL) approaches 
+On the other hand, the successes of deep learning (DL) approaches 
 has given rise to concerns that this technology has 
 the potential to replace the traditional, simulation-driven approach to
 science. Instead of relying on models that are carefully crafted
@@ -49,8 +49,8 @@ and _deep learning_.
 One central reason for the importance of this combination is
 that DL approaches are simply not powerful enough by themselves.
 Given the current state of the art, the clear breakthroughs of DL
-in physical applications are outstanding, the proposed techniques are novel,
-sometimes difficult to apply, and
+in physical applications are outstanding. 
+The proposed techniques are novel, sometimes difficult to apply, and
 significant practical difficulties combing physics and DL persist.
 Also, many fundamental theoretical questions remain unaddressed, most importantly
 regarding data efficienty and generalization.
@@ -78,6 +78,16 @@ at our disposal, and use them wherever we can.
 I.e., our goal is to _reconcile_ the data-centered
 viewpoint and the physical simuation viewpoint.
 
+The resulting methods have a huge potential to improve
+what can be done with numerical methods: e.g., in scenarios
+where solves target cases from a certain well-defined problem
+domain repeatedly, it can make a lot of sense to once invest 
+significant resources to train
+an neural network that supports the repeated solves. Based on the
+domain-specific specialization of this network, such a hybrid
+could vastly outperform traditional, generic solvers. And despite
+the many open questions, first publications have demonstrated
+that this goal is not overly far away. 
 
 
 ## Categorization
@@ -134,10 +144,10 @@ each of the different techniques is particularly useful.
 
 To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
 
-```{note} The focus of this book is on...
+```{note} The focus of this book lies on...
 - _Field-based simulations_ (no Lagrangian methods)
 - Combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
-- Experiments as _outlook_ (replace synthetic data with real)
+- Experiments as _outlook_ (replace synthetic data with real-world observations)
 ```
 
 It's also worth noting that we're starting to build the methods from some very

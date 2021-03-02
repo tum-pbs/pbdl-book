@@ -86,6 +86,7 @@ See also... Test link: {doc}`supervised`
 
 - general motivation: repeated solves in classical solvers -> potential for ML
 - PINNs: often need weighting of added loss terms for different parts
+- DP intro, check transpose of Jacobians in equations
 
 
 ## TODOs , Planned content
