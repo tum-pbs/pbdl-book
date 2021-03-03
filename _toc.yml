@@ -8,15 +8,15 @@
     - file: overview-equations.md
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
-- file: supervised
+- file: supervised.md
   sections:
     - file: supervised-airfoils.ipynb
     - file: supervised-discuss.md
-- file: physicalloss
+- file: physicalloss.md
   sections:
     - file: physicalloss-code.ipynb
     - file: physicalloss-discuss.md
-- file: diffphys
+- file: diffphys.md
   sections:
     - file: diffphys-code-burgers.ipynb
     - file: diffphys-discuss.md
@@ -24,7 +24,7 @@
     - file: diffphys-code-sol.ipynb
     - file: diffphys-dpvspinn.md
     - file: diffphys-outlook.md
-- file: physgrad
+- file: physgrad.md
   sections:
     - file: physgrad-comparison.ipynb
     - file: physgrad-discuss.md
@@ -41,5 +41,5 @@
   sections:
     - file: jupyter-book-reference-markdown
     - file: jupyter-book-reference-notebooks
-- file: references
-- file: notation
+- file: references.md
+- file: notation.md
