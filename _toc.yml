@@ -21,9 +21,11 @@
     - file: diffphys-code-burgers.ipynb
     - file: diffphys-discuss.md
     - file: diffphys-code-ns.ipynb
+    - file: diffphys-dpvspinn.md
+- file: diffphys-examples.md
+  sections:
     - file: diffphys-code-sol.ipynb
     - file: diffphys-control.ipynb
-    - file: diffphys-dpvspinn.md
     - file: diffphys-outlook.md
 - file: physgrad.md
   sections:

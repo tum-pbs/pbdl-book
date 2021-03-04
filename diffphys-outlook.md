@@ -20,7 +20,7 @@ The hybrid approach also bears particular promise for simulators: it improves ge
 
 We've just scratched the surface regarding the possibilities of this combination. The examples with Burgers equation and Navier-Stokes solvers are non-trivial, and good examples for advection-diffusion-type PDEs. However, there's a wide variety of other potential combinations, to name just a few examples:
 
-* PDEs for chemical reactions often show complex behavior due to the ineractions of mulltiple species. Here, and especially interesting direction is to train models that quickly learn to predict the evolution of an experiment or machine, and adjust control knobs to stabilize it, i.e., an online _control_ setting.
+* PDEs for chemical reactions often show complex behavior due to the interactions of mulltiple species. Here, and especially interesting direction is to train models that quickly learn to predict the evolution of an experiment or machine, and adjust control knobs to stabilize it, i.e., an online _control_ setting.
 
 * Plasma simulations share a lot with vorticity-based formulations for fluids, but additionally introduce terms to handle electric and magnetic interactions within the material. Likwise, controllers for plasma fusion experiments and generators are an excellent topic with plenty of potential for DL with differentiable physics.
 
