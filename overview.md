@@ -163,6 +163,14 @@ fundamental steps. Here are some considerations for skipping ahead to the later 
 A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both cases, though!
 ```
 
+## Implementations
+
+This text also represents an introduction to a wide range of deep learning and simulation APIs.
+We'll use popoular deep learning APIs such as _pytorch_ and _tensorflow_, and additionally
+give introductions into _phiflow_ for simulations. Some examples also use _JAX_. Thus after going through
+these examples, you should have a good overview of what's available in current APIs, such that
+the best one can be selected for new tasks.
+
 ---
 <br>
 <br>

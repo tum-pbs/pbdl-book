@@ -6,7 +6,24 @@ to integrate full numerical simulations and the training of deep neural networks
 interacting with these simulations. While we've only hinted at what could be
 achieved via DP approaches it is nonetheless a good time to summarize the pros and cons.
 
+
+## Alternatives - Noise
+
+It is worth mentioning here that other works have proposed perturbing the inputs and 
+the iterations at training time with noise {cite}`sanchez2020learning` (somewhat similar to
+regularizers like dropout). 
+This can help to prevent overfitting to the training states, and hence shares similarities
+with the goals of training with DP. 
+
+However, the noise is typically undirected, and hence not as accurate as training with 
+the actual evolutions of simulations. Hence, this noise can be a good starting point 
+for training that tends to overfit, but if possible, it is preferable to incorporate the
+acutal solver in the training loop via a DP approach.
+
+
 ## Summary
+
+To summarize the pros and cons of training ANNs via differentiable physics:
 
 ✅ Pro: 
 - uses physical model and numerical methods for discretization

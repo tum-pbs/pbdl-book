@@ -19,11 +19,17 @@ As demonstrated with the Burgers example, the PINN solutions typically have sign
 
 ## Efficiency
 
-The PINN approach typically perform a localized sampling and correction of the solutions, which means the corrections in the form of weight updates are likewise typically local. The fulfilment of boundary conditions in space and time can be correspondingly slow, leading to long training runs in practice.
+The PINN approaches typically perform a localized sampling and correction of the solutions, which means the corrections in the form of weight updates are likewise typically local. The fulfilment of boundary conditions in space and time can be correspondingly slow, leading to long training runs in practice.
 
 A well-chosen discretization of a DP approach can remedy this behavior, and provide an improved flow of gradient information. At the same time, the reliance on a computational grid means that solutions can be obtained very quickly. Given an interpolation scheme or set of basis functions, the solution can be sampled at any point in space or time given a very local neighborhood of the computational grid. Worst case, this can lead to slight memory overheads, e.g., by repeatedly storing mostly constand values of a solution.
 
 For the PINN representation with fully-connected networks on the other hand, we need to make a full pass over the potentially large number of values in the whole network to obtain a sample of the solution at a single point. The network effectively needs to encode the full high-dimensional solution. Its size likewise determines the efficiency of derivative calculations.
+
+## Efficiency continued
+
+That being said, because the DP approaches can cover much larger solution manifolds, the structure of these manifolds is typically also difficult to learn. E.g., when training a network with a larger number of iterations (i.e. a long look-ahead into the future), this typically represents a signal that is more difficult to learn than a short look ahead. 
+
+As a consequence, these training runs not only take more computational resources per ANN iteration, the also need longer to converge. Regarding resources, each computation of the look-ahead potentially requires a large number of simulation steps, and typically a similar amount of resources for the backprop step. Regarding convergence, the complexer signal that should be learned can take more training iterations or even require larger ANN structures. 
 
 ## Summary
 

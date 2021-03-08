@@ -18,7 +18,7 @@ of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
 
-$\text{min}_{\theta} || f(x;\theta) - y^* ||_2^2$
+$\text{arg min}_{\theta} | f(x;\theta) - y^* |_2^2$
 
 We typically optimize, i.e. _train_, 
 with some variant of a stochastic gradient descent (SGD) optimizer.
