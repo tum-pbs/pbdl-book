@@ -18,7 +18,7 @@ with the goals of training with DP.
 However, the noise is typically undirected, and hence not as accurate as training with 
 the actual evolutions of simulations. Hence, this noise can be a good starting point 
 for training that tends to overfit, but if possible, it is preferable to incorporate the
-acutal solver in the training loop via a DP approach.
+actual solver in the training loop via a DP approach.
 
 
 ## Summary
@@ -28,7 +28,7 @@ To summarize the pros and cons of training ANNs via differentiable physics:
 ✅ Pro: 
 - uses physical model and numerical methods for discretization
 - efficiency of selected methods carries over to training
-- tight coupling of physical models and NNs possible
+- tight coupling of physical models and ANNs possible
 
 ❌ Con: 
 - not compatible with all simulators (need to provide gradients)

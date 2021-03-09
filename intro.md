@@ -4,7 +4,7 @@ Welcome ...
 Welcome to the Physics-based Deep Learning Book 👋
 
 **TL;DR**: This document targets 
-a veriety of combinations of physical simulations with deep learning.
+a variety of combinations of physical simulations with deep learning.
 As much as possible, the algorithms will come with hands-on code examples to quickly get started.
 Beyond standard _supervised_ learning from data, we'll look at loss constraints, and 
 more tightly coupled learning algorithms with differentiable simulations.

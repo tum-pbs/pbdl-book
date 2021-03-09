@@ -12,7 +12,7 @@ representation regarding the reliability of these derivatives. Also, each deriva
 requires backpropagation through the full network, which can be very slow. Especially so
 for higher-order derivatives.
 
-And while the setup is realtively simple, it is generally difficult to control. The NN
+And while the setup is relatively simple, it is generally difficult to control. The ANN
 has flexibility to refine the solution by itself, but at the same time, tricks are necessary
 when it doesn't pick the right regions of the solution.
 
@@ -37,15 +37,15 @@ we deploy it into an application.
 
 In contrast, for the PINN training as described here, we reconstruct a single solution in a known 
 and given space-time time. As such, any samples from this domain follow the same distribution
-and hence don't really represent test or OOD sampes. As the NN directly encodes the solution,
+and hence don't really represent test or OOD sampes. As the ANN directly encodes the solution,
 there is also little hope that it will yield different solutions, or perform well outside
 of the training distribution. If we're interested in a different solution, we most likely 
-have to start training the NN from scratch.
+have to start training the ANN from scratch.
 
 ## Summary
 
 Thus, the physical soft constraints allow us to encode solutions to 
-PDEs with the tools of NNs.
+PDEs with the tools of ANNs.
 An inherent drawback of this approach is that it yields single solutions,
 and that it does not combine with traditional numerical techniques well. 
 E.g., learned representation is not suitable to be refined with 
@@ -58,7 +58,7 @@ goals of the next sections.
 
 ✅ Pro: 
 - uses physical model
-- derivatives can be convieniently compute via backpropagation
+- derivatives can be conveniently compute via backpropagation
 
 ❌ Con: 
 - quite slow ...

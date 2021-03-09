@@ -8,7 +8,7 @@ methods based on artificial neural networks.
 The general direction of Physics-Based Deep Learning represents a very
 active, quickly growing and exciting field of research -- we want to provide 
 a starting point for new researchers as well as a hands-on introduction into
-state-of-the-art resarch topics. 
+state-of-the-art research topics. 
 
 
 
@@ -53,7 +53,7 @@ in physical applications are outstanding.
 The proposed techniques are novel, sometimes difficult to apply, and
 significant practical difficulties combing physics and DL persist.
 Also, many fundamental theoretical questions remain unaddressed, most importantly
-regarding data efficienty and generalization.
+regarding data efficiency and generalization.
 
 Over the course of the last decades,
 highly specialized and accurate discretization schemes have
@@ -76,7 +76,7 @@ Thus, the key aspects that we want to address in the following are:
 Thus, we want to build on all the powerful techniques that we have
 at our disposal, and use them wherever we can.
 I.e., our goal is to _reconcile_ the data-centered
-viewpoint and the physical simuation viewpoint.
+viewpoint and the physical simulation viewpoint.
 
 The resulting methods have a huge potential to improve
 what can be done with numerical methods: e.g., in scenarios
@@ -105,8 +105,8 @@ observations).
 No matter whether we're considering forward or inverse problem, 
 the most crucial differentiation for the following topics lies in the 
 nature of the integration  between DL techniques
-and the domain knowledge, typically in the form of model euqations.
-Looking ahead, we will particularly aim for a very tight intgration
+and the domain knowledge, typically in the form of model equations.
+Looking ahead, we will particularly aim for a very tight integration
 of the two, that goes beyond soft-constraints in loss functions.
 Taking a global perspective, the following three categories can be
 identified to categorize _physics-based deep learning_ (PBDL)
@@ -166,7 +166,7 @@ A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both
 ## Implementations
 
 This text also represents an introduction to a wide range of deep learning and simulation APIs.
-We'll use popoular deep learning APIs such as _pytorch_ and _tensorflow_, and additionally
+We'll use popular deep learning APIs such as _pytorch_ and _tensorflow_, and additionally
 give introductions into _phiflow_ for simulations. Some examples also use _JAX_. Thus after going through
 these examples, you should have a good overview of what's available in current APIs, such that
 the best one can be selected for new tasks.

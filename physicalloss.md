@@ -24,7 +24,7 @@ $
   \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) ,
 $
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
-of higher and higher order (this can of course also include derivatives with repsect to different axes).
+of higher and higher order (this can of course also include derivatives with respect to different axes).
 
 In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
 with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE

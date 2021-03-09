@@ -2,7 +2,7 @@ Models and Equations
 ============================
 
 Below we'll give a very (really _very_!) brief intro to deep learning, primarily to introduce the notation.
-In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
+In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "ANNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
 
 ## Deep Learning and Neural Networks
 
@@ -12,9 +12,9 @@ our goal is to approximate an unknown function
 $f^*(x) = y^*$ , 
 
 where $y^*$ denotes reference or "ground truth" solutions.
-$f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
+$f^*(x)$ should be approximated with an ANN representation $f(x;\theta)$. We typically determine $f$ 
 with the help of some formulation of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
-of the NN.
+of the ANN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
 
@@ -36,7 +36,7 @@ and **test** data sets with _some_ different distribution than the training one.
 The latter distinction is important! For the test set we want 
 _out of distribution_ (OOD) data to check how well our trained model generalizes.
 Note that this gives a huge range of difficulties: from tiny changes that will certainly work
-up to completely different inputs that are essentially guaranteeed to fail. Hence,
+up to completely different inputs that are essentially guaranteed to fail. Hence,
 test data should be generated with care.
 
 Enough for now - if all the above wasn't totally obvious for you, we very strongly recommend to 
@@ -81,7 +81,7 @@ This invariably introduce discretization errors, which we'd like to keep as smal
 These errors can be measured in terms of the deviation from the exact analytical solution, 
 and for discrete simulations of PDEs, they are typically expressed as a function of the truncation error 
 $O( \Delta x^k )$, where $\Delta x$ denotes the spatial step size of the discretization.
-Likewise, we typically have a temporal disceretization via a time step $\Delta t$.
+Likewise, we typically have a temporal discretization via a time step $\Delta t$.
 
 ```{admonition} Notation and abbreviations
 :class: seealso
@@ -119,7 +119,7 @@ and the abbreviations used inn: {doc}`notation`, at the bottom of the left panel
 %Typically, $d_{r,i} > d_{s,i}$ and $d_{z}=1$ for $d=2$.
 
 We typically solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
-For a quantitiy of interest $\mathbf{u}$, e.g., representing a velocity field
+For a quantity of interest $\mathbf{u}$, e.g., representing a velocity field
 in $d$ dimensions via $\mathbf{u}(\mathbf{x},t): \mathbb{R}^d \rightarrow \mathbb{R}^d $.
 The components of the velocity vector are typically denoted by $x,y,z$ subscripts, i.e.,
 $\mathbf{u} = (u_x,u_y,u_z)^T$ for $d=3$.
@@ -145,7 +145,7 @@ with actual simulations and implementation examples on the next page.
 We'll often consider Burgers' equation 
 in 1D or 2D as a starting point. 
 It represents a well-studied advection-diffusion PDE, which (unlike Navier-Stokes)
-does not include any additional constraits such as conservation of mass. Hence,
+does not include any additional constraints such as conservation of mass. Hence,
 it leads to interesting shock formations.
 In 2D, it is given by:
 

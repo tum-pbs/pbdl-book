@@ -41,7 +41,7 @@ and we don't need manual labour to annotate a large number of samples to get tra
 
 On the other hand, this approach inherits the common challenges of replacing experiments
 with simulations: first, we need to ensure the chosen model has enough power to predict the 
-bheavior of real-world phenomena that we're interested in.
+behavior of real-world phenomena that we're interested in.
 In addition, the numerical approximations have numerical errors
 which need to be kept small enough for a chosen application. As these topics are studied in depth
 for classical simulations, the existing knowledge can likewise be leveraged to
