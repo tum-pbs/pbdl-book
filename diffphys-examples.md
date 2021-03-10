@@ -11,7 +11,7 @@ interact with a numerical solver. Hence, it's a prime example of
 situations where it's crucial to bring the numerical solver into the 
 deep learning loop.
 
-Next, we'll show a tough inverse problem, namely the long-term control
+Next, we'll show how to let NNs solve tough inverse problems, namely the long-term control
 of a fluid simulation, following Holl et al.  {cite}`holl2019pdecontrol`. 
 This task requires long term planning,
 and hence needs two networks, one to _predict_ the evolution, 

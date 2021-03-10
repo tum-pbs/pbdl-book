@@ -2,7 +2,7 @@ Models and Equations
 ============================
 
 Below we'll give a very (really _very_!) brief intro to deep learning, primarily to introduce the notation.
-In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "ANNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
+In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
 
 ## Deep Learning and Neural Networks
 
@@ -12,9 +12,9 @@ our goal is to approximate an unknown function
 $f^*(x) = y^*$ , 
 
 where $y^*$ denotes reference or "ground truth" solutions.
-$f^*(x)$ should be approximated with an ANN representation $f(x;\theta)$. We typically determine $f$ 
+$f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
 with the help of some formulation of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
-of the ANN.
+of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
 

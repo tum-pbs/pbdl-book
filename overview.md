@@ -158,7 +158,7 @@ fundamental steps. Here are some considerations for skipping ahead to the later 
 
 - you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The _Supervised Learning_ chapter is a good starting point then.
 
-- On the other hand, if you're already deep into ANNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the _Physical Loss Terms_ chapter, which lays the foundations for the next chapters.
+- On the other hand, if you're already deep into NNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the _Physical Loss Terms_ chapter, which lays the foundations for the next chapters.
 
 A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both cases, though!
 ```

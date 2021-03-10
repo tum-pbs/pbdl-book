@@ -10,7 +10,7 @@ we can obtain _hybrid_ methods, that use the best numerical methods that we have
 
 ## Interaction
 
-One key component for these hybrids to work well is to let the ANN _interact_ with the PDE solver at training time. Differentiable simulations allow a trained model to explore and experience the physical environment, and receive directed feedback regarding its interactions throughout the solver iterations. This combination nicely fits into the broader context of machine learning as _differentiable programming_. 
+One key component for these hybrids to work well is to let the NN _interact_ with the PDE solver at training time. Differentiable simulations allow a trained model to explore and experience the physical environment, and receive directed feedback regarding its interactions throughout the solver iterations. This combination nicely fits into the broader context of machine learning as _differentiable programming_. 
 
 ## Generalization
 

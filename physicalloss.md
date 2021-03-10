@@ -91,9 +91,9 @@ For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we ca
 ## Summary so far
 
 The approach above gives us a method to include physical equations into DL learning as a soft-constraint.
-Typically, this setup is suitable for _inverse_ problems, where we have certain measurements or observations
-that we wish to find a solution of a model PDE for. Because of the high expense of the reconstruction (to be 
+Typically, this setup is suitable for _inverse problems_, where we have certain measurements or observations
+for which we want to find a PDE solution. Because of the high cost of the reconstruction (to be 
 demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
-to capture a wide range of solutions, such as the previous supervised airfoil example, in this way.
+to capture a wide range of solutions, such as with the previous supervised airfoil example, in this way.
 
 

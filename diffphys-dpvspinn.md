@@ -29,7 +29,7 @@ For the PINN representation with fully-connected networks on the other hand, we 
 
 That being said, because the DP approaches can cover much larger solution manifolds, the structure of these manifolds is typically also difficult to learn. E.g., when training a network with a larger number of iterations (i.e. a long look-ahead into the future), this typically represents a signal that is more difficult to learn than a short look ahead. 
 
-As a consequence, these training runs not only take more computational resources per ANN iteration, the also need longer to converge. Regarding resources, each computation of the look-ahead potentially requires a large number of simulation steps, and typically a similar amount of resources for the backprop step. Regarding convergence, the complexer signal that should be learned can take more training iterations or even require larger ANN structures. 
+As a consequence, these training runs not only take more computational resources per NN iteration, the also need longer to converge. Regarding resources, each computation of the look-ahead potentially requires a large number of simulation steps, and typically a similar amount of resources for the backprop step. Regarding convergence, the complexer signal that should be learned can take more training iterations or even require larger NN structures. 
 
 ## Summary
 

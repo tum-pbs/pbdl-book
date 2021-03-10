@@ -10,10 +10,13 @@ The central goal of this methods is to use existing numerical solvers, and equip
 them with functionality to compute gradients with respect to their inputs.
 Once this is realized for all operators of a simulation, we can leverage 
 the autodiff functionality of DL frameworks with back-propagation to let gradient 
-information from from a simulator into an ANN and vice versa. This has numerous 
+information from from a simulator into an NN and vice versa. This has numerous 
 advantages such as improved learning feedback and generalization, as we'll outline below.
+
 In contrast to physics-informed loss functions, it also enables handling more complex
-solution manifolds instead of single inverse problems.
+solution manifolds instead of single inverse problems. Thus instead of using deep learning
+to solve single inverse problems, we'll show how to train ANNs that solve 
+larger classes of inverse problems very quickly.
 
 ```{figure} resources/placeholder.png
 ---
@@ -54,9 +57,9 @@ $\partial \mathcal P_i / \partial \mathbf{u}$.
 
 Note that we typically don't need derivatives 
 for all parameters of $\mathcal P$, e.g. we omit $\nu$ in the following, assuming that this is a 
-given model parameter, with which the ANN should not interact. 
+given model parameter, with which the NN should not interact. 
 Naturally, it can vary within the solution manifold that we're interested in, 
-but $\nu$ will not be the output of a ANN representation. If this is the case, we can omit
+but $\nu$ will not be the output of a NN representation. If this is the case, we can omit
 providing $\partial \mathcal P_i / \partial \nu$ in our solver. However, the following learning process
 natuarlly transfers to including $\nu$ as a degree of freedom.
 
@@ -189,7 +192,7 @@ Informally, we'd like to find a motion that deforms $d^{~0}$ into a target state
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
 to minimize the loss function $F=|d(t^e) - d^{\text{target}}|^2$. 
 
-Note that as described here this is a pure optimization task, there's no ANN involved,
+Note that as described here this is a pure optimization task, there's no NN involved,
 and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
 as would be custom in a real learning task.
 
@@ -204,7 +207,7 @@ We'd now like to find the minimizer for this objective by
 _gradient descent_ (GD), where the 
 gradient is determined by the differentiable physics approach described earlier in this chapter.
 Once things are working with GD, we can relatively easily switch to better optimizers or bring
-an ANN into the picture, hence it's always a good starting point.
+an NN into the picture, hence it's always a good starting point.
 
 As the discretized velocity field $\mathbf{u}$ contains all our degrees of freedom,
 what we need to update the velocity by an amount 

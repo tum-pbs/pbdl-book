@@ -23,12 +23,12 @@ actual solver in the training loop via a DP approach.
 
 ## Summary
 
-To summarize the pros and cons of training ANNs via differentiable physics:
+To summarize the pros and cons of training NNs via differentiable physics:
 
 ✅ Pro: 
 - uses physical model and numerical methods for discretization
 - efficiency of selected methods carries over to training
-- tight coupling of physical models and ANNs possible
+- tight coupling of physical models and NNs possible
 
 ❌ Con: 
 - not compatible with all simulators (need to provide gradients)
