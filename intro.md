@@ -87,6 +87,7 @@ See also... Test link: {doc}`supervised`
 - PINNs: often need weighting of added loss terms for different parts
 - DP intro, check transpose of Jacobians in equations
 - DP control, show targets at bottom?
+- finish pictures...
 
 
 ## TODOs , Planned content
