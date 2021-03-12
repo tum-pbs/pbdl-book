@@ -95,7 +95,7 @@ $
 $. 
 If we'd need to construct and store all full Jacobian matrices that we encounter during training, 
 this would cause huge memory overheads and unnecessarily slow down training.
-Instead, for backpropagation, we can provide faster operations that compute products
+Instead, for back-propagation, we can provide faster operations that compute products
 with the Jacobian transpose because we always have a scalar loss function at the end of the chain.
 
 Given the formulation above, we need to resolve the derivatives
@@ -134,7 +134,7 @@ use these operators to realize our physics solver?_"
 
 It's true that this would theoretically be possible. The problem here is that each of the vector and matrix
 operations in tensorflow and pytorch is computed individually, and internally needs to store the current 
-state of the forward evaluation for backpropagation (the "$g(x)$" above). For a typical 
+state of the forward evaluation for back-propagation (the "$g(x)$" above). For a typical 
 simulation, however, we're not overly interested in every single intermediate result our solver produces.
 Typically, we're more concerned with significant updates such as the step from $\mathbf{u}(t)$ to  $\mathbf{u}(t+\Delta t)$.
 
@@ -158,7 +158,7 @@ Also, in practice we can be _greedy_ with the derivative operators, and only
 provide those which are relevant for the learning task. E.g., if our network 
 never produces the parameter $\nu$ in the example above, and it doesn't appear in our
 loss formulation, we will never encounter a $\partial/\partial \nu$ derivative
-in our backpropagation step.
+in our back-propagation step.
 
 ---
 
@@ -190,7 +190,7 @@ finding a motion $\mathbf{u}$ such that starting with a given initial state $d^{
 the time evolved scalar density at time $t^e$ has a certain shape or configuration $d^{\text{target}}$.
 Informally, we'd like to find a motion that deforms $d^{~0}$ into a target state.
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
-to minimize the loss function $F=|d(t^e) - d^{\text{target}}|^2$. 
+to minimize the loss function $L=|d(t^e) - d^{\text{target}}|^2$. 
 
 Note that as described here this is a pure optimization task, there's no NN involved,
 and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
@@ -273,16 +273,48 @@ be preferable to actually constructing $A$.
 
 ## A (slightly) more complex example
 
-**[TODO]**
+As a slightly more complex example let's consider Poisson's equation $\nabla^2 a = b$, where
+$a$ is the quantity of interest, and $b$ is given. 
+This is a very fundamental elliptic PDE that is important for 
+a variety of physical problems, from electrostatics to graviational fields. It also arises 
+in the context of fluids, where $a$ takes the role of a scalar pressure field in the fluid, and
+the right hand side $b$ is given by the divergence of the fluid velocity $\mathbf{u}$.
 
-a bit more complex, matrix inversion, eg Poisson solve
-dont backprop through all CG steps (available in phiflow though)
-rather, re-use linear solver to compute multiplication by inverse matrix
+For fluids, we typically have 
+$\mathbf{u}^{n} = \mathbf{u} - \nabla p$, with
+$\nabla^2 p = \nabla \cdot \mathbf{u}$. Here, $\mathbf{u}^{n}$ denotes the _new_, divergence-free
+velocity field. This step is typically crucial to enforce the hard-constraint $\nabla \cdot \mathbf{u}=0$,
+and is often called _Chorin Projection_, or _Helmholtz decomposition_. It is also closely related to the fundamental theorem of vector calculus.
 
-[note 1: essentially yields implicit derivative, cf implicit function theorem & co]
+If we now introduce an NN that modifies $\mathbf{u}$ in an iterative solver, we inevitably have to
+back-propagate through the Poisson solve. I.e., we need a gradient for $\mathbf{u}^{n}$, which in this
+notation takes the form $\partial \mathbf{u}^{n} / \partial \mathbf{u}$.
 
-[note 2: time can be "virtual" , solving for steady state
-only assumption: some iterative procedure, not just single explicit step - then things simplify.]
+In combination, $\partial \mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients simple to compute. The main difficulty lies in obtaining the
+matrix inverse $(\nabla^2)^{-1}$ from the Poisson's equation for pressure (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
+
+In practice, the matrix vector product for $(\nabla^2)^{-1} b$ with $b=\nabla \cdot \mathbf{u}$ is not explicitly computed via matrix operations, but approximated with a (potentially matrix-free) iterative solver. E.g., conjugate gradient (CG) methods are a very popular choice here. Thus, we could treat this iterative solver as a function $S$,
+with $p = S(\nabla \cdot \mathbf{u})$. Note that matrix inversion is a non-linear process, despite the matrix itself being linear. As solvers like CG are also based on matrix and vector operations, we could decompose $S$ into a sequence of simpler operations $S(x) = S_n( S_{n-1}(...S_{1}(x)))$, and back-propagate through each of them. This is certainly possible, but not a good idea: it can introduce numerical problems, and can be very slow.
+By default DL frameworks store the internal states for every differentiable operator like the $S_i()$ in this example, and hence we'd organize and keep $n$ intermediate states in memory. These states are completely uninteresting for our original PDE, though. They're just intermediate states of the CG solver.
+
+If we take a step back and look at $p = (\nabla^2)^{-1} b$, it's gradient $\partial p / \partial b$
+is just $((\nabla^2)^{-1})^T$. And in this case, $(\nabla^2)$ is a symmetric matrix, and so $((\nabla^2)^{-1})^T=(\nabla^2)^{-1}$. This is the identical inverse matrix that we encountered in the original equation above, and hence we can re-use our unmodified iterative solver to compute the gradient. We don't need to take it apart and slow it down by storing intermediate states. However, the iterative solver computes the matrix-vector-products for $(\nabla^2)^{-1} b$. So what is $b$ during back-propagation? In an optimization setting we'll always have our loss function $L$ at the end of the forward chain. The back-propagation step will then give a gradient for the output, let's assume it is $\partial L/\partial p$ here, which needs to be propagated to the earlier operations of the forward pass. Thus, we can simply invoke our iterative solve during the backward pass to compute $\partial p / \partial b = S(\partial L/\partial p)$. And assuming that we've chosen a good solver as $S$ for the forward pass, we get exactly the same performance and accuracy in the backwards pass.
+
+The main take-away here is: it is important _not to blindly back-propagate_ through the forward computation, but to think about which steps of the analytic equations for the forward pass to compute gradients for. In cases like the above, we can often find improved analytic expressions for the gradients, which we can then compute numerically.
+
+```{admonition} Implicit Function Theorem & Time
+:class: tip
+
+**IFT**:
+The process above essentially yields an _implicit derivative_. Instead of explicitly deriving all forward steps, we've relied on the [implicit function theorem](https://en.wikipedia.org/wiki/Implicit_function_theorem) to compute the derivative.
+
+**Time**: we _can_ actually consider the steps of an iterative solver as a virtual "time",
+and back-propagate through them. In line with other DP approaches, this enabled an NN to _interact_ with an iterative solver. An example is to learn initial guesses of CG solvers from {cite}`um2020sol`, 
+[details can be found here](https://github.com/tum-pbs/CG-Solver-in-the-Loop).
+```
+
+
+---
 
 ## Summary of Differentiable Physics so far
 
@@ -298,5 +330,4 @@ any solver or model equation. With the DP approach we can train an NN alongside
 a numerical solver, and thus we can make use of the physical model (as represented by 
 the solver) later on at inference time. This allows us to move beyond solving single
 inverse problems, and can yield NNs that quite robustly generalize to new inputs.
-
-Let's revisit the sample problem from {doc}`physicalloss-code` in the context of DPs.
+Let's revisit this sample problem in the context of DPs.
