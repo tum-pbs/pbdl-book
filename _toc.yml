@@ -40,9 +40,5 @@
     - file: diffphys-code-tf.ipynb
     - file: diffphys-code-ns-v1.ipynb
     - file: diffphys-code-ns-v2a.ipynb
-- file: jupyter-book-reference
-  sections:
-    - file: jupyter-book-reference-markdown
-    - file: jupyter-book-reference-notebooks
 - file: references.md
 - file: notation.md
