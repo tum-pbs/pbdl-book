@@ -3,11 +3,11 @@ Welcome ...
 
 Welcome to the Physics-based Deep Learning Book 👋
 
-**TL;DR**: This document targets 
-a variety of combinations of physical simulations with deep learning.
+**TL;DR**: 
+This document targets a variety of combinations of physical simulations with deep learning.
 As much as possible, the algorithms will come with hands-on code examples to quickly get started.
-Beyond standard _supervised_ learning from data, we'll look at loss constraints, and 
-more tightly coupled learning algorithms with differentiable simulations.
+Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, and 
+more tightly coupled learning algorithms with _differentiable simulations_.
 
 
 ```{figure} resources/teaser.png
@@ -90,46 +90,21 @@ See also... Test link: {doc}`supervised`
 - finish pictures...
 
 
-## TODOs , Planned content
-
-Loose collection of notes and TODOs:
-
-General physics & dl , intro & textual overview
-
-- 	Intro phys loss example, parabola example
+## Other planned content
 
 Supervised simple starting point
 
--    AIAA supervised learning , idp_weissenov/201019-upd-arxiv-v2/  {cite}`thuerey2020deepFlowPred`
-    skepticism? , started colab -> https://colab.research.google.com/drive/11KUe5Ybuprd7_qmNTe1nvQVUz3W6gRUo
-    torch version 1.7 [upd from Liwei?]
-
-- surrogates, shape opt?
+- add surrogates for shape opt?
 
 Physical losses 
 
-- vs. PINNs [alt.: neural ODEs , PDE net?] , all using GD (optional, PINNs could use BFGS)
-    [PINNs], phiflow example -> convert to colab
-
 -    PINNs -> are unsupervised a la tompson; all DL NNs are "supervised" during learning, unsup just means not precomputed and goes through function
-
--    add image | NN | <> | Loss | , backprop; (bring back every section, add variants for other methods?)
 
 -    discuss CG solver, tompson as basic ''unsupervisedd'' example?
 
 Diff phys, start with overview of idea: gradients via autodiff, then run GD
 
 -    illustrate and discuss gradients -> mult. for chain rule; (later: more general PG chain w func composition)
-
--    Differentiable Physics (w/o network) , {cite}`holl2019pdecontrol` 
-        -> phiflow colab notebook good start, but needs updates (see above Jan2)
-
--    SOL_201019-finals_Solver-in-the-Loop-Main-final.pdf , {cite}`um2020sol` 
-        numerical errors, how to include in jupyter / colab?
-
--    ICLR_190925-ICLR-final_1d8cf33bb3c8825e798f087d6cd35f2c7c062fd4.pdf alias
-        PDE control, control focused
-        https://github.com/holl-/PDE-Control    -> update to new version?
 
 beyond GD: re-cap newton & co
 

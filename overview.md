@@ -68,9 +68,9 @@ is highly beneficial for DL to use them as much as possible.
 ```{admonition} Goals of this document
 :class: tip
 Thus, the key aspects that we want to address in the following are:
-- explain how to use DL,
-- and how to combine it with existing knowledge of physics and simulations,
-- **without throwing away** all existing numerical knowledge and techniques.
+- explain how to use deep learning techniques,
+- how to combine them with **existing knowledge** of physics,
+- without **throwing away** our knowledge about numerical methods.
 ```
 
 Thus, we want to build on all the powerful techniques that we have
