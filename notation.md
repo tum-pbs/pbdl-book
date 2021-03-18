@@ -8,8 +8,8 @@
 | $A$ | matrix |
 | $\eta$ | learning rate or step size |
 | $\Gamma$ | boundary of computational domain $\Omega$ |
-| $f^{*}()$ | generic function to be approximated, typically  unknown |
-| $f()$ | approximate version of $f^{*}$ |
+| $f^{*}$ | generic function to be approximated, typically  unknown |
+| $f$ | approximate version of $f^{*}$ |
 | $\Omega$ | computational domain |
 | $\mathcal P^*$ | continuous/ideal physical model |
 | $\mathcal P$ | discretized physical model, PDE |

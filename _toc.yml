@@ -31,6 +31,7 @@
   sections:
     - file: physgrad-comparison.ipynb
     - file: physgrad-discuss.md
+- file: outlook.md
 - file: old-phiflow1.md
   sections:
     - file: overview-burgers-forw-v1.ipynb
