@@ -88,6 +88,7 @@ See also... Test link: {doc}`supervised`
 - DP intro, check transpose of Jacobians in equations
 - DP control, show targets at bottom?
 - finish pictures...
+- include latent space physics, mention LSTM, end of supervised?
 
 
 ## Other planned content
@@ -123,7 +124,7 @@ time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020l
     include DeepFluids variant?
 
 [BAYES , prob?]
-    include results Jakob
+    include results Jakob / Maximilian
 
 [unstruct / lagrangian] {cite}`prantl2019tranquil,ummenhofer2019contconv`
     include ContConv / Lukas

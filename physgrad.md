@@ -1,7 +1,7 @@
 Physical Gradients
 =======================
 
-**TODO, add example for units? integrate comment at bottom?**
+**TODO, finish training section below? integrate comment at bottom?**
 **relate to invertible NNs?**
 
 The next chapter will dive deeper into state-of-the-art-research, and aim for an even tighter
@@ -68,10 +68,9 @@ Note that we exclusively consider multivariate functions, and hence all symbols 
 
 The optimization updates $\Delta x$ of GD scale with the derivative of the objective w.r.t. the inputs,
 
-% \begin{equation} \label{eq:GD-update}
-$
+$$
     \Delta x = -\eta \cdot \frac{\partial L}{\partial x}
-$
+$$ (GD-update)
 
 where $\eta$ is the scalar learning rate.
 The Jacobian $\frac{\partial L}{\partial x}$ describes how the loss reacts to small changes of the input.
@@ -116,9 +115,9 @@ stabilize the training. On the other hand, it also makes the learning process di
 
 Quasi-Newton methods, such as BFGS and its variants, evaluate the gradient $\frac{\partial L}{\partial x}$ and Hessian $\frac{\partial^2 L}{\partial x^2}$ to solve a system of linear equations. The resulting update can be written as
 
-$
+$$
 \Delta x = \eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x}.
-$
+$$ (quasi-newton-update)
 
 where $\eta$, the scalar step size, takes the place of GD's learning rate and is typically determined via a line search.
 This construction solves some of the problems of gradient descent from above, but has other drawbacks.
@@ -186,11 +185,10 @@ As a first step towards _physical gradients_, we introduce _inverse_ gradients (
 which naturally solve many of the aforementioned problems.
 
 Instead of $L$ (which is scalar), let's consider the function $z(x)$. We define the update
-% \begin{equation} \label{eq:IG-def}
 
-$
+$$
     \Delta x = \frac{\partial x}{\partial z} \cdot \Delta z.
-$
+$$ (IG-def)
 
 to be the IG update.
 Here, the Jacobian $\frac{\partial x}{\partial z}$, which is similar to the inverse of the GD update above, encodes how the inputs must change in order to obtain a small change $\Delta z$ in the output.
@@ -241,8 +239,6 @@ Thus, we now consider the fact that inverse gradients are linearizations of inve
 
 
 
----
-
 ### Inverse simulators
 
 Physical processes can be described as a trajectory in state space where each point represents one possible configuration of the system.
@@ -258,9 +254,9 @@ Equipped with the inverse we now define an update that we'll call the **physical
 
 % Original: \begin{equation} \label{eq:pg-def}  \frac{\Delta x}{\Delta z} \equiv \mathcal P_{(x_0,z_0)}^{-1} (z_0 + \Delta z) - x_0 = \frac{\partial x}{\partial z} + \mathcal O(\Delta z^2)
 
-$
+$%
     \frac{\Delta x}{\Delta z}   \equiv  \big( \mathcal P^{-1} (z_0 + \Delta z) - x_0  \big) / \Delta z
-$
+$% (PG-def)
 
 
 **added $ / \Delta z $ on the right!? the above only gives $\Delta x$, see below**
@@ -327,15 +323,16 @@ Non-injective functions can be inverted, for example, by choosing the closest $x
 
 With the local inverse, the PG is defined as 
 
-$
+$$
     \frac{\Delta x}{\Delta z}   \equiv  \big( \mathcal P_{(x_0,z_0)}^{-1} (z_0 + \Delta z) - x_0  \big) / \Delta z
-$
+$$ (local-PG-def)
 
 For differentiable functions, a local inverse is guaranteed to exist by the inverse function theorem as long as the Jacobian is non-singular.
 That is because the inverse Jacobian $\frac{\partial x}{\partial z}$ itself is a local inverse function, albeit not the most accurate one.
 Even when the Jacobian is singular (because the function is not injective, chaotic or noisy), we can usually find good local inverse functions.
 
 
+---
 
 
 ## Summary
@@ -343,7 +340,7 @@ Even when the Jacobian is singular (because the function is not injective, chaot
 The update obtained with a regular gradient descent method has surprising shortcomings.
 The physical gradient instead allows us to more accurately backpropagate through nonlinear functions, provided that we have access to good inverse functions.
 
-
+Before moving on to including PGs in NN training processes, the next example will illustrate ...
 
 
 **todo, integrate comments below?**
@@ -354,4 +351,6 @@ In some cases, simply inverting the time axis of the forward simulator, $t \righ
 %
 In cases where this straightforward approach does not work, e.g. because the simulator destroys information in practice, one can usually formulate local inverse functions that solve these problems.
 
+??? We then consider settings involving neural networks interacting with the simulation and show how GD can be combined with the PG pipeline for network training.
+???
 

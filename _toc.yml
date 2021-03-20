@@ -30,6 +30,7 @@
 - file: physgrad.md
   sections:
     - file: physgrad-comparison.ipynb
+    - file: physgrad-nn.md
     - file: physgrad-discuss.md
 - file: outlook.md
 - file: old-phiflow1.md
