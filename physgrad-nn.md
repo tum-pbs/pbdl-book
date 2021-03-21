@@ -1,4 +1,4 @@
-Physical Gradients 
+Physical Gradients and NNs
 =======================
 
 Re-cap?

@@ -340,10 +340,12 @@ Even when the Jacobian is singular (because the function is not injective, chaot
 The update obtained with a regular gradient descent method has surprising shortcomings.
 The physical gradient instead allows us to more accurately backpropagate through nonlinear functions, provided that we have access to good inverse functions.
 
-Before moving on to including PGs in NN training processes, the next example will illustrate ...
+Before moving on to including PGs in NN training processes, the next example will illustrate the differences between these approaches with a practical example.
 
 
-**todo, integrate comments below?**
+
+
+**TODO, sometime, integrate comments below?**
 
 Old Note: 
 The inverse function to a simulator is typically the time-reversed physical process.
