@@ -37,7 +37,7 @@ The following table summarizes these findings:
 
 | Method   |  ✅ Pro   |  ❌ Con  |
 |----------|-------------|------------|
-| **PINN** | - Analytic derivatives via back-propagation  | - Expensive evaluation of NN, as well as derivative calculations | 
+| **PINN** | - Analytic derivatives via backpropagation  | - Expensive evaluation of NN, as well as derivative calculations | 
 |          | - Simple to implement  | - Incompatible with existing numerical methods     | 
 |          |                  | - No control of discretization  | 
 | **DiffPhys** | - Leverage existing numerical methods | - More complicated to implement  | 

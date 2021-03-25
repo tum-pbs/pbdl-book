@@ -75,7 +75,7 @@ in {doc}`overview`. Here, we can use the same tools to compute spatial derivativ
 Note that above for $R$ we've written this derivative in the shortened notation as $\mathbf{u}_{x}$.
 For functions over time this of course also works for $\partial \mathbf{u} / \partial t$, i.e. $\mathbf{u}_{t}$ in the notation above.
 
-Thus, for some generic $R$, made up of $\mathbf{u}_t$ and $\mathbf{u}_{x}$ terms, we can rely on the back-propagation algorithm
+Thus, for some generic $R$, made up of $\mathbf{u}_t$ and $\mathbf{u}_{x}$ terms, we can rely on the backpropagation algorithm
 of DL frameworks to compute these derivatives once we have a NN that represents $\mathbf{u}$. Essentially, this gives us a 
 function (the NN) that receives space and time coordinates to produce a solution for $\mathbf{u}$. Hence, the input is typically
 quite low-dimensional, e.g., 3+1 values for a 3D case over time, and often produces a scalar value or a spatial vector.
