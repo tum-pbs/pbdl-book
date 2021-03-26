@@ -57,14 +57,14 @@ Bringing these numerical methods back into the picture will be one of the centra
 goals of the next sections.
 
 ✅ Pro: 
-- uses physical model
-- derivatives can be conveniently compute via backpropagation
+- Uses physical model.
+- Derivatives can be conveniently compute via backpropagation.
 
 ❌ Con: 
-- quite slow ...
-- physical constraints are enforced only as soft constraints
-- largely incompatible _classical_ numerical methods
-- accuracy of derivatives relies on learned representation
+- Quite slow ...
+- Physical constraints are enforced only as soft constraints.
+- Largely incompatible _classical_ numerical methods.
+- Accuracy of derivatives relies on learned representation.
 
 Next, let's look at how we can leverage numerical methods to improve the DL accuracy and efficiency
 by making use of differentiable solvers.

@@ -26,13 +26,13 @@ actual solver in the training loop via a DP approach.
 To summarize the pros and cons of training NNs via differentiable physics:
 
 ✅ Pro: 
-- uses physical model and numerical methods for discretization
-- efficiency of selected methods carries over to training
-- tight coupling of physical models and NNs possible
+- Uses physical model and numerical methods for discretization.
+- Efficiency of selected methods carries over to training.
+- Tight coupling of physical models and NNs possible.
 
 ❌ Con: 
-- not compatible with all simulators (need to provide gradients)
-- require more heavy machinery (in terms of framework support) than previously discussed methods
+- Not compatible with all simulators (need to provide gradients).
+- Require more heavy machinery (in terms of framework support) than previously discussed methods.
 
 Especially the last point is one that is bound to strongly improve in a fairly short time, but for now it's important to keep in mind that not every simulator is suitable for DP training out of the box. Hence, in this book we'll focus on examples using phiflow, which was designed for interfacing with deep learning frameworks. 
 Next we can target more some complex scenarios to showcase what can be achieved with differentiable physics.

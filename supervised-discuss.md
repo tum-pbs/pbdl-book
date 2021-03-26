@@ -96,18 +96,18 @@ avoid overfitting.
 
 ## Supervised Training in a nutshell
 
-To summarize:
+To summarize, supervised training has the following properties.
 
 ✅ Pros: 
-- very fast training
-- stable and simple
-- great starting point
+- Very fast training.
+- Stable and simple.
+- Great starting point.
 
 ❌ Con: 
-- lots of data needed
-- sub-optimal performance, accuracy and generalization
+- Lots of data needed.
+- Sub-optimal performance, accuracy and generalization.
 
-Outlook: interactions with external "processes" (such as embedding into a solver) are tricky with supervised training.
+Outlook: any interactions with external "processes" (such as embedding into a solver) are tricky with supervised training.
 First, we'll look at bringing model equations into the picture via soft-constraints, and afterwards
 we'll revisit the challenges of bringing together numerical simulations and learned approaches.
 
