@@ -15,7 +15,7 @@ In the former case, the simulator is only required at training time, while in th
 
 Below, we'll proceed in the following steps:
 - we'll first show the problems with regular gradient descent, especially for functions that combine small and large scales,
-- a central insight will be that an inverse gradient is a lot more meaningful than the regular one,
+- a central insight will be that an _inverse gradient_ is a lot more meaningful than the regular one,
 - finally, we'll show how to use inverse functions (and especially inverse PDE solvers) to compute a very accurate update that includes higher-order terms.
 
 ```
@@ -144,7 +144,7 @@ This behavior stems from the fact that the Hessian of a function composition car
 
 Consider a function composition $L(z(x))$, with $L$ as above, and an additional function $z(x)$.
 Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial z^2} \left( \frac{\partial z}{\partial x} \right)^2 + \frac{\partial L}{\partial z} \cdot \frac{\partial^2 z}{\partial x^2}$ depends on the square of the inner gradient $\frac{\partial z}{\partial x}$. 
-This means that the Hessian is influenced by the _later_ derivatives of a back-propagation pass, 
+This means that the Hessian is influenced by the _later_ derivatives of a backpropagation pass, 
 and as a consequence, the update of any latent space is unknown during the computation of the gradients.
 
 % chain of function evaluations: Hessian of an outer function is influenced by inner ones; inversion corrects and yields quantity similar to IG, but nonetheless influenced by "later" derivatives
@@ -167,8 +167,10 @@ While this may not seem like a big restriction, note that many common neural net
 %
 Related to this is the problem that higher-order derivatives tend to change more quickly when traversing the parameter space, making them more prone to high-frequency noise in the loss landscape.
 
-Quasi-Newton methods are a very active research topic, and hence many extensions have been proposed that can alleviate some of these problems in certain settings. E.g., the memory requirement problem can be sidestepped by storing only lower-dimensional vectors that can be used to approximate the Hessian. However, these difficulties illustrate the problems that often arise when applying methods like BFGS.
-
+```{note} 
+_Quasi-Newton Methods_
+are still a very active research topic, and hence many extensions have been proposed that can alleviate some of these problems in certain settings. E.g., the memory requirement problem can be sidestepped by storing only lower-dimensional vectors that can be used to approximate the Hessian. However, these difficulties illustrate the problems that often arise when applying methods like BFGS.
+```
 
 %\nt{In contrast to these classic algorithms, we will show how to leverage invertible physical models to efficiently compute physical update steps. In certain scenarios, such as simple loss functions, computing the inverse  gradient via the inverse Hessian will also provide a useful building block for our final algorithm.}
 %, and how to they can be used to improve the training of neural networks.
@@ -181,7 +183,7 @@ Quasi-Newton methods are a very active research topic, and hence many extensions
 
 ## Derivation of Physical Gradients
 
-As a first step towards _physical gradients_, we introduce _inverse_ gradients (IGs), 
+As a first step towards _physical_ gradients, we introduce _inverse_ gradients (IGs), 
 which naturally solve many of the aforementioned problems.
 
 Instead of $L$ (which is scalar), let's consider the function $z(x)$. We define the update
@@ -341,18 +343,4 @@ The update obtained with a regular gradient descent method has surprising shortc
 The physical gradient instead allows us to more accurately backpropagate through nonlinear functions, provided that we have access to good inverse functions.
 
 Before moving on to including PGs in NN training processes, the next example will illustrate the differences between these approaches with a practical example.
-
-
-
-
-**TODO, sometime, integrate comments below?**
-
-Old Note: 
-The inverse function to a simulator is typically the time-reversed physical process.
-In some cases, simply inverting the time axis of the forward simulator, $t \rightarrow -t$, can yield an adequate global inverse simulator.
-%
-In cases where this straightforward approach does not work, e.g. because the simulator destroys information in practice, one can usually formulate local inverse functions that solve these problems.
-
-??? We then consider settings involving neural networks interacting with the simulation and show how GD can be combined with the PG pipeline for network training.
-???
 

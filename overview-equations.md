@@ -44,8 +44,7 @@ read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.or
 especially the sections about [MLPs](https://www.deeplearningbook.org/contents/mlp.html) 
 and "Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
 
-```{admonition} Note: Classification vs Regression
-:class: tip
+```{note} Classification vs Regression
 
 The classic ML distinction between _classification_ and _regression_ problems is not so important here:
 we only deal with _regression_ problems in the following.
