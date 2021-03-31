@@ -122,7 +122,7 @@ these updates.
 ```{figure} resources/placeholder.png
 ---
 height: 220px
-name: pg-training
+name: pg-toolbox
 ---
 TODO, visual overview of toolbox  , combinations 
 ```

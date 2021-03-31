@@ -1,4 +1,4 @@
-Differentiable Physics
+Introduction to Differentiable Physics
 =======================
 
 As a next step towards a tighter and more generic combination of deep learning

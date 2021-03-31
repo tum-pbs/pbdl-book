@@ -25,16 +25,17 @@
 - part: Differentiable Physics
   chapters:
   - file: diffphys.md
-    sections:
-      - file: diffphys-code-burgers.ipynb
-      - file: diffphys-discuss.md
-      - file: diffphys-code-ns.ipynb
-      - file: diffphys-dpvspinn.md
+  - file: diffphys-code-burgers.ipynb
+  - file: diffphys-discuss.md
+  - file: diffphys-code-ns.ipynb
+  - file: diffphys-dpvspinn.md
+
+- part: Complex Examples with DP
+  chapters:
   - file: diffphys-examples.md
-    sections:
-      - file: diffphys-code-sol.ipynb
-      - file: diffphys-control.ipynb
-      - file: diffphys-outlook.md
+  - file: diffphys-code-sol.ipynb
+  - file: diffphys-control.ipynb
+  - file: diffphys-outlook.md
 
 - part: Physical Gradients
   chapters:
