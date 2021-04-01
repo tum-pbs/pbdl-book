@@ -147,7 +147,7 @@ to compute the updates (and derivatives) for these operators.
 %in practice break down into larger, monolithic components
 E.g., as this process is very similar to adjoint method optimizations, we can re-use many of the techniques
 that were developed in this field, or leverage established numerical methods. E.g., 
-we could leverage the $O(n)$ complexity of multigrid solvers for matrix inversion.
+we could leverage the $O(n)$ runtime of multigrid solvers for matrix inversion.
 
 The flipside of this approach is, that it requires some understanding of the problem at hand, 
 and of the numerical methods. Also, a given solver might not provide gradient calculations out of the box.
@@ -161,13 +161,14 @@ never produces the parameter $\nu$ in the example above, and it doesn't appear i
 loss formulation, we will never encounter a $\partial/\partial \nu$ derivative
 in our backpropagation step.
 
+The following figure summarizes the DP-based learning approach, and illustrates the sequence of operations that are typically processed within a single PDE solve. As many of the operations are non-linear in practice, this often leads to a challenging learning task for the NN:
 
 ```{figure} resources/diffphys-overview.jpg
 ---
 height: 220px
 name: diffphys-full-overview
 ---
-TODO , details...
+DP learning with a PDE solver that consists of $m$ individual operators $\mathcal P_i$. The gradient travels backward through all $m$ operators before influencing the network weights $\theta$.
 ```
 
 

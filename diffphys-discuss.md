@@ -49,7 +49,7 @@ In this case we compute a (potentially very long) sequence of PDE solver steps i
 
 ```{figure} resources/diffphys-multistep.jpg
 ---
-height: 220px
+height: 180px
 name: diffphys-mulitstep
 ---
 Time stepping with interleaved DP and NN operations for $k$ solver iterations.
@@ -59,7 +59,7 @@ Note that this picture (and the ones before) have assumed an _additive_ influenc
 
 DP setups with many time steps can be difficult to train: the gradients need to backpropagate through the full chain of PDE solver evaluations and NN evaluations. Typically, each of them represents a non-linear and complex function. Hence for larger numbers of steps, the vanishing and exploding gradient problem can make training difficult (see {doc}`diffphys-code-sol` for some practical tipps how to alleviate this).
 
-## Alternatives - Noise
+## Alternatives: Noise
 
 It is worth mentioning here that other works have proposed perturbing the inputs and 
 the iterations at training time with noise {cite}`sanchez2020learning` (somewhat similar to
