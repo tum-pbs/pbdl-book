@@ -18,12 +18,13 @@ solution manifolds instead of single inverse problems. Thus instead of using dee
 to solve single inverse problems, we'll show how to train ANNs that solve 
 larger classes of inverse problems very quickly.
 
-```{figure} resources/placeholder.png
+```{figure} resources/diffphys-shortened.jpg
 ---
 height: 220px
-name: dp-training
+name: diffphys-short-overview
 ---
-TODO, visual overview of DP training
+Training with differentiable physics mean that one or more differentiable operators
+provide directions to steer the learning process.
 ```
 
 ## Differentiable Operators
@@ -160,6 +161,16 @@ never produces the parameter $\nu$ in the example above, and it doesn't appear i
 loss formulation, we will never encounter a $\partial/\partial \nu$ derivative
 in our backpropagation step.
 
+
+```{figure} resources/diffphys-overview.jpg
+---
+height: 220px
+name: diffphys-full-overview
+---
+TODO , details...
+```
+
+
 ---
 
 ## A practical example
@@ -242,7 +253,7 @@ velocities.
 ```{figure} resources/placeholder.png
 ---
 height: 100px
-name: advection-upwing
+name: advection-upwind
 ---
 TODO, small sketch of 1D advection
 ```

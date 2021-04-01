@@ -6,12 +6,12 @@ yield approximate solutions with a fairly simple training process, but what's
 quite sad to see here is that we only use physical models and numerics
 as an "external" tool to produce a big pile of data 😢.
 
-```{figure} resources/placeholder.png
+```{figure} resources/physloss-overview.jpg
 ---
 height: 220px
-name: pinn-training
+name: physloss-overview
 ---
-TODO, visual overview of PINN training
+Physical losses typically combine a supervised loss with a combination of derivatives from the neural network.
 ```
 
 ## Using Physical Models
