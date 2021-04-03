@@ -84,8 +84,8 @@ See also... Test link: {doc}`supervised`
 
 ## TODOs , include
 
-- PINNs: often need weighting of added loss terms for different parts
 - DP intro, check transpose of Jacobians in equations
+- DP SoL, generate result
 - DP control, show targets at bottom?
 - finish pictures...
 - include latent space physics, mention LSTM, end of supervised?

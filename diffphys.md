@@ -251,13 +251,6 @@ velocities.
 
 %...to obtain an explicit update of the form $d(t+\Delta t) = A d(t)$, where the matrix $A$ represents the discretized advection step of size $\Delta t$ for $\mathbf{u}$. ... we'll get a matrix that essentially encodes linear interpolation coefficients for positions $\mathbf{x} + \Delta t \mathbf{u}$. For a grid of size $d_x \times d_y$ we'd have a 
 
-```{figure} resources/placeholder.png
----
-height: 100px
-name: advection-upwind
----
-TODO, small sketch of 1D advection
-```
 
 E.g., for a simple [first order upwinding scheme](https://en.wikipedia.org/wiki/Upwind_scheme) 
 on a Cartesian grid in 1D, with marker density and velocity $d_i$ and $u_i$ for cell $i$
@@ -270,7 +263,15 @@ $$ \begin{aligned}
     & u_i^- = \text{min}(u_i \Delta t / \Delta x,0)
 \end{aligned} $$
 
-E.g., for a positive $u_i$ we have 
+```{figure} resources/diffphys-advect1d.jpg
+---
+height: 150px
+name: advection-upwind
+---
+1st-order upwinding uses a simple one-sided finite-difference stencil that takes into account the direction of the motion
+```
+
+Thus, for a positive $u_i$ we have 
 $d_i^{~t+\Delta t} = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}$
 and hence 
 $\partial \mathcal P / \partial u_i$ from cell $i$ would be $1 + \frac{u_i \Delta t }{ \Delta x}$.
