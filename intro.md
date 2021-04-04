@@ -60,6 +60,7 @@ The contents of the following files would not have been possible without the hel
 
 - [Li-wei Chen](https://ge.in.tum.de/about/dr-liwei-chen/)
 - [Philipp Holl](https://ge.in.tum.de/about/)
+- [Maximilian Mueller](https://www.tum.de)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
@@ -87,7 +88,6 @@ See also... Test link: {doc}`supervised`
 - DP intro, check transpose of Jacobians in equations
 - DP SoL, generate result
 - DP control, show targets at bottom?
-- finish pictures...
 - include latent space physics, mention LSTM, end of supervised?
 
 
@@ -129,10 +129,4 @@ time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020l
 [unstruct / lagrangian] {cite}`prantl2019tranquil,ummenhofer2019contconv`
     include ContConv / Lukas
 
-
----
-
-_Misc jupyter book TODOs_
-
-- Fix latex PDF output
 
