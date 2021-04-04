@@ -7,6 +7,8 @@ echo
 cd /Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
 /Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
 
+# fix up latex 
+
 cd /Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/_build/latex
 export JPYFILENAME=book.tex
 rm ${JPYFILENAME}-in.bak
@@ -22,16 +24,19 @@ sed -i '' -e 's/sphinxpxdimen]{{/sphinxpxdimen]{/g' ${JPYFILENAME}
 
 # dirty fix for chapters
 # sed -i '' -e 's///g' ${JPYFILENAME}
-sed -i '' -e 's/\chapter{/\chaXter{/g' ${JPYFILENAME}
-sed -i '' -e 's/\section{/\chapter{/g' ${JPYFILENAME}
-sed -i '' -e 's/\chaXter{/\subsection{/g' ${JPYFILENAME}
+sed -i '' -e 's/\\chapter{/\\chaXter{/g' ${JPYFILENAME}
+sed -i '' -e 's/\\section{/\\chapter{/g' ${JPYFILENAME}
+sed -i '' -e 's/\\chaXter{/\\subsection{/g' ${JPYFILENAME}
 
+# include mathrsfs package for mathscr font
 # ugly, -i doesnt work here:
 sed '28i\
 \\usepackage{mathrsfs}  ' ${JPYFILENAME} > tmp-latex
 echo renaming: tmp-latex ${JPYFILENAME}; ls -l  tmp-latex ${JPYFILENAME} 
 rm ${JPYFILENAME}
 mv tmp-latex ${JPYFILENAME}
+
+# finally done
 
 echo running LATEX
 pdflatex book
