@@ -20,6 +20,14 @@ sed -i '' -e 's/}.jpg}/.jpg}/g' ${JPYFILENAME}
 sed -i '' -e 's/}.jpeg}/.jpeg}/g' ${JPYFILENAME}
 sed -i '' -e 's/sphinxpxdimen]{{/sphinxpxdimen]{/g' ${JPYFILENAME}
 
+# fix chapters
+# sed -i '' -e 's///g' ${JPYFILENAME}
+# sed -i '' -e 's///g' ${JPYFILENAME}
+# sed -i '' -e 's///g' ${JPYFILENAME}
+sed -i '' -e 's/\chapter{/\chaXter{/g' ${JPYFILENAME}
+sed -i '' -e 's/\section{/\chapter{/g' ${JPYFILENAME}
+sed -i '' -e 's/\chaXter{/\subsection{/g' ${JPYFILENAME}
+
 # ugly, -i doesnt work here:
 sed '28i\
 \\usepackage{mathrsfs}  ' ${JPYFILENAME} > tmp-latex

@@ -40,23 +40,27 @@
 - part: Physical Gradients
   chapters:
   - file: physgrad.md
-    sections:
-      - file: physgrad-comparison.ipynb
-      - file: physgrad-nn.md
-      - file: physgrad-discuss.md
+  - file: physgrad-comparison.ipynb
+  - file: physgrad-nn.md
+  - file: physgrad-discuss.md
+
+- part: PBDL and Uncertainty 
+  chapters:
+  - file: bayesian-intro.md
+  - file: bayesian-code.md
   
 - part: End Matter
   chapters:
   - file: outlook.md
-  - file: old-phiflow1.md
-    sections:
-      - file: overview-burgers-forw-v1.ipynb
-      - file: overview-ns-forw-v1.ipynb
-      - file: physicalloss-code-v2.ipynb
-      - file: diffphys-code-gradient-v1.ipynb
-      - file: diffphys-code-tf.ipynb
-      - file: diffphys-code-ns-v1.ipynb
-      - file: diffphys-code-ns-v2a.ipynb
+ #  - file: old-phiflow1.md
+ #    sections:
+ #      - file: overview-burgers-forw-v1.ipynb
+ #      - file: overview-ns-forw-v1.ipynb
+ #      - file: physicalloss-code-v2.ipynb
+ #      - file: diffphys-code-gradient-v1.ipynb
+ #      - file: diffphys-code-tf.ipynb
+ #      - file: diffphys-code-ns-v1.ipynb
+ #      - file: diffphys-code-ns-v2a.ipynb
   - file: references.md
   - file: notation.md
   
