@@ -65,11 +65,8 @@ The contents of the following files would not have been possible without the hel
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
-<!-- % some markdown tests follow ...
-
----
-
-a b c
+<!-- 
+% some markdown tests follow ...
 
 ```{admonition} My title2
 :class: seealso
@@ -85,11 +82,16 @@ See also... Test link: {doc}`supervised`
 
 ## TODOs , include
 
-- DP intro, check transpose of Jacobians in equations
 - DP SoL, generate result
 - DP control, show targets at bottom?
-- include latent space physics, mention LSTM, end of supervised?
+- update teaser image
+- DP intro, check transpose of Jacobians in equations
+- outlook: include latent space physics & LSTMs, also ContConv benjamin (see below)
 
+
+<!--
+temporary notes, remove:
+-->
 
 ## Other planned content
 
@@ -122,9 +124,6 @@ TODO, for version 2.x add:
 
 time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020lsssubdiv`
     include DeepFluids variant?
-
-[BAYES , prob?]
-    include results Jakob / Maximilian
 
 [unstruct / lagrangian] {cite}`prantl2019tranquil,ummenhofer2019contconv`
     include ContConv / Lukas
