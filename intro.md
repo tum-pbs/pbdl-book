@@ -82,10 +82,10 @@ See also... Test link: {doc}`supervised`
 
 ## TODOs , include
 
-- DP SoL, generate result
 - DP control, show targets at bottom?
 - update teaser image
 - DP intro, check transpose of Jacobians in equations
+- fix phiflow2 , diffphys-code-ns.ipynb
 - outlook: include latent space physics & LSTMs, also ContConv benjamin (see below)
 
 
