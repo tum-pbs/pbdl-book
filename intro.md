@@ -6,8 +6,9 @@ Welcome to the _Physics-based Deep Learning Book_ 👋
 **TL;DR**: 
 This document targets a variety of combinations of physical simulations with deep learning.
 As much as possible, the algorithms will come with hands-on code examples to quickly get started.
-Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, and 
-more tightly coupled learning algorithms with _differentiable simulations_.
+Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
+more tightly coupled learning algorithms with _differentiable simulations_, as well as extensions such
+as reinforcement learning and uncertainty modeling.
 
 
 ```{figure} resources/teaser.jpg
@@ -17,8 +18,6 @@ name: pbdl-teaser
 ---
 Some visual examples of numerically simulated time sequences. In this book, we aim for algorithms that use neural networks alongside numerical solvers.
 ```
-% Teaser, simple version:
-% ![Teaser, simple version](resources/teaser.jpg)
 
 ## Coming up
 
@@ -32,8 +31,8 @@ As a _sneak preview_, in the next chapters will show:
 
 This _book_, where "book" stands for a collection of texts, equations, images and code examples,
 is maintained by the
-[TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us via
-[old fashioned email](mailto:i15ge@cs.tum.edu) if you have any comments. 
+[TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us 
+if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).
 If you find mistakes, please also let us know! We're aware that this document is far from perfect,
 and we're eager to improve it. Thanks in advance!
 
@@ -51,7 +50,7 @@ Oh, and it's great because it's [literate programming](https://en.wikipedia.org/
 ```
 
 
----
+![Divider](resources/divider3.jpg)
 
 
 ## Thanks!

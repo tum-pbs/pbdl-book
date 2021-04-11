@@ -9,6 +9,8 @@ by these solutions, and the trained network can give us predictions
 very quickly. There are a few important points to keep in mind when 
 using supervised training.
 
+![Divider](resources/divider1.jpg)
+
 ## Some things to keep in mind...
 
 ### Natural starting point
@@ -92,7 +94,7 @@ E.g., you'll notice that CNNs typically don't need dropout, as they're nicely
 regularized by construction. For MLPs, you typically need quite a bit to
 avoid overfitting.
 
----
+![Divider](resources/divider2.jpg)
 
 ## Supervised Training in a nutshell
 

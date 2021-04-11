@@ -14,6 +14,8 @@ by, e.g., training longer with a simpler approach. So, if we plan to evaluate th
 models often (e.g., ship them in an application), this increased one-time cost
 can pay off in the long run.
 
+![Divider](resources/divider1.jpg)
+
 ## Summary
 
 ✅ Pro: 

@@ -8,6 +8,8 @@ achieved via DP approaches it is nonetheless a good time to discuss some
 additional properties, and summarize the pros and cons.
 
 
+![Divider](resources/divider4.jpg)
+
 ## Time Steps and Iterations
 
 When using DP approaches for learning application, there is a large amount of flexibility
@@ -72,6 +74,8 @@ the actual evolutions of simulations. Hence, this noise can be a good starting p
 for training that tends to overfit, but if possible, it is preferable to incorporate the
 actual solver in the training loop via a DP approach.
 
+
+![Divider](resources/divider5.jpg)
 
 ## Summary
 

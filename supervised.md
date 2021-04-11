@@ -2,11 +2,11 @@ Supervised Training
 =======================
 
 _Supervised_ here essentially means: "doing things the old fashioned way". Old fashioned in the context of 
-deep learning (DL), of course, so it's still fairly new. Also, "old fashioned" of course also doesn't 
-always mean bad - it's just that we'll be able to do better than simple supervised training later on. 
+deep learning (DL), of course, so it's still fairly new. Also, "old fashioned" doesn't 
+always mean bad - it's just that later on we'll be able to do better than with a simple supervised training.
 
 In a way, the viewpoint of "supervised training" is a starting point for all projects one would encounter in the context of DL, and
-hence is worth studying. And although it typically yields inferior results to approaches that more tightly 
+hence is worth studying. While it typically yields inferior results to approaches that more tightly 
 couple with physics, it nonetheless can be the only choice in certain application scenarios where no good
 model equations exist.
 

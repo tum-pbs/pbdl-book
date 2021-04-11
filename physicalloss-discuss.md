@@ -42,6 +42,8 @@ there is also little hope that it will yield different solutions, or perform wel
 of the training distribution. If we're interested in a different solution, we most likely 
 have to start training the NN from scratch.
 
+![Divider](resources/divider5.jpg)
+
 ## Summary
 
 Thus, the physical soft constraints allow us to encode solutions to 
