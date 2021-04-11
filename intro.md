@@ -1,7 +1,7 @@
 Welcome ... 
 ============================
 
-Welcome to the Physics-based Deep Learning Book 👋
+Welcome to the _Physics-based Deep Learning Book_ 👋
 
 **TL;DR**: 
 This document targets a variety of combinations of physical simulations with deep learning.
@@ -10,25 +10,25 @@ Beyond standard _supervised_ learning from data, we'll look at _physical loss_ c
 more tightly coupled learning algorithms with _differentiable simulations_.
 
 
-```{figure} resources/teaser.png
+```{figure} resources/teaser.jpg
 ---
 height: 220px
 name: pbdl-teaser
 ---
-Some visual examples of hybrid solvers, i.e. numerical simulators that are enhanced by trained neural networks.
+Some visual examples of numerically simulated time sequences. In this book, we aim for algorithms that use neural networks alongside numerical solvers.
 ```
 % Teaser, simple version:
-% ![Teaser, simple version](resources/teaser.png)
+% ![Teaser, simple version](resources/teaser.jpg)
 
 ## Coming up
 
-As a _sneak preview_, in the next chapters we'll show:
+As a _sneak preview_, in the next chapters will show:
 
 - How to train networks to infer fluid flows around shapes like airfoils in one go, i.e., a _surrogate model_ that replaces a traditional numerical simulation.
 
-- We'll show how to use model equations as residual to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
+- How to use model equations as residuals to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
 
-- How to more tightly interact with a full simulator for _control problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
+- How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
 
 This _book_, where "book" stands for a collection of texts, equations, images and code examples,
 is maintained by the
@@ -44,7 +44,7 @@ We also maintain a [link collection](https://github.com/thunil/Physics-Based-Dee
 ```{admonition} Executable code, right here, right now
 :class: tip
 We focus on jupyter notebooks, a key advantage of which is that all code examples
-can be executed _on the spot_, out of a browser. You can modify things and 
+can be executed _on the spot_, with your browser. You can modify things and 
 immediately see what happens -- give it a try...
 <br><br>
 Oh, and it's great because it's [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
@@ -58,7 +58,6 @@ Oh, and it's great because it's [literate programming](https://en.wikipedia.org/
 
 The contents of the following files would not have been possible without the help of many people. Here's an alphabetical list. Big kudos to everyone 🙏
 
-- [Li-wei Chen](https://ge.in.tum.de/about/dr-liwei-chen/)
 - [Philipp Holl](https://ge.in.tum.de/about/)
 - [Maximilian Mueller](https://www.tum.de)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
@@ -82,7 +81,6 @@ See also... Test link: {doc}`supervised`
 
 ## TODOs , include
 
-- DP control, show targets at bottom?
 - update teaser image
 - DP intro, check transpose of Jacobians in equations
 - fix phiflow2 , diffphys-code-ns.ipynb
