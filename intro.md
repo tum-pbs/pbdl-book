@@ -56,74 +56,13 @@ Oh, and it's great because it's [literate programming](https://en.wikipedia.org/
 
 ## Thanks!
 
-The contents of the following files would not have been possible without the help of many people. Here's an alphabetical list. Big kudos to everyone 🙏
+This project would not have been possible without the help of many people who contributed. Thanks to everyone 🙏 Here's an alphabetical list:
 
 - [Philipp Holl](https://ge.in.tum.de/about/)
-- [Maximilian Mueller](https://www.tum.de)
+- [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
+- [Maximilian Mueller](https://ge.in.tum.de/about/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
-
-<!-- 
-% some markdown tests follow ...
-
-```{admonition} My title2
-:class: seealso
-See also... Test link: {doc}`supervised`
-```
-
-✅  Do this , ❌  Don't do this
-
-% ---------------- -->
-
----
-
-
-## TODOs , include
-
-- update teaser image
-- DP intro, check transpose of Jacobians in equations
-- fix phiflow2 , diffphys-code-ns.ipynb
-- outlook: include latent space physics & LSTMs, also ContConv benjamin (see below)
-
-
-<!--
-temporary notes, remove:
--->
-
-## Other planned content
-
-Supervised simple starting point
-
-- add surrogates for shape opt?
-
-Physical losses 
-
--    PINNs -> are unsupervised a la tompson; all DL NNs are "supervised" during learning, unsup just means not precomputed and goes through function
-
--    discuss CG solver, tompson as basic ''unsupervisedd'' example?
-
-Diff phys, start with overview of idea: gradients via autodiff, then run GD
-
--    illustrate and discuss gradients -> mult. for chain rule; (later: more general PG chain w func composition)
-
-beyond GD: re-cap newton & co
-
-Phys grad (PGs) as fundamental improvement, PNAS case; add more complex one?
-        PG update of poisson eq? see PNAS-template-main.tex.bak01-poissonUpdate , explicitly lists GD and PG updates
-
-- PGa 2020 Sept, content: ML & opt
-    Gradients.pdf, -> overleaf-physgrad/ 
-
-- PGb 201002-beforeVac, content: v1,v2,old - more PG focused
-    -> general intro versions
-
-TODO, for version 2.x add: 
-
-time series, sequence prediction?] {cite}`wiewel2019lss,bkim2019deep,wiewel2020lsssubdiv`
-    include DeepFluids variant?
-
-[unstruct / lagrangian] {cite}`prantl2019tranquil,ummenhofer2019contconv`
-    include ContConv / Lukas
 
 
