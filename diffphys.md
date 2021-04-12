@@ -27,7 +27,7 @@ Training with differentiable physics mean that one or more differentiable operat
 provide directions to steer the learning process.
 ```
 
-## Differentiable Operators
+## Differentiable operators
 
 With the DP direction we build on existing numerical solvers. I.e., 
 the approach is strongly relying on the algorithms developed in the larger field 
@@ -123,7 +123,7 @@ one by one.
 For the details of forward and reverse mode differentiation, please check out external materials such 
 as this [nice survey by Baydin et al.](https://arxiv.org/pdf/1502.05767.pdf).
 
-## Learning via DP Operators 
+## Learning via DP operators 
 
 Thus, once the operators of our simulator support computations of the Jacobian-vector 
 products, we can integrate them into DL pipelines just like you would include a regular fully-connected layer
@@ -331,7 +331,7 @@ and backpropagate through these steps. In line with other DP approaches, this en
 
 ---
 
-## Summary of Differentiable Physics so far
+## Summary of differentiable physics so far
 
 To summarize, using differentiable physical simulations 
 gives us a tool to include physical equations with a chosen discretization into DL learning.

@@ -67,7 +67,7 @@ at extrapolation. So we can't expect an NN to magically work with new inputs.
 Rather, we need to make sure that we can properly shape the input space,
 e.g., by normalization and by focusing on invariants. In short, if you always train
 your networks for inputs in the range $[0\dots1]$, don't expect it to work
-with inputs of $[10\dots11]$. You might be able to subtract an offset of $10$ beforehand,
+with inputs of $[27\dots39]$. You might be able to subtract an offset of $10$ beforehand,
 and re-apply it after evaluating the network.
 As a rule of thumb: always make sure you
 actually train the NN on the kinds of input you want to use at inference time.
@@ -96,7 +96,7 @@ avoid overfitting.
 
 ![Divider](resources/divider2.jpg)
 
-## Supervised Training in a nutshell
+## Supervised training in a nutshell
 
 To summarize, supervised training has the following properties.
 

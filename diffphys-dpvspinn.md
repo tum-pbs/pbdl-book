@@ -3,7 +3,10 @@ Diff. Physics versus Phys.-informed Training
 
 In the previous sections we've seen example reconstructions that used physical residuals as soft constraints, in the form of the PINNs, and reconstructions that used a differentiable physics (DP) solver. While both methods can find minimizers for the same minimization problem, the solutions the obtained differ substantially, as do the behavior of the non-linear optimization problem that we get from each formulation. In the following we discuss these differences in more detail, and we will combine conclusions drawn from the behavior of the Burgers case of the previous sections with observations from research papers.
 
-## Compatibility with Existing Numerical Methods
+![Divider](resources/divider3.jpg)
+
+
+## Compatibility with existing numerical methods
 
 It is very obvious that the PINN implementation is quite simple, which is a positive aspect, but at the same time it differs strongly from "typical" discretizations and solution approaches that are usually to employed equations like Burgers equation. The derivatives are computed via the neural network, and hence rely on a fairly accurate representation of the solution to provide a good direction for optimization problems.
 
@@ -30,6 +33,10 @@ For the PINN representation with fully-connected networks on the other hand, we 
 That being said, because the DP approaches can cover much larger solution manifolds, the structure of these manifolds is typically also difficult to learn. E.g., when training a network with a larger number of iterations (i.e. a long look-ahead into the future), this typically represents a signal that is more difficult to learn than a short look ahead. 
 
 As a consequence, these training runs not only take more computational resources per NN iteration, the also need longer to converge. Regarding resources, each computation of the look-ahead potentially requires a large number of simulation steps, and typically a similar amount of resources for the backprop step. Regarding convergence, the complexer signal that should be learned can take more training iterations or even require larger NN structures. 
+
+
+![Divider](resources/divider2.jpg)
+
 
 ## Summary
 

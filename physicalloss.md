@@ -14,7 +14,7 @@ name: physloss-overview
 Physical losses typically combine a supervised loss with a combination of derivatives from the neural network.
 ```
 
-## Using Physical Models
+## Using physical models
 
 We can improve this setting by trying to bring the model equations (or parts thereof)
 into the training process. E.g., given a PDE for $\mathbf{u}(\mathbf{x},t)$ with a time evolution, 

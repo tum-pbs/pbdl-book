@@ -140,11 +140,11 @@ different approaches. In particular, it's important to know in which scenarios
 each of the different techniques is particularly useful.
 
 
-## More Specifically
+## More specifically
 
-To be a bit more specific, _physics_ is a huge field, and we can't cover everything... 
+_Physics_ is a huge field, and we can't cover everything here... 
 
-```{note} The focus of this book lies on...
+```{note} The focus of this book lies on:
 - _Field-based simulations_ (no Lagrangian methods)
 - Combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
 - Experiments as _outlook_ (replace synthetic data with real-world observations)

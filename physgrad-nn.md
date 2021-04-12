@@ -6,7 +6,7 @@ The discussion in the previous two sections already hints at physical gradients 
 By default, PGs would be restricted to functions with square Jacobians. Hence we wouldn't be able to directly use them in optimizations or learning problems, which typically have scalar objective functions.
 In this section, we will first show how PGs can be integrated into the optimization pipeline to optimize scalar objectives.
 
-## Physical Gradients and Loss Functions
+## Physical Gradients and loss functions
 
 As before, we consider a scalar objective function $L(z)$ that depends on the result of an invertible simulator $z = \mathcal P(x)$. In {doc}`physgrad` we've outlined the inverse gradient (IG) update $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$, where $\Delta L$ denotes a step to take in terms of the loss. 
 
@@ -40,7 +40,7 @@ Using equation {eq}`quasi-newton-update`, we get $\Delta z = \eta \cdot (z^\text
 Once $\Delta z$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and PGs for the PDE in {doc}`physgrad-comparison`.
 
 
-## NN Training 
+## NN training 
 
 The previous step gives us an update for the input of the discretized PDE $\mathcal P^{-1}(x)$, i.e. a $\Delta x$. If $x$ was an output of an NN, we can then use established DL algorithms to backpropagate the desired change to the weights of the network.
 We have a large collection of powerful methodologies for training neural networks at our disposal, 
@@ -82,7 +82,7 @@ $$
 where $\mathcal P_{(x,z)}^{-1}(z + \Delta z)$ is treated as a constant.
 
 
-## Iterations and Time Dependence
+## Iterations and time dependence
 
 The above procedure describes the optimization of neural networks that make a single prediction.
 This is suitable for scenarios to reconstruct the state of a system at $t_0$ given the state at a $t_e > t_0$ or to estimate an optimal initial state to match certain conditions at $t_e$.
@@ -93,7 +93,7 @@ Such scenarios arise e.g. in control tasks, where a network induces small forces
 In these scenarios, the process above (Newton step for loss, PG step for physics, GD for the NN) is iteratively repeated, e.g., over the course of different time steps, leading to a series of additive terms in $L$.
 This typically makes the learning task more difficult, as we repeatedly backpropagate through the iterations of the physical solver and the NN, but the PG learning algorithm above extends to these case just like a regular GD training.
 
-## Time Reversal
+## Time reversal
 
 The inverse function of a simulator is typically the time-reversed physical process.
 In some cases, simply inverting the time axis of the forward simulator, $t \rightarrow -t$, can yield an adequate global inverse simulator.
@@ -103,7 +103,7 @@ Unless the simulator destroys information in practice, e.g., due to accumulated 
 
 ---
 
-## A Learning Toolbox
+## A learning toolbox
 
 Taking a step back, what we have here is a flexible "toolbox" for propagating update steps
 through different parts of a system to be optimized. An important takeaway message is that

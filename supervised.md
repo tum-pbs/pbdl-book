@@ -10,7 +10,7 @@ hence is worth studying. While it typically yields inferior results to approache
 couple with physics, it nonetheless can be the only choice in certain application scenarios where no good
 model equations exist.
 
-## Problem Setting
+## Problem setting
 
 For supervised training, we're faced with an 
 unknown function $f^*(x)=y^*$, collect lots of pairs of data $[x_0,y^*_0], ...[x_n,y^*_n]$ (the training data set)

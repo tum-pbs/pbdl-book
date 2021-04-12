@@ -4,9 +4,11 @@ Models and Equations
 Below we'll give a very (really _very_!) brief intro to deep learning, primarily to introduce the notation.
 In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
 
-## Deep Learning and Neural Networks
+## Deep learning and neural networks
 
-There are lots of great introductions to deep learning - hence, we'll keep it short:
+In this book we focus on the connection with physical
+models, and there are lots of great introductions to deep learning. 
+Hence, we'll keep it short: 
 our goal is to approximate an unknown function
 
 $f^*(x) = y^*$ , 
@@ -56,7 +58,7 @@ maximum likelihood estimation
 Also interesting: from a math standpoint ''just'' non-linear optimization ...
 -->
 
-## Partial Differential Equations as Physical Models
+## Partial differential equations as physical models
 
 The following section will give a brief outlook for the model equations
 we'll be using later on in the DL examples.
