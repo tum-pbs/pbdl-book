@@ -1,4 +1,4 @@
-Diff. Physics versus Phys.-informed Training
+Differentiable Physics versus Physics-informed Training
 =======================
 
 In the previous sections we've seen example reconstructions that used physical residuals as soft constraints, in the form of the PINNs, and reconstructions that used a differentiable physics (DP) solver. While both methods can find minimizers for the same minimization problem, the solutions the obtained differ substantially, as do the behavior of the non-linear optimization problem that we get from each formulation. In the following we discuss these differences in more detail, and we will combine conclusions drawn from the behavior of the Burgers case of the previous sections with observations from research papers.

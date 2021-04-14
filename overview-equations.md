@@ -139,7 +139,9 @@ with actual simulations and implementation examples on the next page.
 
 ---
 
-## Some PDEs that we'll use later on
+## Some example PDEs 
+
+The following PDEs are good examples, and we'll use them later on in different settings to show how to incorporate them into DL approaches.
 
 ### Burgers
 
@@ -167,7 +169,7 @@ $\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ .
 
 ### Navier-Stokes
 
-An interesting next step in terms of complexity is given by the
+A good next step in terms of complexity is given by the
 Navier-Stokes equations, which are a well-established model for fluids.
 In addition to an equation for the conservation of momentum (similar to Burgers),
 they include an equation for the conservation of mass. This prevents the 
@@ -205,7 +207,7 @@ $\begin{aligned}
 
 where $\xi$ denotes the strength of the buoyancy force.
 
-And finally, we'll also consider 3D cases with the Navier-Stokes model, i.e.:
+And finally, the Navier-Stokes model in 3D give the following set of equations:
 
 $
 \begin{aligned}
@@ -219,6 +221,6 @@ $
 \end{aligned}
 $
 
-### More to come...
+## Forward Simulations
 
-In the future, we'll include some other model equations as well. Stay tuned...
+Before we really start with learning methods, it's important to cover the most basic variant of using the above model equations: a regular "forward" simulation, that starts from a set of initial conditions, and evolves the state of the system over time with a discretized version of the model equation. We'll show how to run such forward simulations for Burgers' equation in 1D and for a 2D Navier-Stokes simulation.

@@ -19,7 +19,7 @@ when it doesn't pick the right regions of the solution.
 ## Is it "Machine Learning"?
 
 One question that might also come to mind at this point is: _can we really call it machine learning_?
-Of course, such denomination questions are mostly superficial - if an algorithm is useful, it doesn't matter
+Of course, such denomination questions are superficial - if an algorithm is useful, it doesn't matter
 what name it has. However, here the question helps to highlight some important properties
 that are typically associated with algorithms from fields like machine learning or optimization.
 

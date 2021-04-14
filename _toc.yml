@@ -49,6 +49,14 @@
   - file: bayesian-intro.md
   - file: bayesian-code.md
   
+- part: Fast Forward Topics
+  chapters:
+  - file: others-intro.md
+  - file: others-timeseries.md
+  - file: others-GANs.md
+  - file: others-lagrangian.md
+  - file: others-metrics.md
+  
 - part: End Matter
   chapters:
   - file: outlook.md

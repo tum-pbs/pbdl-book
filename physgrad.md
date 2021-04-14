@@ -1,9 +1,6 @@
 Physical Gradients
 =======================
 
-**TODO, finish training section below? integrate comment at bottom?**
-**relate to invertible NNs?**
-
 The next chapter will dive deeper into state-of-the-art-research, and aim for an even tighter
 integration of physics and learning.
 The approaches explained previously all integrate physical models into deep learning algorithms,
