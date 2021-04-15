@@ -37,6 +37,16 @@
   - file: diffphys-control.ipynb
   - file: diffphys-outlook.md
 
+- part: Reinforcement Learning
+  chapters:
+  - file: reinflearn-intro.md
+  - file: reinflearn-code.ipynb
+  
+- part: PBDL and Uncertainty 
+  chapters:
+  - file: bayesian-intro.md
+  - file: bayesian-code.ipynb
+  
 - part: Physical Gradients
   chapters:
   - file: physgrad.md
@@ -44,11 +54,6 @@
   - file: physgrad-nn.md
   - file: physgrad-discuss.md
 
-- part: PBDL and Uncertainty 
-  chapters:
-  - file: bayesian-intro.md
-  - file: bayesian-code.md
-  
 - part: Fast Forward Topics
   chapters:
   - file: others-intro.md

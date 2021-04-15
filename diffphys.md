@@ -62,7 +62,7 @@ given model parameter, with which the NN should not interact.
 Naturally, it can vary within the solution manifold that we're interested in, 
 but $\nu$ will not be the output of a NN representation. If this is the case, we can omit
 providing $\partial \mathcal P_i / \partial \nu$ in our solver. However, the following learning process
-natuarlly transfers to including $\nu$ as a degree of freedom.
+naturally transfers to including $\nu$ as a degree of freedom.
 
 ## Jacobians
 
@@ -152,7 +152,7 @@ we could leverage the $O(n)$ runtime of multigrid solvers for matrix inversion.
 The flipside of this approach is, that it requires some understanding of the problem at hand, 
 and of the numerical methods. Also, a given solver might not provide gradient calculations out of the box.
 Thus, we want to employ DL for model equations that we don't have a proper grasp of, it might not be a good
-idea to direclty go for learning via a DP approach. However, if we don't really understand our model, we probably
+idea to directly go for learning via a DP approach. However, if we don't really understand our model, we probably
 should go back to studying it a bit more anyway...
 
 Also, in practice we can be _greedy_ with the derivative operators, and only 
@@ -191,7 +191,7 @@ Note that to simplify things, we assume that $\mathbf{u}$ is only a function in 
 i.e. constant over time. We'll bring back the time evolution of $\mathbf{u}$ later on.
 %
 Let's denote this re-formulation as $\mathcal P$. It maps a state of $d(t)$ into a 
-new state at an evoled time, i.e.:
+new state at an evolved time, i.e.:
 
 $$
     d(t+\Delta t) = \mathcal P ( ~ d(t), \mathbf{u}, t+\Delta t) 
@@ -289,7 +289,7 @@ be preferable to actually constructing $A$.
 As a slightly more complex example let's consider Poisson's equation $\nabla^2 a = b$, where
 $a$ is the quantity of interest, and $b$ is given. 
 This is a very fundamental elliptic PDE that is important for 
-a variety of physical problems, from electrostatics to graviational fields. It also arises 
+a variety of physical problems, from electrostatics to gravitational fields. It also arises 
 in the context of fluids, where $a$ takes the role of a scalar pressure field in the fluid, and
 the right hand side $b$ is given by the divergence of the fluid velocity $\mathbf{u}$.
 

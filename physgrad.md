@@ -1,6 +1,8 @@
 Physical Gradients
 =======================
 
+**Note, this chapter is very preliminary - probably not for the first version of the book**
+
 The next chapter will dive deeper into state-of-the-art-research, and aim for an even tighter
 integration of physics and learning.
 The approaches explained previously all integrate physical models into deep learning algorithms,
