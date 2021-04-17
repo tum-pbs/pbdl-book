@@ -132,6 +132,18 @@ The resulting training will be significantly more expensive, as more weights nee
 and a much larger number of intermediate states needs to be processed. However, the increased 
 cost typically pays off with a reduced overall inference error.
 
+
+```{figure} resources/timeseries-lss-subdiv-prediction.jpg
+---
+height: 300px
+name: timeseries-lss-subdiv-prediction
+---
+Several time frames of an example prediction from {cite}`wiewel2020lsssubdiv`, which additionally couples the
+learned time evolution with an numerically solved advection step. 
+The learned prediction is shown at the top, the reference simulation at the bottom.
+```
+
+
 ## Source code
 
 In order to make practical experiments in this area of deep learning, we can 
