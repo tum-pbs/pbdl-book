@@ -2,7 +2,9 @@ Additional Topics
 =======================
 
 The next sections will give a shorter introduction to other topics that are highly 
-interesting in the context of physics-based deep learning.
+interesting in the context of physics-based deep learning. These topic (for now) do
+not come with executable notebooks, but we will still point to existing open source 
+implementations for each of them.
 
 ![Divider](resources/divider4.jpg)
 
