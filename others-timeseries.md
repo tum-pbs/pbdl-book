@@ -19,7 +19,7 @@ Below, we will describe an approach to solve this problem following Wiewel et al
 the encoder/decoder of Kim et al. {cite}`bkim2019deep`.
 
 
-```{figure} resources/timeseries-lsp-overview.jpg
+```{figure} resources/others-timeseries-lsp-overview.jpg
 ---
 height: 200px
 name: timeseries-lsp-overview
@@ -133,7 +133,7 @@ and a much larger number of intermediate states needs to be processed. However, 
 cost typically pays off with a reduced overall inference error.
 
 
-```{figure} resources/timeseries-lss-subdiv-prediction.jpg
+```{figure} resources/others-timeseries-lss-subdiv-prediction.jpg
 ---
 height: 300px
 name: timeseries-lss-subdiv-prediction
