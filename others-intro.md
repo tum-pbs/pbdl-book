@@ -10,11 +10,10 @@ implementations for each of them.
 
 More specifically, we will look at:
 
-* Time series predictions, i.e., using to DL predict the evolution of a physical system.	
+* Model reduction and time series predictions, i.e., using to DL predict the evolution of a physical system in a latent space.	
   This typically replaces a numerical solver, and we can make use of special techniques from the DL area that target time series.
 
 * Generative models are likewise an own topic in DL, and here especially generative adversarial networks were shown to be powerful tools. They also represent a highly interesting training approach involving to separate NNs.
-{cite}`xie2018tempoGan`
 
 * Meshless methods and unstructured meshes are an important topic for classical simulations. Here, we'll look at a specific Lagrangian method that employs learning in the context of dynamic, particle-based representations.
 {cite}`prantl2019tranquil`

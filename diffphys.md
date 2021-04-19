@@ -68,7 +68,7 @@ naturally transfers to including $\nu$ as a degree of freedom.
 
 As $\mathbf{u}$ is typically a vector-valued function, $\partial \mathcal P_i / \partial \mathbf{u}$ denotes
 a Jacobian matrix $J$ rather than a single value:
-% test
+% 
 $$ \begin{aligned}
     \frac{ \partial \mathcal P_i }{ \partial \mathbf{u} } = 
     \begin{bmatrix} 
@@ -83,6 +83,7 @@ $$ \begin{aligned}
     \partial \mathcal P_{i,d} / \partial u_{d} 
     \end{bmatrix} 
 \end{aligned} $$
+%
 where, as above, $d$ denotes the number of components in $\mathbf{u}$. As $\mathcal P$ maps one value of
 $\mathbf{u}$ to another, the jacobian is square and symmetric here. Of course this isn't necessarily the case
 for general model equations, but non-square Jacobian matrices would not cause any problems for differentiable 
@@ -139,12 +140,10 @@ state of the forward evaluation for backpropagation (the "$g(x)$" above). For a 
 simulation, however, we're not overly interested in every single intermediate result our solver produces.
 Typically, we're more concerned with significant updates such as the step from $\mathbf{u}(t)$ to  $\mathbf{u}(t+\Delta t)$.
 
-%provide discretized simulator of physical phenomenon as differentiable operator.
 Thus, in practice it is a very good idea to break down the solving process into a sequence
 of meaningful but _monolithic_ operators. This not only saves a lot of work by preventing the calculation
 of unnecessary intermediate results, it also allows us to choose the best possible numerical methods 
 to compute the updates (and derivatives) for these operators.
-%in practice break down into larger, monolithic components
 E.g., as this process is very similar to adjoint method optimizations, we can re-use many of the techniques
 that were developed in this field, or leverage established numerical methods. E.g., 
 we could leverage the $O(n)$ runtime of multigrid solvers for matrix inversion.

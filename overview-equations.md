@@ -11,7 +11,9 @@ models, and there are lots of great introductions to deep learning.
 Hence, we'll keep it short: 
 our goal is to approximate an unknown function
 
-$f^*(x) = y^*$ , 
+$$
+f^*(x) = y^* , 
+$$ (learn-base) 
 
 where $y^*$ denotes reference or "ground truth" solutions.
 $f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
@@ -20,7 +22,9 @@ of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
 
-$\text{arg min}_{\theta} | f(x;\theta) - y^* |_2^2$
+$$
+\text{arg min}_{\theta} | f(x;\theta) - y^* |_2^2
+$$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
 with some variant of a stochastic gradient descent (SGD) optimizer.
