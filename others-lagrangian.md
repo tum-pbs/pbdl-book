@@ -8,6 +8,7 @@ While the previous examples have focused on aspects beyond discretization
 (and used Cartesian grids as a placeholder), the following chapter will target 
 scenarios where learning with dynamically changing and adaptive discretization has a benefit.
 
+
 ## Types of computational meshes
 
 Generally speaking, we can distinguish three types of computational meshes (or "grids")
@@ -27,6 +28,13 @@ for using stable, established DL components (especially regular convolutional la
 However, for target functions that exhibit an uneven mix of smooth and complex
 regions, the other two mesh types can have advantages.
 
+```{figure} resources/others-lagrangian-cconv-dfsph.jpg
+---
+name: others-lagrangian-cconv-dfsph
+---
+Lagrangian simulations of liquids: the sampling points move with the material, and undergo large changes. In the
+top row timesteps of a learned simulation, in the bottom row the traditional SPH solver.
+```
 
 ## Unstructured meshes and graph neural networks
 
@@ -64,14 +72,6 @@ gives an indicator for how a method works.
 
 In the following, we will discuss an example targeting splashing liquids as a particularly challenging case. 
 For these simulations, the fluid material moves significantly and is often distributed very non-uniformly.
-
-```{figure} resources/others-lagrangian-environment.jpg
----
-name: others-lagrangian-environment
----
-An example of a particle-based liquid spreading in a landscape scenario, simulated with 
-learned approach using continuous convolutions {cite}`ummenhofer2019contconv`.
-```
 
 The general outline of a learned, particle-based simulation is similar to a 
 DL method working on a Cartesian grid: we store data such as the velocity
@@ -165,7 +165,8 @@ then supports optimization via gradient descent, e.g., w.r.t. input parameters s
 ---
 name: others-lagrangian-canyon
 ---
-Another example of the learned particle-based liquid solver with a more complex ground geometry.
+An example of a particle-based liquid spreading in a landscape scenario, simulated with 
+learned approach using continuous convolutions {cite}`ummenhofer2019contconv`.
 ```
 
 ## Source code

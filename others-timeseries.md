@@ -21,7 +21,6 @@ the encoder/decoder of Kim et al. {cite}`bkim2019deep`.
 
 ```{figure} resources/others-timeseries-lsp-overview.jpg
 ---
-height: 200px
 name: timeseries-lsp-overview
 ---
 For time series predictions with ROMs, we encode the state of our system with an encoder $f_e$, predict 
