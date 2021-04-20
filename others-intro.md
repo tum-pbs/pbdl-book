@@ -16,13 +16,7 @@ More specifically, we will look at:
 * Generative models are likewise an own topic in DL, and here especially generative adversarial networks were shown to be powerful tools. They also represent a highly interesting training approach involving to separate NNs.
 
 * Meshless methods and unstructured meshes are an important topic for classical simulations. Here, we'll look at a specific Lagrangian method that employs learning in the context of dynamic, particle-based representations.
-{cite}`prantl2019tranquil`
-{cite}`ummenhofer2019contconv`
-
-https://github.com/intel-isl/DeepLagrangianFluids
 
 * Finally, metrics to robustly assess the quality of similarity of measurements and results are a central topic for all numerical methods, no matter whether they employ learning or not. In the last section we will look at how DL can be used to learn specialized and improved metrics.
+	TODO {cite}`kohl2020lsim`
 
-{cite}`kohl2020lsim`
-
-{cite}`um2020sol`

@@ -10,6 +10,15 @@ and no differentiable physics model is available to disambiguate the data. In su
 a supervised learning would yield an undesirable averaging that can be prevented with
 a GAN approach.
 
+```{figure} resources/others-GANs-tempoGAN.jpg
+---
+name: others-GANs-tempoGAN
+---
+GANs were shown to work well for tasks such 
+as the inference of super-resolution solutions where the range of possible
+results can be highly ambiguous.
+```
+
 ## Maximum Likelihood Estimation
 
 To train a GAN we have to briefly turn to classification problems.
@@ -154,6 +163,17 @@ This is a highly challenging solution manifold, and requires an extended "cyclic
 that pushes the discriminator to take all the physical parameters under consideration into account.
 Interestingly, the generator learns to produce realistic and accurate solutions despite 
 being trained purely on data, i.e. without explicit help in the form of a differentiable physics solver setup.
+
+```{figure} resources/others-GANs-meaningful-fig11.jpg
+---
+name: others-GANs-meaningful-fig11
+---
+A range of example outputs of a physically-parametrized GAN {cite}`chu2021physgan`. 
+The network can successfully extrapolate to buoyancy settings beyond the
+range of values seen at training time.
+```
+
+
 
 ---
 
