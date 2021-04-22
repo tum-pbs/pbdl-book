@@ -4,12 +4,20 @@ echo
 echo Note: manually quit first latex pass with shift-x 
 echo
 
-cd /Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
+DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
+cd ${DIR}
+
+#echo Note: make sure to copy latex helpers! cp ./latex-helpers/* ./_build/latex/
+mkdir _build
+mkdir _build/latex
+cp ./latex-helpers/* ./_build/latex/
+
+# first preliminary build to generate .tex file
 /Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
 
 # fix up latex 
 
-cd /Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/_build/latex
+cd ${DIR}/_build/latex
 export JPYFILENAME=book.tex
 rm ${JPYFILENAME}-in.bak
 mv ${JPYFILENAME} ${JPYFILENAME}-in.bak
