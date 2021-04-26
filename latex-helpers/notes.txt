@@ -1,0 +1,5 @@
+needed for:
+jupyter-book build . --builder pdflatex
+
+copy into _build/latex
+
