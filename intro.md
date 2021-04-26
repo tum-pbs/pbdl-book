@@ -59,8 +59,9 @@ This project would not have been possible without the help of many people who co
 
 - [Philipp Holl](https://ge.in.tum.de/about/)
 - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
-- [Maximilian Mueller](https://ge.in.tum.de/about/)
+- [Maximilian Mueller](https://ge.in.tum.de/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
+- [Felix Trost](https://ge.in.tum.de/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
