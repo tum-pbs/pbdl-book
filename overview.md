@@ -1,17 +1,13 @@
 Overview
 ============================
 
-The following collection of digital documents, i.e. "book", 
-targets _Physics-Based Deep Learning_ techniques.
-By that we mean combining physical modeling and numerical simulations with
+The name of this book, _Physics-Based Deep Learning_,
+denotes combiniations of physical modeling and numerical simulations with
 methods based on artificial neural networks. 
 The general direction of Physics-Based Deep Learning represents a very
-active, quickly growing and exciting field of research -- we want to provide 
-a starting point for new researchers as well as a hands-on introduction into
-state-of-the-art research topics. 
-
-
-
+active, quickly growing and exciting field of research, and the following chapter will
+give a more thorough introduction for the topic and establish the basics
+for following chapters.
 
 ```{figure} resources/overview-pano.jpg
 ---
@@ -19,11 +15,13 @@ height: 240px
 name: overview-pano
 ---
 Understanding our environment, and predicting how it will evolve is one of the key challenges of humankind.
+A key tool for achieving these goals are simulations, and the next generation of simulation algorithms
+will rely heavily on deep learning components to yield even more accurate predictions about our world.
 ```
 
 ## Motivation
 
-From weather and climate forecasts {cite}`stocker2014climate`,
+From weather and climate forecasts {cite}`stocker2014climate` (see the picture above),
 over quantum physics {cite}`o2016scalable`,
 to the control of plasma fusion {cite}`maingi2019fesreport`,
 using numerical analysis to obtain solutions for physical models has
@@ -47,7 +45,7 @@ it is crucial to bring together both worlds: _classical numerical techniques_
 and _deep learning_.
 
 One central reason for the importance of this combination is
-that DL approaches are simply not powerful enough by themselves.
+that DL approaches are simply not yet powerful enough by themselves.
 Given the current state of the art, the clear breakthroughs of DL
 in physical applications are outstanding. 
 The proposed techniques are novel, sometimes difficult to apply, and
@@ -62,12 +60,12 @@ as the Navier-Stokes, Maxwell’s, or Schroedinger’s equations.
 Seemingly trivial changes to the discretization can determine
 whether key phenomena are visible in the solutions or not.
 Rather than discarding the powerful methods that have been
-carefully developed in the field of numerical mathematics, it 
+developed in the field of numerical mathematics, it 
 is highly beneficial for DL to use them as much as possible.
 
 ```{admonition} Goals of this document
 :class: tip
-Thus, the key aspects that we want to address in the following are:
+The key aspects that we want to address in the following are:
 - explain how to use deep learning techniques,
 - how to combine them with **existing knowledge** of physics,
 - without **throwing away** our knowledge about numerical methods.
@@ -80,7 +78,7 @@ viewpoint and the physical simulation viewpoint.
 
 The resulting methods have a huge potential to improve
 what can be done with numerical methods: e.g., in scenarios
-where solves target cases from a certain well-defined problem
+where a solver targets cases from a certain well-defined problem
 domain repeatedly, it can make a lot of sense to once invest 
 significant resources to train
 an neural network that supports the repeated solves. Based on the
@@ -89,12 +87,17 @@ could vastly outperform traditional, generic solvers. And despite
 the many open questions, first publications have demonstrated
 that this goal is not overly far away. 
 
+Another way to look at it is that all mathematical models of our nature
+are idealized approximations and contain errors. A lot of effort has been
+made to obtain very good model equations, but in order to make the next 
+big step forward, DL methods offer a very powerful tool to close the
+remaining gap towards reality.
 
 ## Categorization
 
 Within the area of _physics-based deep learning_, 
 we can distinguish a variety of different 
-approaches, from targeting designs, constraints, combined methods, and
+approaches, from targeting constraints, combined methods, and
 optimizations to applications. More specifically, all approaches either target
 _forward_ simulations (predicting state or temporal evolution) or _inverse_
 problems (e.g., obtaining a parametrization for a physical system from
@@ -106,38 +109,32 @@ No matter whether we're considering forward or inverse problem,
 the most crucial differentiation for the following topics lies in the 
 nature of the integration  between DL techniques
 and the domain knowledge, typically in the form of model equations.
-Looking ahead, we will particularly aim for a very tight integration
-of the two, that goes beyond soft-constraints in loss functions.
 Taking a global perspective, the following three categories can be
 identified to categorize _physics-based deep learning_ (PBDL)
 techniques:
 
-- _Data-driven_: the data is produced by a physical system (real or simulated),
-  but no further interaction exists.
+- _Supervised_: the data is produced by a physical system (real or simulated),
+  but no further interaction exists. This is the classic machine learning approach.
 
 - _Loss-terms_: the physical dynamics (or parts thereof) are encoded in the
   loss function, typically in the form of differentiable operations. The
   learning process can repeatedly evaluate the loss, and usually receives
-  gradients from a PDE-based formulation.
+  gradients from a PDE-based formulation. These soft-constraints sometimes also go
+  under the name "physics-informed" training.
 
 - _Interleaved_: the full physical simulation is interleaved and combined with
   an output from a deep neural network; this requires a fully differentiable
   simulator and represents the tightest coupling between the physical system and
-  the learning process. Interleaved approaches are especially important for
+  the learning process. Interleaved differentiable physics approaches are especially important for
   temporal evolutions, where they can yield an estimate of future behavior of the
   dynamics.
 
 Thus, methods can be roughly categorized in terms of forward versus inverse
 solve, and how tightly the physical model is integrated into the
-optimization loop that trains the deep neural network. Here, especially approaches
+optimization loop that trains the deep neural network. Here, especially 
+the interleaved approaches
 that leverage _differentiable physics_ allow for very tight integration
 of deep learning and numerical simulation methods.
-
-The goal of this document is to introduce the different PBDL techniques,
-ordered in terms of growing tightness of the integration, give practical 
-starting points with code examples, and illustrate pros and cons of the 
-different approaches. In particular, it's important to know in which scenarios 
-each of the different techniques is particularly useful.
 
 
 ## More specifically
@@ -156,9 +153,9 @@ fundamental steps. Here are some considerations for skipping ahead to the later 
 ```{admonition} Hint: You can skip ahead if...
 :class: tip
 
-- you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The _Supervised Learning_ chapter is a good starting point then.
+- you're very familiar with numerical methods and PDE solvers, and want to get started with DL topics right away. The {doc}`supervised` chapter is a good starting point then.
 
-- On the other hand, if you're already deep into NNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the _Physical Loss Terms_ chapter, which lays the foundations for the next chapters.
+- On the other hand, if you're already deep into NNs&Co, and you'd like to skip ahead to the research related topics, we recommend starting in the {doc}`physicalloss` chapter, which lays the foundations for the next chapters.
 
 A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both cases, though!
 ```

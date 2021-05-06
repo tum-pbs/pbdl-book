@@ -10,6 +10,8 @@ As much as possible, the algorithms will come with hands-on code examples to qui
 Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
 more tightly coupled learning algorithms with _differentiable simulations_, as well as extensions such
 as reinforcement learning and uncertainty modeling.
+These methods have a huge potential to fundamentally change what we can achieve
+with simulations.
 
 
 ```{figure} resources/teaser.jpg
@@ -29,6 +31,14 @@ As a _sneak preview_, in the next chapters will show:
 - How to use model equations as residuals to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
 
 - How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
+
+The different PBDL techniques will be introduced ordered in terms of growing
+tightness of the integration, and  pros and cons of the different approaches
+will be discussed. It's important to know in which scenarios each of the
+different techniques is particularly useful.
+
+
+## Comments and suggestions
 
 This _book_, where "book" stands for a collection of texts, equations, images and code examples,
 is maintained by the
@@ -55,22 +65,24 @@ Plus, jupyter notebooks are great because they're a form of [literate programmin
 This project would not have been possible without the help of many people who contributed. Thanks to everyone 🙏 Here's an alphabetical list:
 
 - [Philipp Holl](https://ge.in.tum.de/about/)
-% - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
 - [Maximilian Mueller](https://ge.in.tum.de/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
 - [Felix Trost](https://ge.in.tum.de/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
+% - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
+
 ## Citation
 
-If you find this book useful, please cite via:
+If you find this book useful, please cite it via:
 ```
 @article{thuerey2021pbdl,
   title={Physics-based Deep Learning},
-  author={Thuerey, Nils and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
+  author={Nils Thuerey and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
   url={http://physicsbaseddeeplearning.org},
   year={2021},
   publisher={www}
 }
 ```
+
