@@ -108,7 +108,8 @@ observations).
 No matter whether we're considering forward or inverse problem, 
 the most crucial differentiation for the following topics lies in the 
 nature of the integration  between DL techniques
-and the domain knowledge, typically in the form of model equations.
+and the domain knowledge, typically in the form of model equations
+via partial differential equations (PDEs).
 Taking a global perspective, the following three categories can be
 identified to categorize _physics-based deep learning_ (PBDL)
 techniques:
@@ -164,7 +165,7 @@ A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both
 
 This text also represents an introduction to a wide range of deep learning and simulation APIs.
 We'll use popular deep learning APIs such as _pytorch_ [https://pytorch.org](https://pytorch.org) and _tensorflow_ [https://www.tensorflow.org](https://www.tensorflow.org), and additionally
-give introductions into the differentiable simulation framework _phiflow_ [https://github.com/tum-pbs/PhiFlow](https://github.com/tum-pbs/PhiFlow). Some examples also use _JAX_ [https://github.com/google/jax](https://github.com/google/jax). Thus after going through
+give introductions into the differentiable simulation framework _Φ<sub>Flow</sub> (phiflow)_ [https://github.com/tum-pbs/PhiFlow](https://github.com/tum-pbs/PhiFlow). Some examples also use _JAX_ [https://github.com/google/jax](https://github.com/google/jax). Thus after going through
 these examples, you should have a good overview of what's available in current APIs, such that
 the best one can be selected for new tasks.
 

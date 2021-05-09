@@ -1,15 +1,15 @@
 Models and Equations
 ============================
 
-Below we'll give a very (really _very_!) brief intro to deep learning, primarily to introduce the notation.
-In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote model equations for a physical effect, typically a PDE.
+Below we'll give a brief (really _very_ brief!) intro to deep learning, primarily to introduce the notation.
+In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote a set of model equations for a physical effect, typically PDEs.
 
 ## Deep learning and neural networks
 
 In this book we focus on the connection with physical
 models, and there are lots of great introductions to deep learning. 
 Hence, we'll keep it short: 
-our goal is to approximate an unknown function
+the goal in deep learning is to approximate an unknown function
 
 $$
 f^*(x) = y^* , 
@@ -17,7 +17,7 @@ $$ (learn-base)
 
 where $y^*$ denotes reference or "ground truth" solutions.
 $f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
-with the help of some formulation of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
+with the help of some variant of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
 of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
@@ -27,11 +27,11 @@ $$
 $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
-with some variant of a stochastic gradient descent (SGD) optimizer.
+with a stochastic gradient descent (SGD) optimizer of your choice, e.g., Adam {cite}`kingma2014adam`.
 We'll rely on auto-diff to compute the gradient w.r.t. weights, $\partial f / \partial \theta$,
 We will also assume that $e$ denotes a _scalar_ error function (also
-called cost, or objective function sometimes).
-This is crucial for the efficient calculation of gradients.
+called cost, or objective function).
+It is crucial for the efficient calculation of gradients that this function is scalar.
 
 <!-- general goal, minimize E for e(x,y) ... cf. eq. 8.1 from DLbook 
 introduce scalar loss, always(!) scalar...  (also called *cost* or *objective* function) -->
@@ -41,9 +41,10 @@ the **validation** set (from the same distribution, but different data),
 and **test** data sets with _some_ different distribution than the training one.
 The latter distinction is important! For the test set we want 
 _out of distribution_ (OOD) data to check how well our trained model generalizes.
-Note that this gives a huge range of difficulties: from tiny changes that will certainly work
-up to completely different inputs that are essentially guaranteed to fail. Hence,
-test data should be generated with care.
+Note that this gives a huge range of possibilities for the test data set: 
+from tiny changes that will certainly work,
+up to completely different inputs that are essentially guaranteed to fail. 
+There's no gold standard, but test data should be generated with care.
 
 Enough for now - if all the above wasn't totally obvious for you, we very strongly recommend to 
 read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
@@ -67,9 +68,13 @@ Also interesting: from a math standpoint ''just'' non-linear optimization ...
 The following section will give a brief outlook for the model equations
 we'll be using later on in the DL examples.
 We typically target continuous PDEs denoted by $\mathcal P^*$
-whole solutions is of interest in a spatial domain $\Omega$ in $d$ dimensions, i.e.
-for positions $\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$.
-In addition, wo often consider a time evolution for $t \in \mathbb{R}^{+}$.
+whose solution is of interest in a spatial domain $\Omega \subset \mathbb{R}^d$ in $d \in {1,2,3} $ dimensions.
+In addition, wo often consider a time evolution for a finite time interval $t \in \mathbb{R}^{+}$.
+The corresponding fields are either d-dimensional vector fields, e.g. $\mathbf{u}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}^d$, 
+or scalar $\mathbf{p}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}$.
+The components of a vector are typically denoted by $x,y,z$ subscripts, i.e.,
+$\mathbf{v} = (v_x, v_y, v_z)^T$ for $d=3$, while
+positions are denoted by $\mathbf{x} \in \Omega$.
 
 To obtain unique solutions for $\mathcal P^*$ we need to specify suitable
 initial conditions, typically for all quantities of interest at $t=0$,
@@ -91,7 +96,7 @@ Likewise, we typically have a temporal discretization via a time step $\Delta t$
 ```{admonition} Notation and abbreviations
 :class: seealso
 If unsure, please check the summary of our mathematical notation
-and the abbreviations used inn: {doc}`notation`, at the bottom of the left panel.
+and the abbreviations used inn: {doc}`notation`.
 ```
 
 % \newcommand{\pde}{\mathcal{P}}         % PDE ops
@@ -123,18 +128,10 @@ and the abbreviations used inn: {doc}`notation`, at the bottom of the left panel
 %This yields $\vc{} \in \mathbb{R}^{d \times d_{s,x} \times d_{s,y} \times d_{s,z} }$ and $\vr{} \in \mathbb{R}^{d \times d_{r,x} \times d_{r,y} \times d_{r,z} }$
 %Typically, $d_{r,i} > d_{s,i}$ and $d_{z}=1$ for $d=2$.
 
-We typically solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
-For a quantity of interest $\mathbf{u}$, e.g., representing a velocity field
-in $d$ dimensions via $\mathbf{u}(\mathbf{x},t): \mathbb{R}^d \rightarrow \mathbb{R}^d $.
-The components of the velocity vector are typically denoted by $x,y,z$ subscripts, i.e.,
-$\mathbf{u} = (u_x,u_y,u_z)^T$ for $d=3$.
-
+We solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
 The solution can be expressed as a function of $\mathbf{u}$ and its derivatives:
 $\mathbf{u}(\mathbf{x},t+\Delta t) = 
-\mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t-\Delta t)',\mathbf{u}(\mathbf{x},t-\Delta t)'',...)$, 
-where
-$\mathbf{x} \in \Omega \subseteq \mathbb{R}^d$ for the domain $\Omega$ in $d$
-dimensions, and $t \in \mathbb{R}^{+}$.
+\mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t)',\mathbf{u}(\mathbf{x},t)'',...)$.
 
 For all PDEs, we will assume non-dimensional parametrizations as outlined below,
 which could be re-scaled to real world quantities with suitable scaling factors.
@@ -151,25 +148,30 @@ The following PDEs are good examples, and we'll use them later on in different s
 
 We'll often consider Burgers' equation 
 in 1D or 2D as a starting point. 
-It represents a well-studied advection-diffusion PDE, which (unlike Navier-Stokes)
-does not include any additional constraints such as conservation of mass. Hence,
-it leads to interesting shock formations.
+It represents a well-studied PDE, which (unlike Navier-Stokes)
+does not include any additional constraints such as conservation of mass. 
+Hence, it leads to interesting shock formations.
+It contains an advection term (motion / transport) and a diffusion term (dissipation due to the second law of thermodynamics).
 In 2D, it is given by:
 
-$\begin{aligned}
+$$\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
-  \nu \nabla\cdot \nabla u_x + g_x(t), 
+  \nu \nabla\cdot \nabla u_x + g_x, 
   \\
   \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &=
-  \nu \nabla\cdot \nabla u_y + g_y(t)
-\end{aligned}$, 
+  \nu \nabla\cdot \nabla u_y + g_y \ ,
+\end{aligned}$$ (model-burgers2d)
 
 where $\nu$ and $\mathbf{g}$ denote diffusion constant and external forces, respectively.
 
-A simpler variants of Burgers' equation in 1D without forces, i.e. with $u_x = u$
+A simpler variant of Burgers' equation in 1D without forces, 
+denoting the single 1D velocity component as $u = u_x$,
 is given by:
 %\begin{eqnarray}
-$\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ .
+
+$$
+\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u \ . 
+$$ (model-burgers1d)
 
 ### Navier-Stokes
 
@@ -182,7 +184,7 @@ in the form of a hard-constraint for divergence free motions.
 
 In 2D, the Navier-Stokes equations without any external forces can be written as:
 
-$\begin{aligned}
+$$\begin{aligned}
     \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
     - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
     \\
@@ -190,30 +192,31 @@ $\begin{aligned}
     - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
     \\
     \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
-\end{aligned}$
+\end{aligned}$$ (model-ns2d)
 
 where, like before, $\nu$ denotes a diffusion constant for viscosity.
 
-An interesting variant is obtained by including the Boussinesq approximation
+An interesting variant is obtained by including the 
+[Boussinesq approximation](https://en.wikipedia.org/wiki/Boussinesq_approximation_(buoyancy))
 for varying densities, e.g., for simple temperature changes of the fluid.
-With a marker field $d$, e.g., representing indicating regions of high temperature,
+With a marker field $v$, e.g., indicating regions of high temperature,
 this yields the following set of equations:
 
-$\begin{aligned}
+$$\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \xi d
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \xi v
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0,
   \\
-  \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d &= 0 
-\end{aligned}$
+  \frac{\partial v}{\partial{t}} + \mathbf{u} \cdot \nabla v &= 0 
+\end{aligned}$$ (model-boussinesq2d)
 
 where $\xi$ denotes the strength of the buoyancy force.
 
 And finally, the Navier-Stokes model in 3D give the following set of equations:
 
-$
+$$
 \begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
   \\
@@ -223,7 +226,7 @@ $
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0.
 \end{aligned}
-$
+$$ (model-ns3d)
 
 ## Forward Simulations
 
