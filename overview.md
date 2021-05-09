@@ -139,16 +139,16 @@ of deep learning and numerical simulation methods.
 
 ## More specifically
 
-_Physics_ is a huge field, and we can't cover everything here... 
+_Physical simulations_ are a huge field, and we won't cover all possible types of physical models and simulations in the following.
 
-```{note} The focus of this book lies on:
+```{note} Rather, the focus of this book lies on:
 - _Field-based simulations_ (no Lagrangian methods)
 - Combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
-- Experiments as _outlook_ (replace synthetic data with real-world observations)
+- Experiments as _outlook_ (i.e., replace synthetic data with real-world observations)
 ```
 
 It's also worth noting that we're starting to build the methods from some very
-fundamental steps. Here are some considerations for skipping ahead to the later chapters.
+fundamental building blocks. Here are some considerations for skipping ahead to the later chapters.
 
 ```{admonition} Hint: You can skip ahead if...
 :class: tip
@@ -163,8 +163,8 @@ A brief look at our _notation_ in the {doc}`notation` chapter won't hurt in both
 ## Implementations
 
 This text also represents an introduction to a wide range of deep learning and simulation APIs.
-We'll use popular deep learning APIs such as _pytorch_ and _tensorflow_, and additionally
-give introductions into _phiflow_ for simulations. Some examples also use _JAX_. Thus after going through
+We'll use popular deep learning APIs such as _pytorch_ [https://pytorch.org](https://pytorch.org) and _tensorflow_ [https://www.tensorflow.org](https://www.tensorflow.org), and additionally
+give introductions into the differentiable simulation framework _phiflow_ [https://github.com/tum-pbs/PhiFlow](https://github.com/tum-pbs/PhiFlow). Some examples also use _JAX_ [https://github.com/google/jax](https://github.com/google/jax). Thus after going through
 these examples, you should have a good overview of what's available in current APIs, such that
 the best one can be selected for new tasks.
 
