@@ -20,18 +20,21 @@ We can improve this setting by trying to bring the model equations (or parts the
 into the training process. E.g., given a PDE for $\mathbf{u}(\mathbf{x},t)$ with a time evolution, 
 we can typically express it in terms of a function $\mathcal F$ of the derivatives 
 of $\mathbf{u}$ via  
-$
+
+$$
   \mathbf{u}_t = \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) ,
-$
+$$
+
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
 of higher and higher order (this can of course also include derivatives with respect to different axes).
 
 In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
 with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
 naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
-$
-  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) = 0
-$.
+
+$$
+  R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) = 0 .
+$$
 
 This nicely integrates with the objective for training a neural network: similar to before
 we can collect sample solutions 
@@ -42,7 +45,9 @@ get solutions with random offset or other undesirable components. Hence the supe
 help to _pin down_ the solution in certain places.
 Now our training objective becomes
 
-$\text{arg min}_{\theta} \ \alpha_0 \sum_i (f(x_i ; \theta)-y_i)^2 + \alpha_1 R(x_i) $,
+$$
+\text{arg min}_{\theta} \ \alpha_0 \sum_i (f(x_i ; \theta)-y_i)^2 + \alpha_1 R(x_i) ,
+$$ (physloss-training)
 
 where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 
 the residual term, respectively. We could of course add additional residual terms with suitable scaling factors here.
