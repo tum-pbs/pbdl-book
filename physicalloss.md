@@ -6,6 +6,10 @@ yield approximate solutions with a fairly simple training process, but what's
 quite sad to see here is that we only use physical models and numerics
 as an "external" tool to produce a big pile of data 😢.
 
+We as humans have a lot of knowledge about how to describe physical processes
+mathematically. As the following chapters will show, we can improve the
+training process by guiding it with our human knowledge of physics.
+
 ```{figure} resources/physloss-overview.jpg
 ---
 height: 220px
@@ -16,8 +20,7 @@ Physical losses typically combine a supervised loss with a combination of deriva
 
 ## Using physical models
 
-We can improve this setting by trying to bring the model equations (or parts thereof)
-into the training process. E.g., given a PDE for $\mathbf{u}(\mathbf{x},t)$ with a time evolution, 
+Given a PDE for $\mathbf{u}(\mathbf{x},t)$ with a time evolution, 
 we can typically express it in terms of a function $\mathcal F$ of the derivatives 
 of $\mathbf{u}$ via  
 
@@ -26,7 +29,7 @@ $$
 $$
 
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
-of higher and higher order (this can of course also include derivatives with respect to different axes).
+of higher and higher order (this can of course also include mixed derivatives with respect to different axes).
 
 In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
 with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
@@ -65,18 +68,17 @@ In order to compute the residuals at training time, it would be possible to stor
 the unknowns of $\mathbf{u}$ on a computational mesh, e.g., a grid, and discretize the equations of
 $R$ there. This has a fairly long "tradition" in DL, and was proposed by Tompson et al. {cite}`tompson2017` early on.
 
-Instead, a more widely used variant of employing physical soft-constraints {cite}`raissi2018hiddenphys`
-uses fully connected NNs to represent $\mathbf{u}$. This has some interesting pros and cons that we'll outline in the following.
-Due to the popularity of the version, we'll also focus on it in the following code examples and comparisons.
+A popular variant of employing physical soft-constraints {cite}`raissi2018hiddenphys`
+instead uses fully connected NNs to represent $\mathbf{u}$. This has some interesting pros and cons that we'll outline in the following, and we will also focus on it in the following code examples and comparisons.
 
 The central idea here is that the aforementioned general function $f$ that we're after in our learning problems
-can be seen as a representation of a physical field we're after. Thus, the $\mathbf{u}(\mathbf{x})$ will 
-be turned into $\mathbf{u}(\mathbf{x}, \theta)$ where we choose $\theta$ such that the solution to $\mathbf{u}$ is 
+can also be used to obtain a representation of a physical field, e.g., a field $\mathbf{u}$ that satisfies $R=0$. This means $\mathbf{u}(\mathbf{x})$ will 
+be turned into $\mathbf{u}(\mathbf{x}, \theta)$ where we choose the NN parameters $\theta$ such that a desired $\mathbf{u}$ is 
 represented as precisely as possible.
 
 One nice side effect of this viewpoint is that NN representations inherently support the calculation of derivatives. 
 The derivative $\partial f / \partial \theta$ was a key building block for learning via gradient descent, as explained 
-in {doc}`overview`. Here, we can use the same tools to compute spatial derivatives such as $\partial \mathbf{u} / \partial x$,
+in {doc}`overview`. Now, we can use the same tools to compute spatial derivatives such as $\partial \mathbf{u} / \partial x$,
 Note that above for $R$ we've written this derivative in the shortened notation as $\mathbf{u}_{x}$.
 For functions over time this of course also works for $\partial \mathbf{u} / \partial t$, i.e. $\mathbf{u}_{t}$ in the notation above.
 
@@ -90,15 +92,13 @@ To pick a simple example, Burgers equation in 1D,
 $\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ , we can directly
 formulate a loss term $R = \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} - \nu \frac{\partial^2 u}{\partial x^2} u$ that should be minimized as much as possible at training time. For each of the terms, e.g. $\frac{\partial u}{\partial x}$,
 we can simply query the DL framework that realizes $u$ to obtain the corresponding derivative. 
-For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we can typically simply query the derivative function of the framework twice. In the following section, we'll give a specific example of how that works in tensorflow.
+For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we can simply query the derivative function of the framework multiple times. In the following section, we'll give a specific example of how that works in tensorflow.
 
 
 ## Summary so far
 
-The approach above gives us a method to include physical equations into DL learning as a soft-constraint.
+The approach above gives us a method to include physical equations into DL learning as a soft-constraint: the residual loss.
 Typically, this setup is suitable for _inverse problems_, where we have certain measurements or observations
 for which we want to find a PDE solution. Because of the high cost of the reconstruction (to be 
-demonstrated in the following), the solution manifold typically shouldn't be overly complex. E.g., it is difficult 
-to capture a wide range of solutions, such as with the previous supervised airfoil example, in this way.
-
-
+demonstrated in the following), the solution manifold shouldn't be overly complex. E.g., it is not possible 
+to capture a wide range of solutions, such as with the previous supervised airfoil example, with such a physical residual loss.
