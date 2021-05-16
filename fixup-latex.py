@@ -11,6 +11,9 @@ fte = re.compile(r"👋")
 
 # TODO , replace phi symbol w text in phiflow
 
+# TODO , filter tensorflow warnings?
+# also torch "UserWarning:"
+
 path = "tmp2.txt" # simple
 path = "tmp.txt" # utf8
 #path = "book.tex-in.bak" # full utf8

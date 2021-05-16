@@ -2,7 +2,7 @@ Discussion of Supervised Approaches
 =======================
 
 The previous example illustrates that we can quite easily use 
-supervised training to solve quite complex tasks. The main workload is
+supervised training to solve complex tasks. The main workload is
 collecting a large enough dataset of examples. Once that exists, we can
 train a network to approximate the solution manifold sampled
 by these solutions, and the trained network can give us predictions
@@ -23,8 +23,19 @@ on a single example, then there's something fundamentally wrong
 with your code or data. Thus, there's no reason to move on to more complex
 setups that will make finding these fundamental problems more difficult.
 
-Hence: **always** start with a 1-sample overfitting test,
-and then increase the complexity of the setup.
+```{admonition} Best practices 👑
+:class: tip
+
+To summarize the scattered comments of the previous sections, here's a set of "golden rules"  for setting up a DL project.
+
+- Always start with a 1-sample overfitting test.
+- Check how many trainable parameters your network has.
+- Slowly increase the amount of trianing data (and potentially network parameters and depth).
+- Adjust hyperparameters (especially the learning rate).
+- Then introduce other components such as differentiable solvers or adversarial training.
+
+```
+
 
 ### Stability
 
@@ -65,27 +76,33 @@ because they can accurately adapt to the signals they receive at training time,
 but in contrast to other learned representations, they're actually not very good
 at extrapolation. So we can't expect an NN to magically work with new inputs.
 Rather, we need to make sure that we can properly shape the input space,
-e.g., by normalization and by focusing on invariants. In short, if you always train
+e.g., by normalization and by focusing on invariants. 
+
+To give a more specific example: if you always train
 your networks for inputs in the range $[0\dots1]$, don't expect it to work
-with inputs of $[27\dots39]$. You might be able to subtract an offset of $10$ beforehand,
-and re-apply it after evaluating the network.
-As a rule of thumb: always make sure you
-actually train the NN on the kinds of input you want to use at inference time.
+with inputs of $[27\dots39]$. In certain cases it's valid to normalize
+inputs and outputs by subtracting the mean, and normalize via the standard 
+deviation or a suitable quantile (make sure this doesn't destroy important
+correlations in your data).
+
+As a rule of thumb: make sure you actually train the NN on the 
+inputs that are as similar as possible to those you want to use at inference time.
 
 This is important to keep in mind during the next chapters: e.g., if we
 want an NN to work in conjunction with another solver or simulation environment,
 it's important to actually bring the solver into the training process, otherwise
 the network might specialize on pre-computed data that differs from what is produced
-when combining the NN with the solver, i.e _distribution shift_.
+when combining the NN with the solver, i.e it will suffer from _distribution shift_.
 
 ### Meshes and grids
 
-The previous airfoil example use Cartesian grids with standard 
+The previous airfoil example used Cartesian grids with standard 
 convolutions. These typically give the most _bang-for-the-buck_, in terms
 of performance and stability. Nonetheless, the whole discussion here of course 
-also holds for less regular convolutions, e.g., a less regular mesh
-in conjunction with graph-convolutions. You will typically see reduced learning
-performance in exchange for improved stability when switching to these.
+also holds for other types of convolutions, e.g., a less regular mesh
+in conjunction with graph-convolutions, or particle-based data
+with continuous convolutions (cf {doc}`others-lagrangian`). You will typically see reduced learning
+performance in exchange for improved sampling flexibility when switching to these.
 
 Finally, a word on fully-connected layers or _MLPs_ in general: we'd recommend
 to avoid these as much as possible. For any structured data, like spatial functions,
@@ -108,8 +125,9 @@ To summarize, supervised training has the following properties.
 ❌ Con: 
 - Lots of data needed.
 - Sub-optimal performance, accuracy and generalization.
+- Interactions with external "processes" (such as embedding into a solver) are difficult.
 
-Outlook: any interactions with external "processes" (such as embedding into a solver) are tricky with supervised training.
+The next chapters will explain how to alleviate these shortcomings of supervised training.
 First, we'll look at bringing model equations into the picture via soft-constraints, and afterwards
 we'll revisit the challenges of bringing together numerical simulations and learned approaches.
 
