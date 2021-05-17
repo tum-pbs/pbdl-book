@@ -15,7 +15,7 @@ advantages such as improved learning feedback and generalization, as we'll outli
 
 In contrast to physics-informed loss functions, it also enables handling more complex
 solution manifolds instead of single inverse problems. Thus instead of using deep learning
-to solve single inverse problems, we'll show how to train ANNs that solve 
+to solve single inverse problems, we'll show how to train NNs that solve 
 larger classes of inverse problems very quickly.
 
 ```{figure} resources/diffphys-shortened.jpg

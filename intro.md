@@ -10,7 +10,7 @@ As much as possible, the algorithms will come with hands-on code examples to qui
 Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
 more tightly coupled learning algorithms with _differentiable simulations_, as well as extensions such
 as reinforcement learning and uncertainty modeling.
-These methods have a huge potential to fundamentally change what we can achieve
+We live in exciting times: these methods have a huge potential to fundamentally change what we can achieve
 with simulations.
 
 
