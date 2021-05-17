@@ -9,12 +9,12 @@ starting point.
 On the positive side, we can leverage DL frameworks with backpropagation to compute
 the derivatives of the model. At the same time, this puts us at the mercy of the learned
 representation regarding the reliability of these derivatives. Also, each derivative
-requires backpropagation through the full network, which can be very slow. Especially so
+requires backpropagation through the full network, which can be very expensive. Especially so
 for higher-order derivatives.
 
 And while the setup is relatively simple, it is generally difficult to control. The NN
 has flexibility to refine the solution by itself, but at the same time, tricks are necessary
-when it doesn't pick the right regions of the solution.
+when it doesn't focus on the right regions of the solution.
 
 ## Is it "Machine Learning"?
 
@@ -36,7 +36,7 @@ about how well our model will generalize to "real-world" cases that we will enco
 we deploy it into an application.
 
 In contrast, for the PINN training as described here, we reconstruct a single solution in a known 
-and given space-time time. As such, any samples from this domain follow the same distribution
+and given space-time region. As such, any samples from this domain follow the same distribution
 and hence don't really represent test or OOD sampes. As the NN directly encodes the solution,
 there is also little hope that it will yield different solutions, or perform well outside
 of the training distribution. If we're interested in a different solution, we most likely 
@@ -47,7 +47,7 @@ have to start training the NN from scratch.
 ## Summary
 
 Thus, the physical soft constraints allow us to encode solutions to 
-PDEs with the tools of ANNs.
+PDEs with the tools of NNs.
 An inherent drawback of this approach is that it yields single solutions,
 and that it does not combine with traditional numerical techniques well. 
 E.g., learned representation is not suitable to be refined with 
@@ -60,12 +60,12 @@ goals of the next sections.
 
 ✅ Pro: 
 - Uses physical model.
-- Derivatives can be conveniently compute via backpropagation.
+- Derivatives can be conveniently computed via backpropagation.
 
 ❌ Con: 
 - Quite slow ...
 - Physical constraints are enforced only as soft constraints.
-- Largely incompatible _classical_ numerical methods.
+- Largely incompatible with _classical_ numerical methods.
 - Accuracy of derivatives relies on learned representation.
 
 Next, let's look at how we can leverage numerical methods to improve the DL accuracy and efficiency
