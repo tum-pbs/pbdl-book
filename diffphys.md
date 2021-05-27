@@ -2,29 +2,31 @@ Introduction to Differentiable Physics
 =======================
 
 As a next step towards a tighter and more generic combination of deep learning
-methods and deep learning we will target incorporating _differentiable physical 
+methods and physical simulations we will target incorporating _differentiable 
 simulations_ into the learning process. In the following, we'll shorten
 that to "differentiable physics" (DP).
 
-The central goal of this methods is to use existing numerical solvers, and equip
+The central goal of these methods is to use existing numerical solvers, and equip
 them with functionality to compute gradients with respect to their inputs.
 Once this is realized for all operators of a simulation, we can leverage 
 the autodiff functionality of DL frameworks with backpropagation to let gradient 
-information from from a simulator into an NN and vice versa. This has numerous 
+information flow from from a simulator into an NN and vice versa. This has numerous 
 advantages such as improved learning feedback and generalization, as we'll outline below.
 
 In contrast to physics-informed loss functions, it also enables handling more complex
-solution manifolds instead of single inverse problems. Thus instead of using deep learning
-to solve single inverse problems, we'll show how to train NNs that solve 
-larger classes of inverse problems very quickly.
+solution manifolds instead of single inverse problems. 
+E.g., instead of using deep learning
+to solve single inverse problems as in the previous chapter, 
+differentiable physics can be used to train NNs that learn to solve 
+larger classes of inverse problems very efficiently.
 
 ```{figure} resources/diffphys-shortened.jpg
 ---
 height: 220px
 name: diffphys-short-overview
 ---
-Training with differentiable physics mean that one or more differentiable operators
-provide directions to steer the learning process.
+Training with differentiable physics means that a chain of differentiable operators
+provide directions in the form of gradients to steer the learning process.
 ```
 
 ## Differentiable operators
@@ -33,9 +35,9 @@ With the DP direction we build on existing numerical solvers. I.e.,
 the approach is strongly relying on the algorithms developed in the larger field 
 of computational methods for a vast range of physical effects in our world.
 To start with we need a continuous formulation as model for the physical effect that we'd like 
-to simulate -- if this is missing we're in trouble. But luckily, we can resort to 
-a huge library of established model equations, and ideally also on an established
-method for discretization of the equation.
+to simulate -- if this is missing we're in trouble. But luckily, we can 
+tap into existing collections of model equations and established methods
+for discretizing continuous models.
 
 Let's assume we have a continuous formulation $\mathcal P^*(\mathbf{x}, \nu)$ of the physical quantity of 
 interest $\mathbf{u}(\mathbf{x}, t): \mathbb R^d \times \mathbb R^+ \rightarrow \mathbb R^d$,
@@ -57,8 +59,9 @@ $\partial \mathcal P_i / \partial \mathbf{u}$.
 ```
 
 Note that we typically don't need derivatives 
-for all parameters of $\mathcal P$, e.g. we omit $\nu$ in the following, assuming that this is a 
-given model parameter, with which the NN should not interact. 
+for all parameters of $\mathcal P(\mathbf{x}, \nu)$, e.g., 
+we omit $\nu$ in the following, assuming that this is a 
+given model parameter with which the NN should not interact. 
 Naturally, it can vary within the solution manifold that we're interested in, 
 but $\nu$ will not be the output of a NN representation. If this is the case, we can omit
 providing $\partial \mathcal P_i / \partial \nu$ in our solver. However, the following learning process
@@ -85,7 +88,7 @@ $$ \begin{aligned}
 \end{aligned} $$
 %
 where, as above, $d$ denotes the number of components in $\mathbf{u}$. As $\mathcal P$ maps one value of
-$\mathbf{u}$ to another, the jacobian is square and symmetric here. Of course this isn't necessarily the case
+$\mathbf{u}$ to another, the Jacobian is square and symmetric here. Of course this isn't necessarily the case
 for general model equations, but non-square Jacobian matrices would not cause any problems for differentiable 
 simulations.
 
@@ -104,13 +107,13 @@ Given the formulation above, we need to resolve the derivatives
 of the chain of function compositions of the $\mathcal P_i$ at some current state $\mathbf{u}^n$ via the chain rule.
 E.g., for two of them
 
-$
+$$
     \frac{ \partial (\mathcal P_1 \circ \mathcal P_2) }{ \partial \mathbf{u} }|_{\mathbf{u}^n}
     = 
     \frac{ \partial \mathcal P_1 }{ \partial \mathbf{u} }|_{\mathcal P_2(\mathbf{u}^n)}
     \ 
-    \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} }|_{\mathbf{u}^n}
-$,
+    \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} }|_{\mathbf{u}^n} \ , 
+$$
 
 which is just the vector valued version of the "classic" chain rule
 $f(g(x))' = f'(g(x)) g'(x)$, and directly extends for larger numbers of composited functions, i.e. $i>2$.
@@ -130,7 +133,7 @@ Thus, once the operators of our simulator support computations of the Jacobian-v
 products, we can integrate them into DL pipelines just like you would include a regular fully-connected layer
 or a ReLU activation.
 
-At this point, the following (very valid) question often comes up: "_Most physics solver can be broken down into a
+At this point, the following (very valid) question arises: "_Most physics solvers can be broken down into a
 sequence of vector and matrix operations. All state-of-the-art DL frameworks support these, so why don't we just 
 use these operators to realize our physics solver?_"
 
@@ -148,7 +151,7 @@ E.g., as this process is very similar to adjoint method optimizations, we can re
 that were developed in this field, or leverage established numerical methods. E.g., 
 we could leverage the $O(n)$ runtime of multigrid solvers for matrix inversion.
 
-The flipside of this approach is, that it requires some understanding of the problem at hand, 
+The flip-side of this approach is, that it requires some understanding of the problem at hand, 
 and of the numerical methods. Also, a given solver might not provide gradient calculations out of the box.
 Thus, we want to employ DL for model equations that we don't have a proper grasp of, it might not be a good
 idea to directly go for learning via a DP approach. However, if we don't really understand our model, we probably
@@ -186,7 +189,7 @@ Instead of using this formulation as a residual equation right away (as in {doc}
 we can discretize it with our favorite mesh and discretization scheme,
 to obtain a formulation that updates the state of our system over time. This is a standard
 procedure for a _forward_ solve.
-Note that to simplify things, we assume that $\mathbf{u}$ is only a function in space,
+To simplify things, we assume here that $\mathbf{u}$ is only a function in space,
 i.e. constant over time. We'll bring back the time evolution of $\mathbf{u}$ later on.
 %
 Let's denote this re-formulation as $\mathcal P$. It maps a state of $d(t)$ into a 
@@ -208,7 +211,7 @@ and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to o
 as would be custom in a real learning task.
 
 The final state of our marker density $d(t^e)$ is fully determined by the evolution 
-of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem as overall goal:
+of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem:
 
 $$
     \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e - t^0 ) - d^{\text{target}}|^2
@@ -221,7 +224,7 @@ Once things are working with GD, we can relatively easily switch to better optim
 an NN into the picture, hence it's always a good starting point.
 
 As the discretized velocity field $\mathbf{u}$ contains all our degrees of freedom,
-what we need to update the velocity by an amount 
+all we need to do is to update the velocity by an amount 
 $\Delta \mathbf{u} = \partial L / \partial \mathbf{u}$, 
 which can be decomposed into 
 $\Delta \mathbf{u} = 
@@ -241,8 +244,8 @@ loss function $L$.
 
 %the $L^2$ loss $L= |d(t^e) - d^{\text{target}}|^2$, thus
 
-So what are the actual Jacobians here:
-the one for $L$ is simple enough, we simply get a column vector with entries of the form
+So what are the actual Jacobians here?
+The one for $L$ is simple enough, we simply get a column vector with entries of the form
 $2(d(t^e)_i - d^{\text{target}})_i$ for one component $i$.
 $\partial \mathcal P / \partial \mathbf{u}$ is more interesting:
 here we'll get derivatives of the chosen advection operator w.r.t. each component of the 
@@ -273,14 +276,14 @@ name: advection-upwind
 Thus, for a positive $u_i$ we have 
 $d_i^{~t+\Delta t} = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}$
 and hence 
-$\partial \mathcal P / \partial u_i$ from cell $i$ would be $1 + \frac{u_i \Delta t }{ \Delta x}$.
+$\partial \mathcal P / \partial u_i$ for cell $i$ would be $1 + \frac{u_i \Delta t }{ \Delta x}$.
 For the full gradient we'd need to add 
 the potential contributions from cells $i+1$ and $i-1$, depending on the sign of their velocities.
 
 In practice this step is similar to evaluating a transposed matrix multiplication.
 If we rewrite the calculation above as 
 $d^{~t+\Delta t} = A \mathbf{u}$, then $\partial \mathcal P / \partial \mathbf{u} = A^T$.
-In many practical cases, a matrix free implementation of this multiplication might 
+However, in many practical cases, a matrix free implementation of this multiplication might 
 be preferable to actually constructing $A$.
 
 ## A (slightly) more complex example
@@ -298,16 +301,16 @@ $\nabla^2 p = \nabla \cdot \mathbf{u}$. Here, $\mathbf{u}^{n}$ denotes the _new_
 velocity field. This step is typically crucial to enforce the hard-constraint $\nabla \cdot \mathbf{u}=0$,
 and is often called _Chorin Projection_, or _Helmholtz decomposition_. It is also closely related to the fundamental theorem of vector calculus.
 
-If we now introduce an NN that modifies $\mathbf{u}$ in an iterative solver, we inevitably have to
+If we now introduce an NN that modifies $\mathbf{u}$ in a solver, we inevitably have to
 backpropagate through the Poisson solve. I.e., we need a gradient for $\mathbf{u}^{n}$, which in this
 notation takes the form $\partial \mathbf{u}^{n} / \partial \mathbf{u}$.
 
-In combination, $\partial \mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients simple to compute. The main difficulty lies in obtaining the
+In combination, $\mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients simple to compute. The main difficulty lies in obtaining the
 matrix inverse $(\nabla^2)^{-1}$ from the Poisson's equation for pressure (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
 
 In practice, the matrix vector product for $(\nabla^2)^{-1} b$ with $b=\nabla \cdot \mathbf{u}$ is not explicitly computed via matrix operations, but approximated with a (potentially matrix-free) iterative solver. E.g., conjugate gradient (CG) methods are a very popular choice here. Thus, we could treat this iterative solver as a function $S$,
 with $p = S(\nabla \cdot \mathbf{u})$. Note that matrix inversion is a non-linear process, despite the matrix itself being linear. As solvers like CG are also based on matrix and vector operations, we could decompose $S$ into a sequence of simpler operations $S(x) = S_n( S_{n-1}(...S_{1}(x)))$, and backpropagate through each of them. This is certainly possible, but not a good idea: it can introduce numerical problems, and can be very slow.
-By default DL frameworks store the internal states for every differentiable operator like the $S_i()$ in this example, and hence we'd organize and keep $n$ intermediate states in memory. These states are completely uninteresting for our original PDE, though. They're just intermediate states of the CG solver.
+As mentioned above, by default DL frameworks store the internal states for every differentiable operator like the $S_i()$ in this example, and hence we'd organize and keep $n$ intermediate states in memory. These states are completely uninteresting for our original PDE, though. They're just intermediate states of the CG solver.
 
 If we take a step back and look at $p = (\nabla^2)^{-1} b$, it's gradient $\partial p / \partial b$
 is just $((\nabla^2)^{-1})^T$. And in this case, $(\nabla^2)$ is a symmetric matrix, and so $((\nabla^2)^{-1})^T=(\nabla^2)^{-1}$. This is the identical inverse matrix that we encountered in the original equation above, and hence we can re-use our unmodified iterative solver to compute the gradient. We don't need to take it apart and slow it down by storing intermediate states. However, the iterative solver computes the matrix-vector-products for $(\nabla^2)^{-1} b$. So what is $b$ during backpropagation? In an optimization setting we'll always have our loss function $L$ at the end of the forward chain. The backpropagation step will then give a gradient for the output, let's assume it is $\partial L/\partial p$ here, which needs to be propagated to the earlier operations of the forward pass. Thus, we can simply invoke our iterative solve during the backward pass to compute $\partial p / \partial b = S(\partial L/\partial p)$. And assuming that we've chosen a good solver as $S$ for the forward pass, we get exactly the same performance and accuracy in the backwards pass.
@@ -333,9 +336,9 @@ and backpropagate through these steps. In line with other DP approaches, this en
 ## Summary of differentiable physics so far
 
 To summarize, using differentiable physical simulations 
-gives us a tool to include physical equations with a chosen discretization into DL learning.
+gives us a tool to include physical equations with a chosen discretization into DL.
 In contrast to the residual constraints of the previous chapter,
-this makes it possible to left NNs seamlessly interact with physical solvers.
+this makes it possible to let NNs seamlessly interact with physical solvers.
 
 We'd previously fully discard our physical model and solver
 once the NN is trained: in the example from {doc}`physicalloss-code` 
