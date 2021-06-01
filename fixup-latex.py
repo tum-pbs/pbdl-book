@@ -9,6 +9,8 @@ ft2 = re.compile(r"tst")
 ft3 = re.compile(r"’")
 fte = re.compile(r"👋")
 
+# notebooks, parse and remove lines with WARNING:tensorflow + next? ; remove full "name": "stderr" {} block?  (grep stderr *ipynb)
+
 # TODO , replace phi symbol w text in phiflow
 
 # TODO , filter tensorflow warnings? "WARNING:tensorflow:" eg in physloss-code

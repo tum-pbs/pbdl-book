@@ -326,8 +326,8 @@ The main take-away here is: it is important _not to blindly backpropagate_ throu
 The process above essentially yields an _implicit derivative_. Instead of explicitly deriving all forward steps, we've relied on the [implicit function theorem](https://en.wikipedia.org/wiki/Implicit_function_theorem) to compute the derivative.
 
 **Time**: we _can_ actually consider the steps of an iterative solver as a virtual "time",
-and backpropagate through these steps. In line with other DP approaches, this enabled an NN to _interact_ with an iterative solver. An example is to learn initial guesses of CG solvers from {cite}`um2020sol`, 
-[details can be found here](https://github.com/tum-pbs/CG-Solver-in-the-Loop).
+and backpropagate through these steps. In line with other DP approaches, this enables an NN to _interact_ with an iterative solver. An example is to learn initial guesses of CG solvers from {cite}`um2020sol`. 
+[Details can be found here](https://github.com/tum-pbs/CG-Solver-in-the-Loop)
 ```
 
 
