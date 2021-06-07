@@ -64,7 +64,7 @@ Plus, jupyter notebooks are great because they're a form of [literate programmin
 
 This project would not have been possible without the help of many people who contributed. Thanks to everyone 🙏 Here's an alphabetical list:
 
-- [Philipp Holl](https://ge.in.tum.de/about/)
+- [Philipp Holl](https://ge.in.tum.de/about/philipp-holl/)
 - [Maximilian Mueller](https://ge.in.tum.de/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
 - [Felix Trost](https://ge.in.tum.de/)
@@ -79,7 +79,7 @@ If you find this book useful, please cite it via:
 ```
 @article{thuerey2021pbdl,
   title={Physics-based Deep Learning},
-  author={Nils Thuerey and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
+  author={Nils Thuerey and Philipp Holl and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
   url={http://physicsbaseddeeplearning.org},
   year={2021},
   publisher={www}
