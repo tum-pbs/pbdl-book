@@ -1,14 +1,14 @@
 Summary and Discussion
 =======================
 
-The previous sections have explained the differentiable physics approach for deep learning, and have given a range of examples: from a very basic gradient calculation, all the way to complex learning setups powered by complex simulations. This is a good time to pause and take a step back, to take a look at what we have: in the end, the _differentiable physics_ component of these approaches is not too complicated. It's largely based on existing numerical methods, with a focus on efficiently using those methods to not only do a forward simulation, but also to compute gradient information. What is primarily exciting in this context are the implications that arise from the combination of these numerical methods with deep learning.
+The previous sections have explained the _differentiable physics_ approach for deep learning, and have given a range of examples: from a very basic gradient calculation, all the way to complex learning setups powered by advanced simulations. This is a good time to take a step back and evaluate: in the end, the differentiable physics components of these approaches are not too complicated. They are largely based on existing numerical methods, with a focus on efficiently using those methods not only to do a forward simulation, but also to compute gradient information. What is primarily exciting in this context are the implications that arise from the combination of these numerical methods with deep learning.
 
 ![Divider](resources/divider6.jpg)
 
 ## Integration
 
 Most importantly, training via differentiable physics allows us to seamlessly bring the two fields together:
-we can obtain _hybrid_ methods, that use the best numerical methods that we have at our disposal for the simulation itself, as well as for the training process. We can then use the trained model to improve forward or backward solves. Thus, in the end, we have a solver that combines a _traditional_ solver and a _learned_ component.
+we can obtain _hybrid_ methods, that use the best numerical methods that we have at our disposal for the simulation itself, as well as for the training process. We can then use the trained model to improve forward or backward solves. Thus, in the end, we have a solver that combines a _traditional_ solver and a _learned_ component that in combination can improve the capabilities of numerical methods.
 
 ## Interaction
 
@@ -20,8 +20,5 @@ The hybrid approach also bears particular promise for simulators: it improves ge
 
 ![Divider](resources/divider7.jpg)
 
-Training NNs via differentiable physics solvers, i.e., what we've described as "DP" in the previous
-sections, is a very generic approach that is applicable to a wide range of combinations of PDE-based models
-and deep learning. Nonetheless, the next chapters will discuss several variants that are orthogonal
-to the general DP version, or can yield benefits in more specialized settings.
+Training NNs via differentiable physics solvers is a very generic approach that is applicable to a wide range of combinations of PDE-based models and deep learning. Nonetheless, the next chapters will discuss several variants that are orthogonal to the general DP version, or can yield benefits in more specialized settings.
 

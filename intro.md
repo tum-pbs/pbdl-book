@@ -71,7 +71,11 @@ This project would not have been possible without the help of many people who co
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
+% future:
 % - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
+
+% proofreading acks:
+% - Chloe Pailard
 
 ## Citation
 
