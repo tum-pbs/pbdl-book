@@ -1,73 +1,73 @@
 Introduction to Reinforcement Learning
 =======================
 
-Deep reinforcement learning, in the following abbreviated to _reinforcement learning_ (RL) is a very popular class of methods in the larger field of deep learning.
-RL lets an artificial intelligence agent explore the interaction possibilities with a surrounding environment. While doing this, the agent receives reward signals for its actions and tries to discern which actions contribute to higher rewards, to adapt its behavior accordingly. Typical application domains for reinforcement learning are in robotics or for defeating human grand masters in games like Go [\[Sil+18\]](https://discovery.ucl.ac.uk/id/eprint/10069050/1/alphazero_preprint.pdf).
+Deep reinforcement learning, referred to as just _reinforcement learning_ (RL) from now on, is a class of methods in the larger field of deep learning that lets an artificial intelligence agent explore the interactions with a surrounding environment. While doing this, the agent receives reward signals for its actions and tries to discern which actions contribute to higher rewards, to adapt its behavior accordingly. RL has been very successful at playing games such as Go {cite}`silver2017mastering`, and it bears promise for engineering applications such as robotics.
 
-The setup for RL generally consists of two parts: the environment and the agent. The environment receives actions from the agent while supplying it with observations and rewards. The observations represent the fraction of the information from the respective environment state that the agent is able to perceive. The rewards are given by a predefined function, usually taylored to the environment and might contain e.g. a game score, a penalty for wrong actions or a bounty for successfully finished tasks [\[SB18\]](https://books.google.de/books?hl=de&lr=&id=uWV0DwAAQBAJ&oi=fnd&pg=PR7&dq=reinforcement+learning&ots=mipFo3YYm4&sig=aEdRfox5-Pg5nvPkQtqWj4JiwKw&redir_esc=y#v=onepage&q=reinforcement%20learning&f=false).
+The setup for RL generally consists of two parts: the environment and the agent. The environment receives actions from the agent while supplying it with observations and rewards. The observations represent the fraction of the information from the respective environment state that the agent is able to perceive. The rewards are given by a predefined function, usually tailored to the environment and might contain e.g. a game score, a penalty for wrong actions or a bounty for successfully finished tasks.
 
-The agent on the other hand encompasses a neural network which decides on actions given observations. In the learning process it uses the combined information of state, action and corresponding rewards to increase the cumulative intensity of reward signals it receives over each trajectory. To achieve this goal, multiple algorithms have been proposed, which can be roughly divided into two classes: policy gradient and value based methods [\[SB18\]](https://books.google.de/books?hl=de&lr=&id=uWV0DwAAQBAJ&oi=fnd&pg=PR7&dq=reinforcement+learning&ots=mipFo3YYm4&sig=aEdRfox5-Pg5nvPkQtqWj4JiwKw&redir_esc=y#v=onepage&q=reinforcement%20learning&f=false).
-
+The agent on the other hand encompasses a neural network which decides on actions given observations. In the learning process it uses the combined information of state, action and corresponding rewards to increase the cumulative intensity of reward signals it receives over each trajectory. To achieve this goal, multiple algorithms have been proposed, which can be roughly divided into two classes: policy gradient and value based methods {cite}`sutton2018rl`.
 
 ## Algorithms
 
-In vanilla policy gradient, the trained neural networks directly select actions from environment observations. In the learning process, probabilities for actions leading to higher rewards in the rest of the respective trajectories are pushed up, while actions with smaller return are made less likely.
+In vanilla policy gradient methods, the trained neural networks directly select actions $a$ from environment observations. In the learning process, probabilities for actions leading to higher rewards in the rest of the respective trajectories are increased, while actions with smaller return are made less likely.
 
-Value based methods like Q-Learning on the other hand work by optimizing a state-action value function, also called Q-Function. The network in this case receives state and action and predicts the average cumulative reward resulting from that pair for the remainder of the trajectory. Actions are chosen to maximize this Q-Function given the state. 
+Value based methods, such as _Q-Learning_, on the other hand work by optimizing a state-action value function, the so-called Q-Function. The network in this case receives state $s$ and action $a$ to predicts the average cumulative reward resulting from that pair for the remainder of the trajectory. Actions are chosen to maximize this Q-Function given the state. 
+
+**TODO introduce PPO, is the following supposed to describe PPO already?**
 
 Actor-critic methods combine elements from both approaches. Here, the actions generated by a policy network are rated based on a corresponding change in state potential. These values are given by another neural network and approximate the expected cumulative reward from the given state. 
 
-However, the loss function of the actor being dependent of another neural network might also create instabilities in the learning process. PPO-Clip is an algorithm which tries to counteract this problem by setting a bound for the change of action probability motivated by individual samples. This way, outliers have a limited effect on the agents behavior [\[Sch+17\]](https://arxiv.org/abs/1707.06347v2).
+### Proximal Policy Optimization 
 
-$
-\theta_{k+1} = \text{arg max}_{\theta}L(\theta_k, \theta)
-$
+We will use ... PPO ... **TODO** because ...
 
-$
-L(\theta_k, \theta)=\mathbb{E}_{s, a \sim \pi_{\theta_k}}[\text{min}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}A^{\pi_{\theta_k}}(s, a), \text{clip}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}, 1-\epsilon, 1+\epsilon)A^{\pi_{\theta_k}}(s, a)]
-$
+The loss for a PPO actor is:
 
-The formulas above describe the update rule of the PPO actor. $\epsilon$ defines the bound for the deviation from the previous policy as described above. $A^{\pi_{\theta_k}}(s, a)$ denotes the estimate for the advantage of an action $a$ in a state $s$, i.e. how well the agent performs compared a random agent. Its value depends on the critic's output [\[Ach18\]](https://spinningup.openai.com/en/latest/):
+$$\begin{aligned}
+\theta_{k+1}  &= \text{arg max}_{\theta}L(\theta_k, \theta) \\
+L(\theta_k, \theta) &= 
+    \mathbb{E}_{s, a \sim \pi_{\theta_k}}[\text{min}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}A^{\pi_{\theta_k}}(s, a), \text{clip}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}, 1-\epsilon, 1+\epsilon)A^{\pi_{\theta_k}}(s, a)]
+\end{aligned}$$
 
-$
-A^{\pi_{\theta_k}}_t = \sum\limits_{i=0}^{n-t-1}(\gamma\lambda)^i\delta_{t+i}
-$
+Here, $\epsilon$ defines the bound for the deviation from the previous policy as described above. $A^{\pi_{\theta_k}}(s, a)$ denotes the estimate for the advantage of $a$ in a state $s$, i.e. how well the agent performs compared to a random agent. Its value depends on the critic's output [\[Ach18\]](https://spinningup.openai.com/en/latest/):
 
-$
-\delta_t = r_t+\gamma [V(s_{t+1} ; \phi) - V(s_t ; \phi)]
-$
+$$\begin{aligned}
+A^{\pi_{\theta_k}}_t &= \sum\limits_{i=0}^{n-t-1}(\gamma\lambda)^i\delta_{t+i} \\
+\delta_t             &= r_t+\gamma [V(s_{t+1} ; \phi) - V(s_t ; \phi)]
+\end{aligned}$$
 
-# Application to Inverse Problems
+However, the loss function of the actor being dependent on another neural network can create instabilities in the learning process. _PPO-Clip_ is an algorithm which tries to counteract this problem by setting a bound for the change of action probability motivated by individual samples. This way, outliers have a limited effect on the agents behavior [\[Sch+17\]](https://arxiv.org/abs/1707.06347v2).
+
+### Application to Inverse Problems
 
 Overall, reinforcement learning is primarily used for trajectory optimization with multiple decision problems building upon one another. In the context of PDE control, reinforcement learning algorithms can operate in a quite similar fashion as supervised single shooting approaches by generating full trajectories and learning by comparing the final approximation to the target.
 
 However, the approaches diverge in the manner this optimization is in fact done. For example, reinforcement learning algorithms like PPO try to explore the action space during training by adding a random offset to the actions selected by the actor. This way the algorithm may discover new behavioral patterns that are more refined than the previous ones [\[Ach18\]](https://spinningup.openai.com/en/latest/).
 
-Also the way how long term effects of generated forces are taken into account is different. In a control force estimator setup with differentiable physics loss, these dependencies are handled by passing the loss gradient through the simulation step back into previous timesteps. Contrary to that, reinforcement learning usually treats the environment as a kind of black box providing no gradient information. When using PPO, the value estimator network is instead used to track the long term dependencies by predicting the influence any action has for the future system evolution.
+Also the way how long term effects of generated forces are taken into account is different. In a control force estimator setup with differentiable physics loss, these dependencies are handled by passing the loss gradient through the simulation step back into previous time steps. Contrary to that, reinforcement learning usually treats the environment as a kind of black box providing no gradient information. When using PPO, the value estimator network is instead used to track the long term dependencies by predicting the influence any action has for the future system evolution.
 
 Working on Burgers' equation, the trajectory generation process can be summarized as following, showing how the simulation steps of the environment and the neural network evaluations of the agent are interleaved.
 
-$
+$$
 \mathbf{u}_{t+1}=\mathcal{P}(\mathbf{u}_t+\pi(\mathbf{u}_t, \mathbf{u}^*, t; \theta)\Delta t)
-$
+$$
 
 The reward is calculated in a similar fashion as the Loss in the DP approach: it consists of two parts, one of which amounts to the negative square norm of the applied forces and is given at every time step. The other part adds a punishment proportional to the L2-distance between the final approximation and the target state at the end of each trajectory. 
 
-$
-r_t = r_t^f+r_t^o
-$
-
-$
-r_t^f=-\left\lVert{\mathbf{a}_t}\right\rVert_2^2
-$
-
-$
-r_t^o =
+$$\begin{aligned}
+r_t   &=  r_t^f+r_t^o \\
+r_t^f &= -\left\lVert{\mathbf{a}_t}\right\rVert_2^2 \\
+r_t^o &=
 \begin{cases}
     -\left\lVert{\mathbf{u}^*-\mathbf{u}_t}\right\rVert_2^2,&\text{if } t = n-1\\
     0,&\text{otherwise}
 \end{cases}
-$
+\end{aligned}$$
+
+## Implementation
+
+**TODO** overview of env for next notebook...
+
 
 <!--
 -Basic idea is trajectory optimization
