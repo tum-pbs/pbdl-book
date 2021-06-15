@@ -21,20 +21,34 @@ The objective of the actor in actor-critic approaches depends on the output of t
 
 PPO was introduced as a method to specifically counteract this problem. The idea is to restrict the influence individual state value estimates can have on the change of the actors behavior during learning. PPO is a popular choice especially when working on continuous action spaces and has been extensively used in research, for example by [OpenAI](https://openai.com/). This can be attributed to the fact that it tends to achieve good results with a stable learning progress while still being comparatively easy to implement. Because of these factors we will use PPO as well.
 
-More specifically, we will use the algorithm _PPO-clip_. This PPO variant sets a hard limit for the change in behavior caused by singular update steps. Formally, this generates the following update rule and objective for the actor:
+More specifically, we will use the algorithm _PPO-clip_. This PPO variant sets a hard limit for the change in behavior caused by singular update steps. We'll denote a policy realized as a neural network with weights $\theta$ as $\pi(a; s,\theta)$, i.e., $\pi$ is conditioned on both a state of the environment $s$, and the weights of the NN. 
+In addition, $\theta_{\text{p}}$ will denote the weights from a previous state of the policy network. Correspondingly
+$\pi(a; s,\theta_{\text{p}})$ or in short $\pi(\theta_{\text{p}})$ denotes a policy evaluation with the previous state of the network.
+Formally, this gives the following objective for the actor:
 
 $$\begin{aligned}
+\text{arg max}_{\theta} \ 
+    \mathbb{E}_{a,s \sim \pi_{\theta_{\text{p}}}}
+    \Big[ & \text{min} \Big(
+            \frac{\pi(a;s,\theta)}{\pi(a;s,\theta_{\text{p}} )} A^{\pi(\theta_{\text{p}})}(s, a), 
+    \\ &
+            \ \text{clip}(\frac{\pi(a;s,\theta)}{\pi(a;s,\theta_{\text{p}} )}, 1-\epsilon, 1+\epsilon) 
+            A^{\pi(\theta{\text{p}})}(s, a) \Big) \Big] 
+\end{aligned}$$
+
+<!-- $$\begin{aligned}
 \theta_{k+1}  &= \text{arg max}_{\theta}L(\theta_k, \theta) \\
 L(\theta_k, \theta) &= 
     \mathbb{E}_{s, a \sim \pi_{\theta_k}}[\text{min}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}A^{\pi_{\theta_k}}(s, a), \text{clip}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}, 1-\epsilon, 1+\epsilon)A^{\pi_{\theta_k}}(s, a))]
-\end{aligned}$$
+\end{aligned}$$ -->
 
-Here, $\epsilon$ defines the bound for the deviation from the previous policy. $A^{\pi_{\theta_k}}(s, a)$ denotes the estimate for the advantage of $a$ in a state $s$, i.e. how well the agent performs compared to a random agent. Its value depends on the critic's output:
+Here, $\epsilon$ defines the bound for the deviation from the previous policy. $A^{\pi(\theta)}(s, a)$ denotes the estimate for the advantage of performing action $a$ in a state $s$, i.e. how well the agent performs compared to a random agent. Its value depends on the critic's output:
 
 $$\begin{aligned}
-A^{\pi_{\theta_k}}_t &= \sum\limits_{i=0}^{n-t-1}(\gamma\lambda)^i\delta_{t+i} \\
+A^{\pi(\theta)} &= \sum\limits_{i=0}^{n-t-1}(\gamma\lambda)^i\delta_{t+i} \\
 \delta_t             &= r_t+\gamma [V(s_{t+1} ; \phi) - V(s_t ; \phi)]
 \end{aligned}$$
+
 
 ### Application to Inverse Problems
 
@@ -42,9 +56,9 @@ Reinforcement learning is widely used for trajectory optimization with multiple 
 
 However, the approaches differ in terms of how this optimization is performed. For example, reinforcement learning algorithms like PPO try to explore the action space during training by adding a random offset to the actions selected by the actor. This way the algorithm can discover new behavioral patterns that are more refined than the previous ones.
 
-The way how long term effects of generated forces are taken into account can also differ for physical systems. In a control force estimator setup with differentiable physics (DP) loss, as discussed e.g. in {doc}`diffphys-code-burgers.ipynb`, these dependencies are handled by passing the loss gradient through the simulation step back into previous time steps. Contrary to that, reinforcement learning usually treats the environment as a black box without gradient information. When using PPO, the value estimator network is instead used to track the long term dependencies by predicting the influence any action has for the future system evolution.
+The way how long term effects of generated forces are taken into account can also differ for physical systems. In a control force estimator setup with differentiable physics (DP) loss, as discussed e.g. in {doc}`diffphys-code-burgers`, these dependencies are handled by passing the loss gradient through the simulation step back into previous time steps. Contrary to that, reinforcement learning usually treats the environment as a black box without gradient information. When using PPO, the value estimator network is instead used to track the long term dependencies by predicting the influence any action has for the future system evolution.
 
-Working on Burgers' equation, the trajectory generation process can be summarized as following, showing how the simulation steps of the environment and the neural network evaluations of the agent are interleaved.
+Working with Burgers' equation as physical environment, the trajectory generation process can be summarized as follows. It shows how the simulation steps of the environment and the neural network evaluations of the agent are interleaved:
 
 $$
 \mathbf{u}_{t+1}=\mathcal{P}(\mathbf{u}_t+\pi(\mathbf{u}_t, \mathbf{u}^*, t; \theta)\Delta t)
@@ -64,7 +78,7 @@ r_t^o &=
 
 ## Implementation
 
-In the following, we'll describe a way to implement a PPO-based RL training for physical systems. This implementation is also the basis for the notebook of the next section, i.e., {doc}`reinflearn-code.ipynb`. While this notebook provides a practical example, and an evaluation in comparison to DP training, we'll first give a more generic overview below.
+In the following, we'll describe a way to implement a PPO-based RL training for physical systems. This implementation is also the basis for the notebook of the next section, i.e., {doc}`reinflearn-code`. While this notebook provides a practical example, and an evaluation in comparison to DP training, we'll first give a more generic overview below.
 
 To train a reinforcement learning agent to control a PDE-governed system, the physical model has to be formalized as an RL environment. The [stable-baselines3](https://github.com/DLR-RM/stable-baselines3) framework, which we use in the following to implement a PPO training, uses a vectorized version of the gym environment. This way, rollout collection can be performed on multiple trajectories in parallel for better resource utilization and wall time efficiency. 
 
