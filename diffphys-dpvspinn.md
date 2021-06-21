@@ -40,7 +40,7 @@ As a consequence, these training runs not only take more computational resources
 
 ## Summary
 
-The following table summarizes these pros and cons of physics-informed (PI) and differentiable physics (DP) approachs:
+The following table summarizes these pros and cons of physics-informed (PI) and differentiable physics (DP) approaches:
 
 | Method   |  ✅ Pro   |  ❌ Con  |
 |----------|-------------|------------|

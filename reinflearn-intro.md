@@ -36,19 +36,18 @@ $$\begin{aligned}
             A^{\pi(\theta{\text{p}})}(s, a) \Big) \Big] 
 \end{aligned}$$
 
-<!-- $$\begin{aligned}
-\theta_{k+1}  &= \text{arg max}_{\theta}L(\theta_k, \theta) \\
-L(\theta_k, \theta) &= 
-    \mathbb{E}_{s, a \sim \pi_{\theta_k}}[\text{min}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}A^{\pi_{\theta_k}}(s, a), \text{clip}(\frac{\pi_\theta(a|s)}{\pi_{\theta_k}(a|s)}, 1-\epsilon, 1+\epsilon)A^{\pi_{\theta_k}}(s, a))]
-\end{aligned}$$ -->
-
-Here, $\epsilon$ defines the bound for the deviation from the previous policy. $A^{\pi(\theta)}(s, a)$ denotes the estimate for the advantage of performing action $a$ in a state $s$, i.e. how well the agent performs compared to a random agent. Its value depends on the critic's output:
+Here, $\epsilon$ defines the bound for the deviation from the previous policy. $A^{\pi(\theta)}(s, a)$ denotes the estimate for the advantage $A$ of performing action $a$ in a state $s$, i.e. how well the agent performs compared to a random agent. Its value depends on the critic's output, for we use the so-called _Generalized Advantage Estimation_ (GAE) {cite}`schulman2015high`:
 
 $$\begin{aligned}
 A^{\pi(\theta)} &= \sum\limits_{i=0}^{n-t-1}(\gamma\lambda)^i\delta_{t+i} \\
-\delta_t             &= r_t+\gamma [V(s_{t+1} ; \phi) - V(s_t ; \phi)]
+\delta_t             &= r_t+\gamma [V(s_{t+1} ; \phi) - V(s_t ; \theta_C)]
 \end{aligned}$$
 
+Here $\theta_C$ represents the parameters of the critic's network, $r_t$ describes the reward obtained in time step t, while n denotes the total length of the trajectory. $\gamma$ and $\lambda$ are two hyperparameters 
+which influence rewards and state value predictions from the distant futures have on the advantage calculation. 
+They are typically set to values smaller than one.
+
+The $\delta_t$ in the formulation above represents a biased approximation of the advantage $A(s, a) = Q(s, a) - V(s)$, where $Q$ is the state-action value function as defined above and $V$ is the state value. The GAE can then be understood as a discounted cumulative sum of these estimates, from the current timestep until the end of the trajectory.
 
 ### Application to Inverse Problems
 
