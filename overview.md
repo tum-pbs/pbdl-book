@@ -81,7 +81,7 @@ what can be done with numerical methods: e.g., in scenarios
 where a solver targets cases from a certain well-defined problem
 domain repeatedly, it can make a lot of sense to once invest 
 significant resources to train
-an neural network that supports the repeated solves. Based on the
+a neural network that supports the repeated solves. Based on the
 domain-specific specialization of this network, such a hybrid
 could vastly outperform traditional, generic solvers. And despite
 the many open questions, first publications have demonstrated

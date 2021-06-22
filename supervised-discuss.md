@@ -30,7 +30,7 @@ To summarize the scattered comments of the previous sections, here's a set of "g
 
 - Always start with a 1-sample overfitting test.
 - Check how many trainable parameters your network has.
-- Slowly increase the amount of trianing data (and potentially network parameters and depth).
+- Slowly increase the amount of training data (and potentially network parameters and depth).
 - Adjust hyperparameters (especially the learning rate).
 - Then introduce other components such as differentiable solvers or adversarial training.
 
