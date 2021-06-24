@@ -67,7 +67,7 @@ NN on the other hand incurs a constant cost per evaluation, and is typically tri
 to evaluate on specialized hardware such as GPUs or NN units.
 
 Despite this, it's important to be careful:
-NNs can quickly generate huge numbers of inbetween results. Consider a CNN layer with
+NNs can quickly generate huge numbers of in between results. Consider a CNN layer with
 $128$ features. If we apply it to an input of $128^2$, i.e. ca. 16k cells, we get $128^3$ intermediate values.
 That's more than 2 million.
 All these values at least need to be momentarily stored in memory, and processed by the next layer.
