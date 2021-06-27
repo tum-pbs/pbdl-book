@@ -1,13 +1,17 @@
 Physical Gradients
 =======================
 
-**Note, this chapter is very preliminary - probably not for the first version of the book**
+**Note, this chapter is very preliminary - probably not for the first version of the book. move after RL, before BNNs?**
 
-The next chapter will dive deeper into state-of-the-art-research, and aim for an even tighter
-integration of physics and learning.
-The approaches explained previously all integrate physical models into deep learning algorithms,
-either as part of the loss function or via operators embedded into the network.
-In the former case, the simulator is only required at training time, while in the latter it also employed at inference time. When using {doc}`diffphys`, it actually enables an end-to-end training of NNs.
+The next chapter will questions some fundamental aspects of the formulations so far -- namely the gradients -- and aim for an even tighter integration of physics and learning.
+The approaches explained previously all integrate physical models into deep learning algorithms.
+Either as a physics-informed (PI) loss function or via differentiable physics (DP) operators embedded into the network.
+In the PI case, the simulator is only required at training time, while for DP approaches, it also employed at inference time, it actually enables an end-to-end training of NNs and numerical solvers. Both employ first order derivatives to drive optimizations and learning processes, and we haven't questioned at all whether this is the best choice so far.
+
+A central insight the following chapter is that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
+Treating network and simulator as separate systems instead of a single black box, we'll derive a different update step that replaces the gradient of the simulator.
+As this gradient is closely related to a regular gradient, but computed via physical model equations, 
+we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the {\em physical gradient} (PG).
 
 ```{admonition} Looking ahead
 :class: tip
@@ -23,20 +27,18 @@ Below, we'll proceed in the following steps:
 ## Overview
 
 All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation, GD and hence backpropagation was also employed for the PDE solver (_simulator_) $\mathcal P$, computing the composite gradient 
-$\frac{\partial L}{\partial x} = \frac{\partial L}{\partial \mathcal P(x)} \frac{\partial \mathcal P(x)}{\partial x}$ for the loss function $L$.
+$\partial L / \partial x$ for the loss function $L$:
+
+$$
+\frac{\partial L}{\partial x} = \frac{\partial L}{\partial \mathcal P(x)} \frac{\partial \mathcal P(x)}{\partial x}
+$$ 
 
 In the field of classical optimization, techniques such as Newton's method or BFGS variants are commonly used to optimize numerical processes since they can offer better convergence speed and stability.
 These methods likewise employ gradient information, but substantially differ from GD in the way they 
 compute the update step, typically via higher order derivatives.
-
 % cite{nocedal2006numerical} 
 
-A central insight the following chapter is that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
-Treating network and simulator as separate systems instead of a single black box, we'll derive a different update step that replaces the gradient of the simulator.
-As this gradient is closely related to a regular gradient, but computed via physical model equations, 
-we refer to this update as the {\em physical gradient} (PG).
-The PG can take into account nonlinearities to produce better optimization updates when an (full or approximate) inverse simulator is available.
-
+The PG which we'll derive below can take into account nonlinearities to produce better optimization updates when an (full or approximate) inverse simulator is available.
 In contrast to classic optimization techniques, we show how a differentiable or invertible physics 
 simulator can be leveraged to compute the PG without requiring higher-order derivatives of the simulator.
 
@@ -78,7 +80,7 @@ Surprisingly, this very widely used construction has a number of undesirable pro
 
 **Units** 📏
 
-A first indicator that something is amiss with GD is that it inherently misrespresents dimensions.
+A first indicator that something is amiss with GD is that it inherently misrepresents dimensions.
 Assume two parameters $x_1$ and $x_2$ have different physical units.
 Then the GD parameter updates scale with the inverse of these units because the parameters appear in the denominator for the GD update above.
 The learning rate $\eta$ could compensate for this discrepancy but since $x_1$ and $x_2$ have different units, there exists no single $\eta$ to produce the correct units for both parameters.
@@ -124,8 +126,7 @@ This construction solves some of the problems of gradient descent from above, bu
 **Units** 📏
 
 Quasi-Newton methods definitely provide a much better handling of physical units than GD.
-%Equation~\ref{eq:quasi-newton-update} 
-The quasi-Newton update
+The quasi-Newton update from equation {eq}`quasi-newton-update`
 produces the correct units for all parameters to be optimized, $\eta$ can stay dimensionless.
 
 **Convergence near optimum** 💎
@@ -223,7 +224,7 @@ The change in $x$ is $\Delta x = \Delta L \cdot \frac{\partial x}{\partial z} \f
 The change in intermediate spaces is independent of their respective dependencies, at least up to first order.
 Consequently, the change to these spaces can be estimated during backpropagation, before all gradients have been computed.
 
-Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll direclty get the correctly scaled direction at a given layer, without "helpers" such as the inverse Hessian.
+Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll directly get the correctly scaled direction at a given layer, without "helpers" such as the inverse Hessian.
 
 **Limitations**
 

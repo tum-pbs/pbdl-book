@@ -3,7 +3,7 @@ Introduction to Posterior Inference
 
 We should keep in mind that for all measurements, models, and discretizations we have uncertainties. For the former, this typically appears in the form of measurements errors, while model equations usually encompass only parts of a system we're interested in, and for numerical simulations we inherently introduce discretization errors. So a very important question to ask here is how sure we can be sure that an answer we obtain is the correct one. From a statistics viewpoint, we'd like to know the probability distribution for the posterior, i.e., the different outcomes that are possible.
 
-### Uncertainty 
+## Uncertainty 
 
 This admittedly becomes even more difficult in the context of machine learning:
 we're typically facing the task of approximating complex and unknown functions.
@@ -30,6 +30,19 @@ than training a regular NN. This should come as no surprise, as we're trying to
 learn something fundamentally different here: a full probability distribution 
 instead of a point estimate. (All previous chapters "just" dealt with
 learning such point estimates, and the tasks were still far from trivial.)
+
+```{admonition} Aleatoric and Epistemic Uncertainty
+:class: tip
+Although we won't go into detail within the scope of this book, many works 
+distinguish two types of uncertainty which are important to mention here:
+
+- _Aleatoric_ uncertainty denotes uncertainty within the data, e.g., noise in measurements.
+
+- _Epistemic_ uncertainty, on the other hand, describes uncertainties within a model such as a trained neural network.
+
+In the following we'll primarily target _epistemic_ uncertainty via posterior inference. 
+However, as a word of caution: if they appear together, the different kinds of uncertainties (the two types above are not exhaustive) are very difficult to disentangle in practice. 
+```
 
 ![Divider](resources/divider5.jpg)
 

@@ -30,7 +30,7 @@ This equation has turned the step w.r.t. $L$ into a step in $z$ space: $\Delta z
 However, it does not prescribe a unique way to compute $\Delta z$ since the derivative $\frac{\partial z}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial z}$ puts almost no restrictions on $\Delta z$.
 Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta z$ where $\eta$ controls the step size of the optimization steps.
 
-Here an obvious questions is: Doesn't this leave us with the distadvantage of having to compute the inverse Hessian, as dicussed before?
+Here an obvious questions is: Doesn't this leave us with the disadvantage of having to compute the inverse Hessian, as discussed before?
 Luckily, unlike with regular Newton or quasi-Newton methods, where the Hessian of the full system is required, here, the Hessian is needed only for $L(z)$. Even better, for many typical $L$ its computation can be completely forgone.
 
 E.g., consider the case $L(z) = \frac 1 2 || z^\textrm{predicted} - z^\textrm{target}||_2^2$ which is the most common supervised objective function.
@@ -127,5 +127,6 @@ name: pg-toolbox
 TODO, visual overview of toolbox  , combinations 
 ```
 
+Details of PGs and additional examples can be found in the corresponding paper {cite}`holl2021pg`.
 In the next section's we'll show examples of training physics-based NNs 
 with invertible simulations. (These will follow soon, stay tuned.)

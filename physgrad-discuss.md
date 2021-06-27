@@ -1,14 +1,14 @@
 Discussion
 =======================
 
-In a way, the learning via physical gradients provides the tightest possible coupling
+In a way, the learning via physical gradients provide the tightest possible coupling
 of physics and NNs: the full non-linear process of the PDE model directly steers
 the optimization of the NN.
 
 Naturally, this comes at a cost - invertible simulators are more difficult to build
-(and less common) than the first-order gradients which are relatively commonly used
-for learning processes and adjoint optimizations. Nonetheless, if they're available,
-they can speed up convergence, and yield models that have an inherently better performance.
+(and less common) than the first-order gradients from
+deep learning and adjoint optimizations. Nonetheless, if they're available,
+invertible simulators can speed up convergence, and yield models that have an inherently better performance.
 Thus, once trained, these models can give a performance that we simply can't obtain
 by, e.g., training longer with a simpler approach. So, if we plan to evaluate these
 models often (e.g., ship them in an application), this increased one-time cost
@@ -25,5 +25,4 @@ can pay off in the long run.
 
 ❌ Con: 
 - Requires inverse simulators (at least local ones).
-- less wide-spread availability than, e.g., differentiable physics simulators.
-
+- Less wide-spread availability than, e.g., differentiable physics simulators.
