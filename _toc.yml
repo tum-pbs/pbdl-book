@@ -1,70 +1,53 @@
-# PBDL Table of content (cf https://jupyterbook.org/customize/toc.html)
-#
-
-- file: intro.md
-
-- part: Introduction
+format: jb-book
+root: intro.md
+parts:
+- caption: Introduction
   chapters:
   - file: intro-teaser.ipynb
   - file: overview.md
     sections:
-      - file: overview-equations.md
-      - file: overview-burgers-forw.ipynb
-      - file: overview-ns-forw.ipynb
+    - file: overview-equations.md
+    - file: overview-burgers-forw.ipynb
+    - file: overview-ns-forw.ipynb
   - file: supervised.md
     sections:
-      - file: supervised-airfoils.ipynb
-      - file: supervised-discuss.md
-
-- part: Physical Losses
+    - file: supervised-airfoils.ipynb
+    - file: supervised-discuss.md
+- caption: Physical Losses
   chapters:
   - file: physicalloss.md
   - file: physicalloss-code.ipynb
   - file: physicalloss-discuss.md
-
-- part: Differentiable Physics
+- caption: Differentiable Physics
   chapters:
   - file: diffphys.md
   - file: diffphys-code-burgers.ipynb
   - file: diffphys-discuss.md
   - file: diffphys-code-ns.ipynb
   - file: diffphys-dpvspinn.md
-
-- part: Complex Examples with DP
+- caption: Complex Examples with DP
   chapters:
   - file: diffphys-examples.md
   - file: diffphys-code-sol.ipynb
   - file: diffphys-control.ipynb
   - file: diffphys-outlook.md
-
-- part: Reinforcement Learning
+- caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
   - file: reinflearn-code.ipynb
-  
-# - part: Physical Gradients
-#  chapters:
-#  - file: physgrad.md
-#  - file: physgrad-comparison.ipynb
-#  - file: physgrad-nn.md
-#  - file: physgrad-discuss.md
-  
-- part: PBDL and Uncertainty 
+- caption: PBDL and Uncertainty
   chapters:
   - file: bayesian-intro.md
   - file: bayesian-code.ipynb
-
-- part: Fast Forward Topics
+- caption: Fast Forward Topics
   chapters:
   - file: others-intro.md
   - file: others-timeseries.md
   - file: others-GANs.md
   - file: others-lagrangian.md
   - file: others-metrics.md
-  
-- part: End Matter
+- caption: End Matter
   chapters:
   - file: outlook.md
   - file: references.md
   - file: notation.md
-  

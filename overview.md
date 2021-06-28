@@ -2,7 +2,7 @@ Overview
 ============================
 
 The name of this book, _Physics-Based Deep Learning_,
-denotes combiniations of physical modeling and numerical simulations with
+denotes combinations of physical modeling and numerical simulations with
 methods based on artificial neural networks. 
 The general direction of Physics-Based Deep Learning represents a very
 active, quickly growing and exciting field of research, and the following chapter will
@@ -25,7 +25,7 @@ From weather and climate forecasts {cite}`stocker2014climate` (see the picture a
 over quantum physics {cite}`o2016scalable`,
 to the control of plasma fusion {cite}`maingi2019fesreport`,
 using numerical analysis to obtain solutions for physical models has
-become an integral part of science.
+become an integral part of science.  
 
 At the same time, machine learning technologies and deep neural networks in particular,
 have led to impressive achievements in a variety of fields:
