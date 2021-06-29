@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: Physics-based Deep Learning
-author: Thuerey et al.
+author: N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um
 logo: resources/logo.jpg
 
 # Force re-execution of notebooks on each build.

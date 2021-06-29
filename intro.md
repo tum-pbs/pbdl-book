@@ -81,12 +81,12 @@ This project would not have been possible without the help of many people who co
 
 If you find this book useful, please cite it via:
 ```
-@article{thuerey2021pbdl,
+@book{thuerey2021pbdl,
   title={Physics-based Deep Learning},
   author={Nils Thuerey and Philipp Holl and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
   url={http://physicsbaseddeeplearning.org},
   year={2021},
-  publisher={www}
+  publisher={WWW}
 }
 ```
 
