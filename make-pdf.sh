@@ -1,11 +1,55 @@
 # source this file with "." in a shell
 
+#DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
+DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book-cleanCheckout/ 
+cd ${DIR}
+
+# warning - modifies notebooks!
+python3.7 json-cleanup-for-pdf.py
+
+exit
+
+
+
+
+# GEN!
+/Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
+
+
+cd _build/latex
+
+rm -f book-in.tex sphinxmessages-in.sty
+mv book.tex book-in.tex
+mv sphinxmessages.sty sphinxmessages-in.sty
+
+python3.7 ../../fixup-latex.py
+# generates book-in2.tex
+
+# remove unicode chars
+iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
+
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+# OLD VERSION
+
 echo
 echo Note: first comment out PG chapter in _toc
 echo Note: manually quit first latex pass with shift-x 
 echo
 
-DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
+#DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
+DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book-cleanCheckout/ 
 cd ${DIR}
 
 #echo Note: make sure to copy latex helpers! cp ./latex-helpers/* ./_build/latex/
