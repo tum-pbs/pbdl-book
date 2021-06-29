@@ -5,9 +5,9 @@ import sys, os, re
 # fix jupyter book latex output
 
 #filter_mem = re.compile(r".+\|\s+(\d+)MiB\s+/\s+(\d+)MiB\s+\|")#')
-ft2 = re.compile(r"tst")
-ft3 = re.compile(r"’")
-fte = re.compile(r"👋")
+#ft2 = re.compile(r"tst")
+#ft3 = re.compile(r"’")
+#fte = re.compile(r"👋")
 
 # notebooks, parse and remove lines with WARNING:tensorflow + next? ; remove full "name": "stderr" {} block?  (grep stderr *ipynb)
 
@@ -21,27 +21,75 @@ fte = re.compile(r"👋")
 #   u = np.asarray( [0.008612174447657694, 0.02584669669548606, ... ] )
 
 
-path = "tmp2.txt" # simple
-path = "tmp.txt" # utf8
-#path = "book.tex-in.bak" # full utf8
-outf = "tmpOut.txt"
+inf  = "book-in.tex" 
+outf = "book-in2.tex"
+print("Start fixup latex, "+inf+" -> "+outf+" \n\n")
 
-with open(outf, 'w') as fout:
-	with open(path, 'r') as f:
-		c = 0
-		for line in iter(f.readline, ''):
-			line = re.sub('’', '\'', str(line))
-			line = re.sub('[abz]', '.', str(line))
+reSkip = [] ; reSCnt = []
+reSkip.append( re.compile(r"catcode") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"sepackage{fontspec}") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"defaultfontfeatures") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"polyglossia") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"setmainlanguage{english}") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"addto.captionsenglish") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"set....font{Free") ) ; reSCnt.append( 7 )
+reSkip.append( re.compile(r"ucharclasses") ) ; reSCnt.append( 1 )
+reSkip.append( re.compile(r"unicode-math") ) ; reSCnt.append( 1 )
 
-			t = ft3.search(str(line))
-			if t is not None:
-				print("H " + format(t) +"  "+ format(t.group(0)) )
+#reSkip.append( re.compile(r"") )
+#reSkip.append( re.compile(r"") )
+#reSkip.append( re.compile(r"") )
+#reSkip.append( re.compile(r"") )
 
-			t = fte.search(str(line))
-			if t is not None:
-				print("E " + format(t) + format(t.group(0)) )
+# reSkip.append( re.compile(r"") )
 
-			fout.write(line)
-			print(line[:-1])
-			c = c+1
+def parseF(inf,outf,reSkip,reSCnt):
+	print("Fixup, "+inf+" -> "+outf+" ")
+	with open(outf, 'w') as fout:
+		with open(inf, 'r') as f:
+			c = 0
+			skip = 0
+			skipTot = 0
+			for line in iter(f.readline, ''):
+
+				# skip lines?
+				if skip==0:
+					for r in range(len(reSkip)):
+						t = reSkip[r].search(str(line))
+						if t is not None:
+							#print(format(c)+" skip due to '" + format(t) +"',  RE #"+format(r)+" , skip "+format(reSCnt[r]) )  # debug
+							skip = reSCnt[r]
+							skipTot += reSCnt[r]
+
+				if skip>0:
+					skip = skip-1
+					fout.write("% SKIP due to RE #"+format(r)+" , L"+format(reSCnt[r]) +"   "+line)
+					#print("S "+line[:-1]) # debug
+				else:
+					fout.write(line)
+					#print(line[:-1]) # debug
+
+				c = c+1
+
+				# line = re.sub('’', '\'', str(line))
+				# line = re.sub('[abz]', '.', str(line))
+
+				# t = ft3.search(str(line))
+				# if t is not None:
+				# 	print("H " + format(t) +"  "+ format(t.group(0)) )
+
+				# t = fte.search(str(line))
+				# if t is not None:
+				# 	print("E " + format(t) + format(t.group(0)) )
+	print("Fixup -> "+outf+" done, skips: "+format(skipTot)  +" \n")
+
+parseF(inf,outf,reSkip,reSCnt)
+
+inf  = "sphinxmessages-in.sty" 
+outf = "sphinxmessages.sty"
+
+reSkip = [] ; reSCnt = []
+reSkip.append( re.compile(r"addto.captionsenglish") ) ; reSCnt.append( 1 )
+
+parseF(inf,outf,reSkip,reSCnt)
 
