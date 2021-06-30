@@ -36,7 +36,7 @@ reSkip.append( re.compile(r"set....font{Free") ) ; reSCnt.append( 7 )
 reSkip.append( re.compile(r"ucharclasses") ) ; reSCnt.append( 1 )
 reSkip.append( re.compile(r"unicode-math") ) ; reSCnt.append( 1 )
 
-#reSkip.append( re.compile(r"") )
+
 #reSkip.append( re.compile(r"") )
 #reSkip.append( re.compile(r"") )
 #reSkip.append( re.compile(r"") )
@@ -85,6 +85,8 @@ def parseF(inf,outf,reSkip,reSCnt):
 
 parseF(inf,outf,reSkip,reSCnt)
 
+#---
+
 inf  = "sphinxmessages-in.sty" 
 outf = "sphinxmessages.sty"
 
@@ -93,3 +95,19 @@ reSkip.append( re.compile(r"addto.captionsenglish") ) ; reSCnt.append( 1 )
 
 parseF(inf,outf,reSkip,reSCnt)
 
+#---
+
+inf  = "book-in.aux" 
+outf = "book.aux"
+
+reSkip = [] ; reSCnt = []
+reSkip.append( re.compile(r"selectlanguage...english") ) ; reSCnt.append( 1 )
+
+parseF(inf,outf,reSkip,reSCnt)
+
+#---
+
+# same, selectlanguage 
+inf  = "book-in.toc" 
+outf = "book.toc"
+parseF(inf,outf,reSkip,reSCnt)

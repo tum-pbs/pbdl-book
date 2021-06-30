@@ -1,16 +1,18 @@
 # source this file with "." in a shell
 
+# do clean git checkout?
+
 #DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book/
-DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book-cleanCheckout/ 
-cd ${DIR}
+#DIR=/Users/thuerey/Dropbox/mbaDevelSelected/pbdl-book-cleanCheckout/ 
+#cd ${DIR}
+
 
 # warning - modifies notebooks!
 python3.7 json-cleanup-for-pdf.py
-
-exit
-
+#TEMP!!!!  python3.7 ../pbdl-book/json-cleanup-for-pdf.py
 
 
+# clean / remove _build dir ?
 
 # GEN!
 /Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
@@ -18,15 +20,22 @@ exit
 
 cd _build/latex
 
-rm -f book-in.tex sphinxmessages-in.sty
+rm -f book-in.tex sphinxmessages-in.sty book-in.aux book-in.toc
 mv book.tex book-in.tex
 mv sphinxmessages.sty sphinxmessages-in.sty
+mv book.aux book-in.aux
+mv book.toc book-in.toc
 
+#TEMP!!!!  python3.7 ../../../pbdl-book/fixup-latex.py
 python3.7 ../../fixup-latex.py
 # generates book-in2.tex
 
 # remove unicode chars
 iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
+
+# run pdflatex?
+pdflatex -recorder book
+# pdflatex -recorder book
 
 exit
 
