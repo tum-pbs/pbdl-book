@@ -1,9 +1,15 @@
 import json, re, os
 
+
+
 fileList = [ 
 	"diffphys-code-burgers.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
 	"bayesian-code.ipynb", "supervised-airfoils.ipynb" # pytorch
 	]
+
+fileList = [ "diffphys-code-burgers.ipynb"] # debug
+
+# shorten "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
 
 for fnOut in fileList:
 	fn = fnOut[:-5] + "bak"
@@ -26,6 +32,8 @@ for fnOut in fileList:
 
 	re1 = re.compile(r"WARNING:tensorflow:")
 	re2 = re.compile(r"UserWarning:")
+	re3 = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
+	re3t = "[0.008612174447657694, 0.02584669669548606, 0.043136357266407785 ... ]"
 
 	t="cells"
 	okay = 0
@@ -41,6 +49,14 @@ for fnOut in fileList:
 			#print(d[t][i].keys())
 			#d[t][i]["outputs"] = ""
 			#print(d[t][i]["outputs"])
+
+			for j in range(len( d[t][i]["source"] )):
+				#print( d[t][i]["source"][j] )
+				#print( type(d[t][i]["source"][j] ))
+				dsOut = re3.sub( re3t, d[t][i]["source"][j] )  # replace long number string (only for burgers)
+				d[t][i]["source"][j] = dsOut
+				deletes = deletes+1
+				#print( d[t][i]["source"][j] +"\n >>> \n" +d2 )
 
 			#print(len( d[t][i]["outputs"] ))
 			for j in range(len( d[t][i]["outputs"] )):

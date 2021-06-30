@@ -19,6 +19,7 @@ python3.7 json-cleanup-for-pdf.py
 
 
 cd _build/latex
+mv book.pdf book-xetex.pdf
 
 rm -f book-in.tex sphinxmessages-in.sty book-in.aux book-in.toc
 mv book.tex book-in.tex
