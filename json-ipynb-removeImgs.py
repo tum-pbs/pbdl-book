@@ -1,8 +1,8 @@
 import json
+# for spell checking single files
 
 fnOut="temp_reduced.txt"
 
-#fn="t.json"
 fn="temp.txt"
 with open(fn) as file:
 	d = json.load(file)
@@ -33,8 +33,6 @@ for i in range(len(d[t])):
 				#if(  d[t][i]["outputs"][j]["data"].contains('image/png') ):
 				if( 'image/png' in d[t][i]["outputs"][j]["data"].keys() ):
 					d[t][i]["outputs"][j]["data"]['image/png'] = ""
-
-#print(d["cells"])
 
 with open(fnOut,'w') as fileOut:
 	json.dump(d,fileOut, indent=1, sort_keys=True)

@@ -1,15 +1,13 @@
 import json, re, os
 
-
-
 fileList = [ 
 	"diffphys-code-burgers.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
 	"bayesian-code.ipynb", "supervised-airfoils.ipynb" # pytorch
 	]
 
-fileList = [ "diffphys-code-burgers.ipynb"] # debug
+#fileList = [ "diffphys-code-burgers.ipynb"] # debug
 
-# shorten "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
+# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
 
 for fnOut in fileList:
 	fn = fnOut[:-5] + "bak"
