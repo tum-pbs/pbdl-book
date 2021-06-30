@@ -75,7 +75,7 @@ for fnOut in fileList:
 						else: # delete line "dell"
 							deletes = deletes+1
 							dell.append(d[t][i]["outputs"][j]["text"][k])
-							print( format(nums) +"  " + d[t][i]["outputs"][j]["text"][k] ) # len( d[t][i]["outputs"][j]["text"][k] ) )
+							#print( format(nums) +"  " + d[t][i]["outputs"][j]["text"][k] ) # len( d[t][i]["outputs"][j]["text"][k] ) )
 
 					for dl in dell:
 						d[t][i]["outputs"][j]["text"].remove(dl)
