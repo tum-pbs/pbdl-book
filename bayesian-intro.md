@@ -1,13 +1,13 @@
 Introduction to Posterior Inference
 =======================
 
-We should keep in mind that for all measurements, models, and discretizations we have uncertainties. For the former, this typically appears in the form of measurements errors, while model equations usually encompass only parts of a system we're interested in, and for numerical simulations we inherently introduce discretization errors. So a very important question to ask here is how sure we can be sure that an answer we obtain is the correct one. From a statistics viewpoint, we'd like to know the probability distribution for the posterior, i.e., the different outcomes that are possible.
+We should keep in mind that for all measurements, models, and discretizations we have uncertainties. For measurements and observations, this typically appears in the form of measurement errors. Model equations equations, on the other hand, usually encompass only parts of a system we're interested in (leaving the remainder as an uncertainty), while for numerical simulations we inherently introduce discretization errors. So a very important question to ask here is how we can be sure that an answer we obtain is the correct one. From a statisticians viewpoint, we'd like to know the posterior pobability distribution, a distribution that captures possible uncertainties we have about our model or data.
 
 ## Uncertainty 
 
 This admittedly becomes even more difficult in the context of machine learning:
 we're typically facing the task of approximating complex and unknown functions.
-From a probabilistic perspective, the standard process of training an NN here
+From a probabilistic perspective, the standard process of training a NN here
 yields a _maximum likelihood estimation_ (MLE) for the parameters of the network.
 However, this MLE viewpoint does not take any of the uncertainties mentioned above into account:
 for DL training, we likewise have a numerical optimization, and hence an inherent
@@ -18,8 +18,8 @@ _posterior inference_ possible,
 i.e. learn to produce the full output distribution. However, this turns out to be an
 extremely difficult task.
 
-This where so called _Bayesian neural network_ (BNN) approaches come into play. They 
-make a form of posterior inference possible by making assumptions about the probability 
+This is where so-called _Bayesian neural network_ (BNN) approaches come into play. They 
+allow for a form of posterior inference by making assumptions about the probability 
 distributions of individual parameters of the network. This gives a distribution for the
 parameters, with which we can evaluate the network multiple times to obtain different versions
 of the output, and in this way sample the distribution of the output.
@@ -48,24 +48,26 @@ However, as a word of caution: if they appear together, the different kinds of u
 
 ## Introduction to Bayesian Neural Networks
 
-In order to combine posterior inference with Neural Networks, we can use standard techniques from Bayesian Modeling and combine them with the Deep Learning machinery. In Bayesian Modeling, we aim at learning _distributions_ over the model parameters instead of these fixed point estimates. In the case of NNs, the model parameters are the weights and biases of the network, summarized as $\theta$. Our goal is therefore to learn a so-called _posterior distribution_ $p({\theta}|{D})$ from the data $D$, which captures the uncertainty we have about the networks weights and biases _after_ observing the data $D$. This posterior distribution is the central quantity of interest here: if we can estimate it reasonably well, we can use it to make good predictions, but also assess uncertainties related to those predictions. For both objectives it is necessary to _marginalize_ over the posterior distribution, i.e. integrate it out. A single prediction for input $x_{i}$ can for example be obtained via
+In order to combine posterior inference with Neural Networks, we can use standard techniques from Bayesian Modeling and combine them with the Deep Learning machinery. In Bayesian Modeling, we aim at learning _distributions_ over the model parameters instead of these fixed point estimates. In the case of NNs, the model parameters are the weights and biases, summarized by $\theta$, for a neural network $f$. Our goal is therefore to learn a so-called _posterior distribution_ $p({\theta}|{D})$ from the data $D$, which captures the uncertainty we have about the networks weights and biases _after_ observing the data $D$. This posterior distribution is the central quantity of interest here: if we can estimate it reasonably well, we can use it to make good predictions, but also assess uncertainties related to those predictions. For both objectives it is necessary to _marginalize_ over the posterior distribution, i.e. integrate it out. A single prediction for input $x_{i}$ can for example be obtained via
 
 $$
-    \hat{y_{i}}=\int f_{\theta}(x_{i}) ~ p(\theta|D) ~ d\theta
+    \hat{y_{i}}=\int f(x_{i}; \theta) ~ p(\theta|D) ~ d\theta
 $$
 
 Similarly, one can for instance compute the standard deviation in order to assess a measure of uncertainty over the prediction $\hat{y_{i}}$.
 
 ## Prior distributions
 
-In order to obtain the required posterior distribution, in Bayesian modeling one first has to define a _prior distribution_ $p({\theta})$ over the network parameters. This prior distribution should encompass the knowledge we have about the network weights _before_ training the model. We for instance know that the weights of neural networks are usually rather small and can be both positive and negative. Centered normal distributions with some small variance parameter are therefore a standard choice. For computational simplicity, they are typically also assumed to be independent from another. When observing data ${D}$, the prior distribution over the weights is updated to the so-called posterior according to Bayes rule:
+In order to obtain the required posterior distribution, in Bayesian modeling one first has to define a _prior distribution_ $p({\theta})$ over the network parameters. This prior distribution should encompass the knowledge we have about the network weights _before_ training the model. We for instance know that the weights of neural networks are usually rather small and can be both positive and negative. Centered normal distributions with some small variance parameter are therefore a standard choice. For computational simplicity, they are typically also assumed to be independent from another. When observing data ${D}$, the prior distribution over the weights is updated to the  posterior according to Bayes rule:
 
 $$
     p({\theta}|{D}) = \frac{p({D}|{\theta})p({\theta})}{p({D})}
     \text{ . }
 $$
 
-This is, we update our a-priori knowledge after observing data, i.e. we _learn_ from data. The computation required for the Bayesian update is usually intractable, especially when dealing with non-trivial network architectures. Therefore, the posterior $p({\theta}|{D})$ is approximated with an easy-to-evaluate variational distribution $q_{\phi}(\theta)$, parametrized by $\phi$. Again, independent Normal distributions are typically used for each weight. Hence, the parameters $\phi$ contain all mean and variance parameters $\mu, \sigma$ of those normal distributions. The optimization goal is then to find a distribution $q_{\phi}(\theta)$ that is close to the true posterior. One can measure the similarity of two distributions via the KL-divergence. 
+This is, we update our a-priori knowledge after observing data, i.e. we _learn_ from data. The computation required for the Bayesian update is usually intractable, especially when dealing with non-trivial network architectures. Therefore, the posterior $p({\theta}|{D})$ is approximated with an easy-to-evaluate variational distribution $q_{\phi}(\theta)$, parametrized by $\phi$. Again, independent Normal distributions are typically used for each weight. Hence, the parameters $\phi$ contain all mean and variance parameters $\mu, \sigma$ of those normal distributions. 
+The optimization goal is then to find a distribution $q_{\phi}(\theta)$ that is close to the true posterior.
+One way of assessing this closeness is the KL-divergence, a method used widely in practice for measuring the similarity of two distributions.
 
 ## Evidence lower bound
 
@@ -94,9 +96,9 @@ If $S>1$, steps 2 and 3 have to be repeated $S$ times in order to compute the EL
 ## Dropout as alternative
 
 % todo, cite [Gal et al](https://arxiv.org/abs/1506.02142) 
-Previous work has also shown that using dropout is mathematically  equivalent  to  an  approximation to  the  probabilistic  deep  Gaussian  process. In other words, if you train a network with dropout (and L2 regularization), this is equivalent to a variational Bayesian network with a specific prior (satisfying the so-called KL-condition) and specific approximate posterior choice (a product of Bernoulli distributions). 
+Previous work has shown that using dropout is mathematically equivalent to an approximation to the probabilistic deep Gaussian process. Furthermore, for a specific prior (satisfying the so-called KL-condition) and specific approximate posterior choice (a product of Bernoulli distributions), training a neural network with dropout and L2 regularization and training a variational BNN results in an equivalent optimization procedure. In other words, dropout neural networks are a form of Bayesian neural networks.
 
-Obtaining uncertainty estimates is then as easy as training a conventional neural network with dropout and extending dropout, which traditionally has only been used during the training phase, to the prediction phase. This will lead to the predictions being random (because dropout will randomly drop some of the weights), which allows us to compute average and standard deviation statistics for single samples from the dataset, just like for the variational BNN case.
+Obtaining uncertainty estimates is then as easy as training a conventional neural network with dropout and extending dropout, which traditionally has only been used during the training phase, to the prediction phase. This will lead to the predictions being random (because dropout will randomly drop some of the activations), which allows us to compute average and standard deviation statistics for single samples from the dataset, just like for the variational BNN case.
 It is an ongoing discussion in the field whether variational or dropout-based methods are preferable. 
 
 ## A practical example
