@@ -26,13 +26,16 @@ Some visual examples of numerically simulated time sequences. In this book, we a
 
 As a _sneak preview_, in the next chapters will show:
 
-- How to train networks to infer fluid flows around shapes like airfoils in one go, i.e., a _surrogate model_ that replaces a traditional numerical simulation.
+- How to train networks to infer a fluid flow around shapes like airfoils, and estimate the uncertainty of the prediction. This gives a _surrogate model_ that replaces a traditional numerical simulation.
 
 - How to use model equations as residuals to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
 
 - How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
 
-The different PBDL techniques will be introduced ordered in terms of growing
+Over the course of the next
+chapters we will introduce different approaches for introducing physical models
+into deep learning, i.e., _physics-based deep learning_ (PBDL) approaches.
+These algorithmic variants will be introduced in order of increasing
 tightness of the integration, and  pros and cons of the different approaches
 will be discussed. It's important to know in which scenarios each of the
 different techniques is particularly useful.
@@ -40,7 +43,7 @@ different techniques is particularly useful.
 
 ## Comments and suggestions
 
-This _book_, where "book" stands for a collection of texts, equations, images and code examples,
+This _book_, where "book" stands for a collection of digital texts and code examples,
 is maintained by the
 [TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us 
 if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).

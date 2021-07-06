@@ -23,11 +23,12 @@
 
 | ABbreviation | Meaning |
 | --- | --- |
-| CNN  | Convolutional Neural Network |
+| BNN  | Bayesian neural network |
+| CNN  | Convolutional neural network |
 | DL   | Deep Learning |
 | GD   | (steepest) Gradient Descent|
 | MLP  | Multi-Layer Perceptron, a neural network with fully connected layers |
-| NN   | Neural Network (a generic one, in contrast to, e.g., a CNN or MLP) |
+| NN   | Neural network (a generic one, in contrast to, e.g., a CNN or MLP) |
 | PDE  | Partial Differential Equation |
 | PBDL | Physics-Based Deep Learning |
 | SGD  | Stochastic Gradient Descent|
