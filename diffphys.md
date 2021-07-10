@@ -63,7 +63,7 @@ for all parameters of $\mathcal P(\mathbf{x}, \nu)$, e.g.,
 we omit $\nu$ in the following, assuming that this is a 
 given model parameter with which the NN should not interact. 
 Naturally, it can vary within the solution manifold that we're interested in, 
-but $\nu$ will not be the output of a NN representation. If this is the case, we can omit
+but $\nu$ will not be the output of an NN representation. If this is the case, we can omit
 providing $\partial \mathcal P_i / \partial \nu$ in our solver. However, the following learning process
 naturally transfers to including $\nu$ as a degree of freedom.
 

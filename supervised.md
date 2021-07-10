@@ -14,7 +14,7 @@ model equations exist.
 
 For supervised training, we're faced with an 
 unknown function $f^*(x)=y^*$, collect lots of pairs of data $[x_0,y^*_0], ...[x_n,y^*_n]$ (the training data set)
-and directly train a NN to represent an approximation of $f^*$ denoted as $f$.
+and directly train an NN to represent an approximation of $f^*$ denoted as $f$.
 
 The $f$ we can obtain in this way is typically not exact, 
 but instead we obtain it via a minimization problem:
@@ -24,7 +24,7 @@ $$
 \text{arg min}_{\theta} \sum_i (f(x_i ; \theta)-y^*_i)^2 .
 $$ (supervised-training)
 
-This will give us $\theta$ such that $f(x;\theta) =  y \approx y$ as accurately as possible given
+This will give us $\theta$ such that $f(x;\theta) =  y \approx y^*$ as accurately as possible given
 our choice of $f$ and the hyperparameters for training. Note that above we've assumed 
 the simplest case of an $L^2$ loss. A more general version would use an error metric $e(x,y)$
 to be minimized via $\text{arg min}_{\theta} \sum_i e( f(x_i ; \theta) , y^*_i) )$. The choice
@@ -37,7 +37,7 @@ The training data typically needs to be of substantial size, and hence it is att
 to use numerical simulations solving a physical model $\mathcal{P}$ 
 to produce a large number of reliable input-output pairs for training.
 This means that the training process uses a set of model equations, and approximates
-them numerically, in order to train the NN representation $\tilde{f}$. This
+them numerically, in order to train the NN representation $f$. This
 has quite a few advantages, e.g., we don't have measurement noise of real-world devices
 and we don't need manual labour to annotate a large number of samples to get training data.
 
@@ -61,7 +61,8 @@ in mind in comparison to the more complex variants we'll encounter later on.
 ## Surrogate models
 
 One of the central advantages of the supervised approach above is that
-we obtain a _surrogate_ for the model $\mathcal{P}$. The numerical approximations
+we obtain a _surrogate model_, i.e., a new function that mimics the behavior of the original $\mathcal{P}$. 
+The numerical approximations
 of PDE models for real world phenomena are often very expensive to compute. A trained
 NN on the other hand incurs a constant cost per evaluation, and is typically trivial
 to evaluate on specialized hardware such as GPUs or NN units.
@@ -78,4 +79,4 @@ is a very attractive and interesting direction.
 ## Show me some code!
 
 Let's directly look at an example for this: we'll replace a full solver for
-_turbulent flows around airfoils_ with a surrogate model (from {cite}`thuerey2020dfp`). 
+_turbulent flows around airfoils_ with a surrogate model from {cite}`thuerey2020dfp`. 

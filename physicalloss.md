@@ -32,7 +32,7 @@ where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to 
 of higher and higher order (this can of course also include mixed derivatives with respect to different axes).
 
 In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
-with a NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
+with an NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
 naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
 
 $$

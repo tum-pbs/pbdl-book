@@ -7,7 +7,7 @@ We should keep in mind that for all measurements, models, and discretizations we
 
 This admittedly becomes even more difficult in the context of machine learning:
 we're typically facing the task of approximating complex and unknown functions.
-From a probabilistic perspective, the standard process of training a NN here
+From a probabilistic perspective, the standard process of training an NN here
 yields a _maximum likelihood estimation_ (MLE) for the parameters of the network.
 However, this MLE viewpoint does not take any of the uncertainties mentioned above into account:
 for DL training, we likewise have a numerical optimization, and hence an inherent
