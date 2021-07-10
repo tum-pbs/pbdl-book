@@ -5,8 +5,8 @@ The name of this book, _Physics-Based Deep Learning_,
 denotes combinations of physical modeling and numerical simulations with
 methods based on artificial neural networks. 
 The general direction of Physics-Based Deep Learning represents a very
-active, quickly growing and exciting field of research, and the following chapter will
-give a more thorough introduction for the topic and establish the basics
+active, quickly growing and exciting field of research. The following chapter will
+give a more thorough introduction to the topic and establish the basics
 for following chapters.
 
 ```{figure} resources/overview-pano.jpg
@@ -32,14 +32,14 @@ have led to impressive achievements in a variety of fields:
 from image classification {cite}`krizhevsky2012` over
 natural language processing {cite}`radford2019language`, 
 and more recently also for protein folding {cite}`alquraishi2019alphafold`.
-The field is very vibrant, and quickly developing, with the promise of vast possibilities.
+The field is very vibrant and quickly developing, with the promise of vast possibilities.
 
 On the other hand, the successes of deep learning (DL) approaches 
-has given rise to concerns that this technology has 
+have given rise to concerns that this technology has 
 the potential to replace the traditional, simulation-driven approach to
 science. Instead of relying on models that are carefully crafted
 from first principles, can data collections of sufficient size
-be processed to provide the correct answers instead?
+be processed to provide the correct answers?
 In short: this concern is unfounded. As we'll show in the next chapters,
 it is crucial to bring together both worlds: _classical numerical techniques_
 and _deep learning_.
@@ -77,9 +77,9 @@ I.e., our goal is to _reconcile_ the data-centered
 viewpoint and the physical simulation viewpoint.
 
 The resulting methods have a huge potential to improve
-what can be done with numerical methods: e.g., in scenarios
+what can be done with numerical methods: in scenarios
 where a solver targets cases from a certain well-defined problem
-domain repeatedly, it can make a lot of sense to once invest 
+domain repeatedly, it can for instance make a lot of sense to once invest 
 significant resources to train
 a neural network that supports the repeated solves. Based on the
 domain-specific specialization of this network, such a hybrid
@@ -105,7 +105,7 @@ observations).
 
 ![An overview of categories of physics-based deep learning methods](resources/physics-based-deep-learning-overview.jpg)
 
-No matter whether we're considering forward or inverse problem, 
+No matter whether we're considering forward or inverse problems, 
 the most crucial differentiation for the following topics lies in the 
 nature of the integration  between DL techniques
 and the domain knowledge, typically in the form of model equations

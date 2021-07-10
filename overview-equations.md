@@ -27,7 +27,7 @@ $$
 $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
-with a stochastic gradient descent (SGD) optimizer of your choice, e.g., Adam {cite}`kingma2014adam`.
+with a stochastic gradient descent (SGD) optimizer of your choice, e.g. Adam {cite}`kingma2014adam`.
 We'll rely on auto-diff to compute the gradient w.r.t. weights, $\partial f / \partial \theta$,
 We will also assume that $e$ denotes a _scalar_ error function (also
 called cost, or objective function).
@@ -78,7 +78,7 @@ positions are denoted by $\mathbf{x} \in \Omega$.
 
 To obtain unique solutions for $\mathcal P^*$ we need to specify suitable
 initial conditions, typically for all quantities of interest at $t=0$,
-and boundary conditions for the boundary or $\Omega$, denoted by $\Gamma$ in 
+and boundary conditions for the boundary of $\Omega$, denoted by $\Gamma$ in 
 the following.
 
 $\mathcal P^*$ denotes
@@ -87,7 +87,7 @@ its continuity, we will typically assume that first and second derivatives exist
 
 We can then use numerical methods to obtain approximations 
 of a smooth function such as $\mathcal P^*$ via discretization. 
-This invariably introduce discretization errors, which we'd like to keep as small as possible.
+These invariably introduce discretization errors, which we'd like to keep as small as possible.
 These errors can be measured in terms of the deviation from the exact analytical solution, 
 and for discrete simulations of PDEs, they are typically expressed as a function of the truncation error 
 $O( \Delta x^k )$, where $\Delta x$ denotes the spatial step size of the discretization.
@@ -96,7 +96,7 @@ Likewise, we typically have a temporal discretization via a time step $\Delta t$
 ```{admonition} Notation and abbreviations
 :class: seealso
 If unsure, please check the summary of our mathematical notation
-and the abbreviations used inn: {doc}`notation`.
+and the abbreviations used in: {doc}`notation`.
 ```
 
 % \newcommand{\pde}{\mathcal{P}}         % PDE ops
@@ -186,15 +186,19 @@ In 2D, the Navier-Stokes equations without any external forces can be written as
 
 $$\begin{aligned}
     \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
-    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
+    - \frac{\Delta t}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
     \\
     \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &=
-    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
+    - \frac{\Delta t}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
     \\
     \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
 \end{aligned}$$ (model-ns2d)
 
 where, like before, $\nu$ denotes a diffusion constant for viscosity.
+In practice, the $\Delta t$ factor for the pressure term can be often simplified to
+$1/\rho$ as it simply yields a scaling of the pressure gradient used to make
+the velocity divergence free. We'll typically use this simplification later on 
+in implementations, effectively computing an instantaneous pressure.
 
 An interesting variant is obtained by including the 
 [Boussinesq approximation](https://en.wikipedia.org/wiki/Boussinesq_approximation_(buoyancy))
@@ -203,9 +207,9 @@ With a marker field $v$, e.g., indicating regions of high temperature,
 this yields the following set of equations:
 
 $$\begin{aligned}
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{\Delta t}{\rho} \nabla p 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \xi v
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{\Delta t}{\rho} \nabla p + \xi v
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0,
   \\
@@ -218,11 +222,11 @@ And finally, the Navier-Stokes model in 3D give the following set of equations:
 
 $$
 \begin{aligned}
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
   \\
-  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
+  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0.
 \end{aligned}
