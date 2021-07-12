@@ -2,7 +2,7 @@ Physical Loss Terms
 =======================
 
 The supervised setting of the previous sections can quickly 
-yield approximate solutions with a fairly simple training process, but what's
+yield approximate solutions with a fairly simple training process. However, what's
 quite sad to see here is that we only use physical models and numerics
 as an "external" tool to produce a big pile of data 😢.
 
@@ -31,9 +31,7 @@ $$
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
 of higher and higher order (this can of course also include mixed derivatives with respect to different axes).
 
-In this context we can employ DL by approximating the unknown $\mathbf{u}$ itself 
-with an NN, denoted by $\tilde{\mathbf{u}}$. If the approximation is accurate, the PDE
-naturally should be satisfied, i.e., the residual $R$ should be equal to zero: 
+In this context, we can approximate the unknown u itself with a neural network. If the approximation, which we call $\tilde{\mathbf{u}}$, is accurate, the PDE should be satisfied naturally. In other words, the residual R should be equal to zero:
 
 $$
   R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) = 0 .
@@ -44,8 +42,8 @@ we can collect sample solutions
 $[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(\mathbf{x})=y$. 
 This is typically important, as most practical PDEs we encounter do not have unique solutions
 unless initial and boundary conditions are specified. Hence, if we only consider $R$ we might
-get solutions with random offset or other undesirable components. Hence the supervised sample points
-help to _pin down_ the solution in certain places.
+get solutions with random offset or other undesirable components. The supervised sample points
+therefore help to _pin down_ the solution in certain places.
 Now our training objective becomes
 
 $$
@@ -55,9 +53,13 @@ $$ (physloss-training)
 where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 
 the residual term, respectively. We could of course add additional residual terms with suitable scaling factors here.
 
+It is instructive to note what the two different terms in equation {eq}`physloss-training` mean: The first term is a conventional, supervised L2-loss. If we were to optimize only this loss, our network would learn to approximate the training samples well, but might average multiple modes in the solutions, and do poorly in regions in between the sample points. 
+If we, instead, were to optimize only the second term (the physical residual), our neural network might be able to locally satisfy the PDE, but still could produce solutions that are still 'off' from our training data. This can happen due to "null spaces" in the solutions, i.e., different solutions that all satisfy the residuals.
+Therefore, we optimize both objectives simultaneously such that, in the best case, the network learns to approximate the specific solutions of the training data while still capturing knowledge about the underlying PDE.
+
 Note that, similar to the data samples used for supervised training, we have no guarantees that the
 residual terms $R$ will actually reach zero during training. The non-linear optimization of the training process
-will minimize the supervised and residual terms as much as possible, but worst case, large non-zero residual 
+will minimize the supervised and residual terms as much as possible, but there is no guarantee. Large, non-zero residual 
 contributions can remain. We'll look at this in more detail in the upcoming code example, for now it's important 
 to remember that physical constraints in this way only represent _soft-constraints_, without guarantees
 of minimizing these constraints.

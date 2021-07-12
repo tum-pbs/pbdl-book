@@ -50,7 +50,7 @@ Thus, the physical soft constraints allow us to encode solutions to
 PDEs with the tools of NNs.
 An inherent drawback of this approach is that it yields single solutions,
 and that it does not combine with traditional numerical techniques well. 
-E.g., learned representation is not suitable to be refined with 
+E.g., the learned representation is not suitable to be refined with 
 a classical iterative solver such as the conjugate gradient method. 
 
 This means many
