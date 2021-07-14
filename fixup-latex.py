@@ -102,6 +102,7 @@ parseF(inf,outf,reSkip,reSCnt)
 inf  = "book-in.aux" 
 outf = "book.aux"
 
+# remove selectlang eng statements from book aux
 reSkip = [] ; reSCnt = []
 reSkip.append( re.compile(r"selectlanguage...english") ) ; reSCnt.append( 1 )
 
@@ -109,7 +110,19 @@ parseF(inf,outf,reSkip,reSCnt)
 
 #---
 
-# same, selectlanguage 
+# same, selectlanguage for toc
 inf  = "book-in.toc" 
 outf = "book.toc"
 parseF(inf,outf,reSkip,reSCnt)
+
+#---
+
+inf  = "sphinxmanual-in.cls" 
+outf = "sphinxmanual.cls"
+
+# remove openright option from style
+reSkip = [] ; reSCnt = []
+reSkip.append( re.compile(r"PassOptionsToClass.openright...sphinxdocclass") ) ; reSCnt.append( 1 )
+
+parseF(inf,outf,reSkip,reSCnt)
+

@@ -22,6 +22,7 @@ mv book.tex book-in.tex
 mv sphinxmessages.sty sphinxmessages-in.sty
 mv book.aux book-in.aux
 mv book.toc book-in.toc
+mv sphinxmanual.cls sphinxmanual-in.cls
 
 python3.7 ../../fixup-latex.py
 # generates book-in2.tex
