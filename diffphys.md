@@ -34,7 +34,7 @@ provide directions in the form of gradients to steer the learning process.
 With the DP direction we build on existing numerical solvers. I.e., 
 the approach is strongly relying on the algorithms developed in the larger field 
 of computational methods for a vast range of physical effects in our world.
-To start with we need a continuous formulation as model for the physical effect that we'd like 
+To start with, we need a continuous formulation as model for the physical effect that we'd like 
 to simulate -- if this is missing we're in trouble. But luckily, we can 
 tap into existing collections of model equations and established methods
 for discretizing continuous models.
@@ -45,9 +45,10 @@ with model parameters $\nu$ (e.g., diffusion, viscosity, or conductivity constan
 The component of $\mathbf{u}$ will be denoted by a numbered subscript, i.e.,
 $\mathbf{u} = (u_1,u_2,\dots,u_d)^T$.
 %and a corresponding discrete version that describes the evolution of this quantity over time: $\mathbf{u}_t = \mathcal P(\mathbf{x}, \mathbf{u}, t)$.
-Typically, we are interested in the temporal evolution of such a system, 
-and discretization yields a formulation $\mathcal P(\mathbf{x}, \nu)$
-that we can re-arrange to compute a future state after a time step $\Delta t$ via sequence of
+Typically, we are interested in the temporal evolution of such a system.
+Discretization yields a formulation $\mathcal P(\mathbf{x}, \nu)$
+that we can re-arrange to compute a future state after a time step $\Delta t$. 
+The state at $t+\Delta t$ is computed via sequence of
 operations $\mathcal P_1, \mathcal P_2 \dots \mathcal P_m$ such that
 $\mathbf{u}(t+\Delta t) = \mathcal P_1 \circ \mathcal P_2 \circ \dots \mathcal P_m ( \mathbf{u}(t),\nu )$,
 where $\circ$ denotes function decomposition, i.e. $f(g(x)) = f \circ g(x)$.
@@ -151,9 +152,9 @@ E.g., as this process is very similar to adjoint method optimizations, we can re
 that were developed in this field, or leverage established numerical methods. E.g., 
 we could leverage the $O(n)$ runtime of multigrid solvers for matrix inversion.
 
-The flip-side of this approach is, that it requires some understanding of the problem at hand, 
+The flip-side of this approach is that it requires some understanding of the problem at hand, 
 and of the numerical methods. Also, a given solver might not provide gradient calculations out of the box.
-Thus, we want to employ DL for model equations that we don't have a proper grasp of, it might not be a good
+Thus, if we want to employ DL for model equations that we don't have a proper grasp of, it might not be a good
 idea to directly go for learning via a DP approach. However, if we don't really understand our model, we probably
 should go back to studying it a bit more anyway...
 
@@ -199,14 +200,16 @@ $$
     d(t+\Delta t) = \mathcal P ( ~ d(t), \mathbf{u}, t+\Delta t) 
 $$
 
-As a simple example of an optimization and learning task, let's consider the problem of
-finding a motion $\mathbf{u}$ such that starting with a given initial state $d^{~0}$ at $t^0$,
-the time evolved scalar density at time $t^e$ has a certain shape or configuration $d^{\text{target}}$.
-Informally, we'd like to find a motion that deforms $d^{~0}$ into a target state.
+As a simple example of an inverse problem and learning task, let's consider the problem of
+finding a unknown motion $\mathbf{u}$: 
+this motion should transform a given initial scalar density state $d^{~0}$ at time $t^0$ 
+into state that's evolved by $\mathcal P$ to a later "end" time $t^e$ 
+with a certain shape or configuration $d^{\text{target}}$.
+Informally, we'd like to find a motion that deforms $d^{~0}$ through the PDE model into a target state.
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
 to minimize the loss function $L=|d(t^e) - d^{\text{target}}|^2$. 
 
-Note that as described here this is a pure optimization task, there's no NN involved,
+Note that as described here this inverse problem is a pure optimization task: there's no NN involved,
 and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
 as would be custom in a real learning task.
 
@@ -214,7 +217,7 @@ The final state of our marker density $d(t^e)$ is fully determined by the evolut
 of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem:
 
 $$
-    \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e - t^0 ) - d^{\text{target}}|^2
+    \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2
 $$
 
 We'd now like to find the minimizer for this objective by
@@ -229,38 +232,58 @@ $\Delta \mathbf{u} = \partial L / \partial \mathbf{u}$,
 which can be decomposed into 
 $\Delta \mathbf{u} = 
 \frac{ \partial d }{ \partial \mathbf{u}}
-\frac{ \partial L }{ \partial d}
-$.
-And as the evolution of $d$ is given by our discretized physical model $P$,
-what we're acutally looking for is the Jacobian 
-$\partial \mathcal P / \partial \mathbf{u}$ to
-compute 
-$\Delta \mathbf{u} = 
- \frac{ \partial \mathcal P }{ \partial \mathbf{u}}
- \frac{ \partial L }{ \partial d}$. 
-We luckily don't need $\partial \mathcal P / \partial \mathbf{u}$ as a full
-matrix, but instead only mulitplied by the vector obtained from the derivative of our scalar 
-loss function $L$.
+\frac{ \partial L }{ \partial d} $.
 
+The $\frac{ \partial L }{ \partial d}$ component is typically simple enough: we'll get 
+
+$$ 
+\frac{ \partial L }{ \partial d} 
+    = \partial | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2 / \partial d 
+    = 2 (d(t^e)-d^{\text{target}}).
+$$
+
+If $d$ is represented as a vector, e.g., for one entry per cell of a mesh, 
+$\frac{ \partial L }{ \partial d}$ will likewise be a column vector of equivalent size.
+This is thanks to the fact that $L$ is always a scalar loss function, and hence the Jacobian
+matrix will have a dimension of 1 along the $L$ dimension.
+Intuitively, this vector will simply contain the differences between $d$ at the end time
+in comparison to the target densities $d^{\text{target}}$.
+
+The evolution of $d$ itself is given by our discretized physical model $\mathcal P$,
+and we use $\mathcal P$ and $d$ interchangeably.
+Hence, the more interesting component is the Jacobian 
+$\partial d / \partial \mathbf{u} = \partial \mathcal P / \partial \mathbf{u}$ to
+compute the full $\Delta \mathbf{u} = 
+ \frac{ \partial d }{ \partial \mathbf{u}}
+ \frac{ \partial L }{ \partial d}$. 
+We luckily don't need $\partial d / \partial \mathbf{u}$ as a full
+matrix, but instead only multiplied by $\frac{ \partial L }{ \partial d}$.
+
+So what is the actual Jacobian for $d$? To compute it we first need
+to finalize our PDE model $\mathcal P$, such that we get an expression which we can derive.
+In the next section we'll choose a specific advection scheme and a discretization
+so that we can be more specific.
+
+%the vector obtained from the derivative of our scalar loss function $L$.
 %the $L^2$ loss $L= |d(t^e) - d^{\text{target}}|^2$, thus
 
-So what are the actual Jacobians here?
-The one for $L$ is simple enough, we simply get a column vector with entries of the form
-$2(d(t^e)_i - d^{\text{target}})_i$ for one component $i$.
-$\partial \mathcal P / \partial \mathbf{u}$ is more interesting:
-here we'll get derivatives of the chosen advection operator w.r.t. each component of the 
-velocities.
+%So what are the actual Jacobians here? The one for $L$ is simple enough, we simply get a column vector with entries of the form $2(d_i(t^e) - d^{\text{target}}_i)$ for one component $i$.
+
+%$\partial \mathcal P / \partial \mathbf{u}$ is more interesting: here we'll get derivatives of the chosen advection operator w.r.t. each component of the velocities.
 
 %...to obtain an explicit update of the form $d(t+\Delta t) = A d(t)$, where the matrix $A$ represents the discretized advection step of size $\Delta t$ for $\mathbf{u}$. ... we'll get a matrix that essentially encodes linear interpolation coefficients for positions $\mathbf{x} + \Delta t \mathbf{u}$. For a grid of size $d_x \times d_y$ we'd have a 
 
+### Introducing a specific advection scheme
 
-E.g., for a simple [first order upwinding scheme](https://en.wikipedia.org/wiki/Upwind_scheme) 
-on a Cartesian grid in 1D, with marker density and velocity $d_i$ and $u_i$ for cell $i$
-(superscripts for time $t$ are omitted for brevity), 
-we get 
+In the following we'll make use of a simple [first order upwinding scheme](https://en.wikipedia.org/wiki/Upwind_scheme) 
+on a Cartesian grid in 1D, with marker density and velocity $d_i$ and $u_i$ for cell $i$.
+We omit the $(t)$ for quantities at time $t$ for brevity, i.e., $d_i(t)$ is written as $d_i$ below.
+From above, we'll use our _physical model_ that updates the marker density 
+$d_i(t+\Delta t) = \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t)$, which
+gives the following:
 
 $$ \begin{aligned}
-    & d_i^{~t+\Delta t} = d_i - u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \text{ with }  \\
+    & d_i(t+\Delta t) = d_i - u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \text{ with }  \\
     & u_i^+ = \text{max}(u_i \Delta t / \Delta x,0) \\
     & u_i^- = \text{min}(u_i \Delta t / \Delta x,0)
 \end{aligned} $$
@@ -274,19 +297,97 @@ name: advection-upwind
 ```
 
 Thus, for a positive $u_i$ we have 
-$d_i^{~t+\Delta t} = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}$
-and hence 
-$\partial \mathcal P / \partial u_i$ for cell $i$ would be $1 + \frac{u_i \Delta t }{ \Delta x}$.
-For the full gradient we'd need to add 
-the potential contributions from cells $i+1$ and $i-1$, depending on the sign of their velocities.
 
-In practice this step is similar to evaluating a transposed matrix multiplication.
+$$
+    \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t) = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}
+$$ (eq:advection)
+
+and hence $\partial \mathcal P / \partial u_i$ gives 
+$\frac{\Delta t }{ \Delta x} d_i - \frac{\Delta t }{ \Delta x} d_{i+1}$. Intuitively, 
+the change of the velocity $u_i$ depends on the spatial derivatives of the densities. 
+Due to the first order upwinding, we only include two neighbors (higher order methods would depend on
+additional entries of $d$)
+
+% velocity derivative , Just for completeness: another derivative we could compute here is
+
+In practice this step is equivalent to evaluating a transposed matrix multiplication.
 If we rewrite the calculation above as 
-$d^{~t+\Delta t} = A \mathbf{u}$, then $\partial \mathcal P / \partial \mathbf{u} = A^T$.
+$ \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t) = A \mathbf{u}$, 
+then $\partial \mathcal P / \partial \mathbf{u} = A^T$.
 However, in many practical cases, a matrix free implementation of this multiplication might 
 be preferable to actually constructing $A$.
 
-## A (slightly) more complex example
+% density derivative
+Another derivative that we can consider for the advection scheme is that w.r.t. the previous
+density state, i.e. $d_i(t)$, which is $d_i$ in the shortened notation.
+$\partial \mathcal P / \partial d_i$ for cell $i$ from above gives $1 + \frac{u_i \Delta t }{ \Delta x}$. However, for the full gradient we'd need to add the potential contributions from cells $i+1$ and $i-1$, depending on the sign of their velocities. This derivative will come into play in the next section.
+
+### Time evolution
+
+So far we've only dealt with a single update step of
+$d$ from time $t$ to $t+\Delta t$, but we could of course have an arbitrary number of such 
+steps. After all, above we stated the goal to advance the initial marker state $d(t^0)$ to
+the target state at time $t^e$, which could encompass a long interval of time.
+
+In the expression above for $d_i(t+\Delta t)$, each of the $d_i(t)$ in turn depend
+on the velocity and density states at time $t-\Delta t$, i.e., $d_i(t-\Delta t)$. Thus we have to trace back
+the influence of our loss $L$ all the way back to how $\mathbf{u}$ influences the initial marker
+state. This can involve a large number of evaluations of our advection scheme via $\mathcal P$.
+
+This sounds challenging at first:
+e.g., one could try to insert equation {eq}`eq:advection` at time $t-\Delta t$
+into equation {eq}`eq:advection` at $t$ and repeat this process recursively until
+we have a single expression relating $d^{~0}$ to the targets. However, thanks
+to the linear nature of the Jacobians, we can treat each advection step, i.e.,
+each invocation of our PDE $\mathcal P$ as a seperate, modular
+operation. And each of these invocations follows the procedure described 
+in the previous section.
+
+Hence, given the machinery above, the backtrace is fairly simple to realize: 
+for each of the advection steps
+in $\mathcal P$ we can compute a Jacobian product with the _incoming_ vector of derivatives
+from the loss $L$ or a previous advection step. We repeat this until we have traced the chain from the
+loss with $d^{\text{target}}$ all the way back to $d^{~0}$. 
+Theoretically, the velocity $\mathbf{u}$ could be a function of time, in which
+case we'd get a gradient $\Delta \mathbf{u}(t)$ for every time step $t$. To simplify things
+below, let's we assume we have field that is constant in time, i.e., we're
+reusing the same velocities $\mathbf{u}$ for every advection via $\mathcal P$. Now, each time step
+will give us a contribution to $\Delta \mathbf{u}$ which we can accumulate for all steps.
+
+$$ \begin{aligned}
+    \Delta \mathbf{u} =& 
+        \frac{ \partial d(t^e) }{ \partial \mathbf{u} }
+        \frac{ \partial L }{ \partial d(t^e) }
+        +
+        \frac{ \partial d(t^e - \Delta t) }{ \partial \mathbf{u}}
+        \frac{ \partial d(t^e) }{ \partial d(t^e - \Delta t) }
+        \frac{ \partial L }{ \partial d(t^e)}
+        + \\
+    & 
+        \cdots + \\
+    & 
+       \Big( \frac{ \partial d(t^0) }{ \partial \mathbf{u}} \cdots 
+        \frac{ \partial d(t^e - \Delta t) }{ \partial d(t^e - 2 \Delta t) }
+        \frac{ \partial d(t^e) }{ \partial d(t^e - \Delta t) }
+        \frac{ \partial L }{ \partial d(t^e)} \Big)
+\end{aligned} $$
+
+Here the last term above contains the full backtrace of the marker density to time $t^0$. 
+The terms of this sum look unwieldy 
+at first, but they contain a lot of similar Jacobians, and in practice can be computed efficiently
+by backtracing through the sequence of computational steps in the forward evaluation of our PDE.
+
+This structure also makes clear that the process is very similar to the regular training
+process of an NN: the evaluations of these Jacobian vector products is exactly what
+a deep learning framework does for training an NN (we just have weights $\theta$ instead
+of a velocity field there). And hence all we need to do in practice is to provide a custom 
+function the Jacobian vector product for $\mathcal P$.
+
+
+---
+
+
+## Implicit gradient calculations
 
 As a slightly more complex example let's consider Poisson's equation $\nabla^2 a = b$, where
 $a$ is the quantity of interest, and $b$ is given. 
@@ -305,8 +406,8 @@ If we now introduce an NN that modifies $\mathbf{u}$ in a solver, we inevitably 
 backpropagate through the Poisson solve. I.e., we need a gradient for $\mathbf{u}^{n}$, which in this
 notation takes the form $\partial \mathbf{u}^{n} / \partial \mathbf{u}$.
 
-In combination, $\mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients simple to compute. The main difficulty lies in obtaining the
-matrix inverse $(\nabla^2)^{-1}$ from the Poisson's equation for pressure (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
+In combination, $\mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients are simple to compute. The main difficulty lies in obtaining the
+matrix inverse $(\nabla^2)^{-1}$ from Poisson's equation for pressure (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
 
 In practice, the matrix vector product for $(\nabla^2)^{-1} b$ with $b=\nabla \cdot \mathbf{u}$ is not explicitly computed via matrix operations, but approximated with a (potentially matrix-free) iterative solver. E.g., conjugate gradient (CG) methods are a very popular choice here. Thus, we could treat this iterative solver as a function $S$,
 with $p = S(\nabla \cdot \mathbf{u})$. Note that matrix inversion is a non-linear process, despite the matrix itself being linear. As solvers like CG are also based on matrix and vector operations, we could decompose $S$ into a sequence of simpler operations $S(x) = S_n( S_{n-1}(...S_{1}(x)))$, and backpropagate through each of them. This is certainly possible, but not a good idea: it can introduce numerical problems, and can be very slow.
