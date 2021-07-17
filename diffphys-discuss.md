@@ -1,9 +1,9 @@
 Discussion
 =======================
 
-The training via differentiable physics as described so far allows us
+To summarize, the training via differentiable physics (DP) as described so far allows us
 to integrate full numerical simulations into the training of deep neural networks.
-As a consequence, this let's the networks learn to interact with these simulations. 
+As a consequence, this let's the networks learn to _interact_ with these simulations. 
 While we've only hinted at what could be
 achieved via DP approaches it is nonetheless a good time to discuss some 
 additional properties, and summarize the pros and cons.
@@ -14,11 +14,14 @@ additional properties, and summarize the pros and cons.
 
 ## Time steps and iterations
 
-When using differentiable physics (DP) approaches for learning application, 
-there is a large amount of flexibility w.r.t. the combination of DP and NN building blocks. 
+When using DP approaches for learning application, 
+there is a lot of flexibility w.r.t. the combination of DP and NN building blocks. 
+As some of the differences are subtle, the following section will go into more detail
 
-Just as a reminder, this is the previously shown _overview_ figure to illustrate the combination 
-of NNs and DP operators. Here, these operators look like a loss term: they typically don't have weights,
+**XXX**
+
+To re-cap, this is the previous figure illustrating NNs with DP operators. 
+Here, these operators look like a loss term: they typically don't have weights,
 and only provide a gradient that influences the optimization of the NN weights:
 
 ```{figure} resources/diffphys-shortened.jpg
@@ -96,4 +99,4 @@ To summarize the pros and cons of training NNs via DP:
 Here, the last negative point (regarding heavy machinery) is bound to strongly improve in a fairly short amount of time. However, for now it's important to keep in mind that not every simulator is suitable for DP training out of the box. Hence, in this book we'll focus on examples using phiflow, which was designed for interfacing with deep learning frameworks. 
 
 Next we can target more some complex scenarios to showcase what can be achieved with differentiable physics.
-This will also illustrate how the right selection of a numerical methods for a DP operator yields improvements in terms of training accuracy.
+This will also illustrate how the right selection of numerical methods for a DP operator yields improvements in terms of training accuracy.

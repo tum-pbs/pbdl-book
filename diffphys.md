@@ -362,9 +362,9 @@ $$ \begin{aligned}
         \frac{ \partial d(t^e - \Delta t) }{ \partial \mathbf{u}}
         \frac{ \partial d(t^e) }{ \partial d(t^e - \Delta t) }
         \frac{ \partial L }{ \partial d(t^e)}
-        + \\
+        \\
     & 
-        \cdots + \\
+        + \ \cdots \ + \\
     & 
        \Big( \frac{ \partial d(t^0) }{ \partial \mathbf{u}} \cdots 
         \frac{ \partial d(t^e - \Delta t) }{ \partial d(t^e - 2 \Delta t) }
