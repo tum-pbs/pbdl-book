@@ -2,7 +2,7 @@ Models and Equations
 ============================
 
 Below we'll give a brief (really _very_ brief!) intro to deep learning, primarily to introduce the notation.
-In addition we'll discuss some _model equations_ below. Note that we won't use _model_ to denote trained neural networks, in contrast to some other texts. These will only be called "NNs" or "networks". A "model" will always denote a set of model equations for a physical effect, typically PDEs.
+In addition we'll discuss some _model equations_ below. Note that we'll avoid using _model_ to denote trained neural networks, in contrast to some other texts and APIs. These will be called "NNs" or "networks". A "model" will typically denote a set of model equations for a physical effect, usually PDEs. 
 
 ## Deep learning and neural networks
 
