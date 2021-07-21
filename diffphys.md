@@ -201,9 +201,9 @@ $$
 $$
 
 As a simple example of an inverse problem and learning task, let's consider the problem of
-finding a unknown motion $\mathbf{u}$: 
+finding an unknown motion $\mathbf{u}$: 
 this motion should transform a given initial scalar density state $d^{~0}$ at time $t^0$ 
-into state that's evolved by $\mathcal P$ to a later "end" time $t^e$ 
+into a state that's evolved by $\mathcal P$ to a later "end" time $t^e$ 
 with a certain shape or configuration $d^{\text{target}}$.
 Informally, we'd like to find a motion that deforms $d^{~0}$ through the PDE model into a target state.
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
@@ -276,7 +276,7 @@ so that we can be more specific.
 ### Introducing a specific advection scheme
 
 In the following we'll make use of a simple [first order upwinding scheme](https://en.wikipedia.org/wiki/Upwind_scheme) 
-on a Cartesian grid in 1D, with marker density and velocity $d_i$ and $u_i$ for cell $i$.
+on a Cartesian grid in 1D, with marker density $d_i$ and velocity $u_i$ for cell $i$.
 We omit the $(t)$ for quantities at time $t$ for brevity, i.e., $d_i(t)$ is written as $d_i$ below.
 From above, we'll use our _physical model_ that updates the marker density 
 $d_i(t+\Delta t) = \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t)$, which
@@ -329,7 +329,7 @@ $d$ from time $t$ to $t+\Delta t$, but we could of course have an arbitrary numb
 steps. After all, above we stated the goal to advance the initial marker state $d(t^0)$ to
 the target state at time $t^e$, which could encompass a long interval of time.
 
-In the expression above for $d_i(t+\Delta t)$, each of the $d_i(t)$ in turn depend
+In the expression above for $d_i(t+\Delta t)$, each of the $d_i(t)$ in turn depends
 on the velocity and density states at time $t-\Delta t$, i.e., $d_i(t-\Delta t)$. Thus we have to trace back
 the influence of our loss $L$ all the way back to how $\mathbf{u}$ influences the initial marker
 state. This can involve a large number of evaluations of our advection scheme via $\mathcal P$.
