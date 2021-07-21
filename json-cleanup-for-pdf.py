@@ -1,4 +1,16 @@
-import json, re, os
+import sys, json, re, os
+# usage: json-cleanup-for-pdf.py <int>
+# if int>0, disable PDF mode (only do WWW cleanup)
+
+# disableWrites = True # debugging
+
+pdfMode = True
+
+print(format(sys.argv))
+if len(sys.argv)>1:
+	if int(sys.argv[1])>0:
+		print("WWW mode on")
+		pdfMode = False
 
 fileList = [ 
 	"diffphys-code-burgers.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
@@ -6,11 +18,21 @@ fileList = [
 	]
 
 #fileList = [ "diffphys-code-burgers.ipynb"] # debug
+#fileList = [ "diffphys-code-sol.ipynb"] # debug
 
-# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
+
+# main
 
 for fnOut in fileList:
-	fn = fnOut[:-5] + "bak"
+	# create backups
+	fn0 = fnOut[:-5] + "bak"
+	fn = fn0 + "0"; cnt = 0
+	while os.path.isfile(fn):
+		#print("Error: "+fn+" already exists!")
+		#exit(1)
+		print("Warning: "+fn+" already exists!")
+		fn = fn0 + format(cnt); cnt=cnt+1
+
 	print("renaming "+fnOut+ " to "+fn )
 	if os.path.isfile(fnOut):
 		os.rename(fnOut, fn)
@@ -18,18 +40,16 @@ for fnOut in fileList:
 		print("Error: "+fn+" missing!")
 		exit(1)
 
-	#continue # exit(1)
-
-	#fn="diffphys-code-burgers.ipynb"
-	#fnOut="diffphys-code-burgers-r.ipynb"
-
 	with open(fn) as file:
 		d = json.load(file)
 
 	#print(d.keys()) #print(d["cells"][0].keys())
 
+	# remove TF / pytorch warnings
 	re1 = re.compile(r"WARNING:tensorflow:")
 	re2 = re.compile(r"UserWarning:")
+
+	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
 	re3 = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
 	re3t = "[0.008612174447657694, 0.02584669669548606, 0.043136357266407785 ... ]"
 
@@ -48,13 +68,14 @@ for fnOut in fileList:
 			#d[t][i]["outputs"] = ""
 			#print(d[t][i]["outputs"])
 
-			for j in range(len( d[t][i]["source"] )):
-				#print( d[t][i]["source"][j] )
-				#print( type(d[t][i]["source"][j] ))
-				dsOut = re3.sub( re3t, d[t][i]["source"][j] )  # replace long number string (only for burgers)
-				d[t][i]["source"][j] = dsOut
-				deletes = deletes+1
-				#print( d[t][i]["source"][j] +"\n >>> \n" +d2 )
+			if pdfMode:
+				for j in range(len( d[t][i]["source"] )):
+					#print( d[t][i]["source"][j] )
+					#print( type(d[t][i]["source"][j] ))
+					dsOut = re3.sub( re3t, d[t][i]["source"][j] )  # replace long number string (only for burgers)
+					d[t][i]["source"][j] = dsOut
+					deletes = deletes+1
+					#print( d[t][i]["source"][j] +"\n >>> \n" +d2 )
 
 			#print(len( d[t][i]["outputs"] ))
 			for j in range(len( d[t][i]["outputs"] )):
@@ -81,8 +102,6 @@ for fnOut in fileList:
 						d[t][i]["outputs"][j]["text"].remove(dl)
 
 					print( format( len( d[t][i]["outputs"][j]["text"] )) + " A")
-
-	#print(d["cells"])
 
 	if deletes==0:
 		print("Warning: Nothing found in "+fn+"!")
