@@ -5,8 +5,8 @@ An inherent challenge for many practical PDE solvers is the large dimensionality
 Our model $\mathcal{P}$ is typically discretized with $\mathcal{O}(n^3)$ samples for a 3 dimensional 
 problem (with $n$ denoting the number of samples along one axis), 
 and for time-dependent phenomena we additionally have a discretization along
-time. The latter typically scales in accordance to the spatial dimensions, giving an
-overall number of samples on the order of $\mathcal{O}(n^4)$. Not surprisingly, 
+time. The latter typically scales in accordance to the spatial dimensions. This gives an
+overall samples count on the order of $\mathcal{O}(n^4)$. Not surprisingly, 
 the workload in these situations quickly explodes for larger $n$ (and for all practical high-fidelity applications we want $n$ to be as large as possible).
 
 One popular way to reduce the complexity is to map a spatial state of our system $\mathbf{s_t} \in \mathbb{R}^{n^3}$
@@ -32,7 +32,7 @@ the time evolution with $f_t$, and then decode the full spatial information with
 
 Reducing the dimension and complexity of computational models, often called _reduced order modeling_ (ROM) or _model reduction_, is a classic topic in the computational field. Traditional techniques often employ techniques such as principal component analysis to arrive at a basis for a chosen space of solution. However, being linear by construction, these approaches have inherent limitations when representing complex, non-linear solution manifolds. In practice, all "interesting" solutions are highly non-linear, and hence DL has received a substantial amount of interest as a way to learn non-linear representations. Due to the non-linearity, DL representations can potentially yield a high accuracy with fewer degrees of freedom in the reduced model compared to classic approaches.
 
-The canonical NN for reduced models is an _autoencoder_. This denotes a network whose sole task is to reconstruct a given input $x$ while passing it through a bottleneck that is typically located in or near the middle of the stack of layers of the NN. The data in the bottleneck then represents the compressed, latent space representation $\mathbf{c}$, the part of the network leading up to it the encoder $f_e$, and the part after the bottleneck the decoder $f_d$. In combination, the learning task can be written as
+The canonical NN for reduced models is an _autoencoder_. This denotes a network whose sole task is to reconstruct a given input $x$ while passing it through a bottleneck that is typically located in or near the middle of the stack of layers of the NN. The data in the bottleneck then represents the compressed, latent space representation $\mathbf{c}$. The part of the network leading up to the bottleneck  $\mathbf{c}$ is the encoder $f_e$, and the part after it the decoder $f_d$. In combination, the learning task can be written as
 
 $$
 \text{arg min}_{\theta_e,\theta_d} | f_d( f_e(\mathbf{s};\theta_e) ;\theta_d) - \mathbf{s} |_2^2
@@ -54,15 +54,11 @@ would prevent using the encoder or decoder in a standalone manner. E.g., the dec
 
 ### Autoencoder variants
 
-One popular variant of autoencoders is worth a mention here: the so-called _varational autoencoders_, or VAEs. These
-autoencoders follow the structure above, but additionally employ a loss term to shape the latent space of $\mathbf{c}$.
-Typically we use a normal distribution as target, which makes the latent space 
-an $m$ dimensional unit cube, i.e., each dimension should have a zero mean and unit standard deviation.
-This approach is especially useful if the decoder should be used as a generative model. E.g., we can then produce
-$\mathbf{c}$ samples directly, and decode them to obtain full states. 
-While this is very useful to, e.g., obtain generative models for faces or other types of natural images, it is less 
-crucial in a simulation setting. Here we rather want to obtain a latent space that facilitates the temporal prediction,
-rather than being able to easily produce samples from it.
+One popular variant of autoencoders is worth a mention here: the so-called _variational autoencoders_, or VAEs. These autoencoders follow the structure above, but additionally employ a loss term to shape the latent space of $\mathbf{c}$. Its goal is to let the latent space follow a known distribution. This makes it possible to draw samples in latent space without workarounds such as having to project samples into the latent space.
+
+Typically we use a normal distribution as target, which makes the latent space an $m$ dimensional unit cube: each dimension should have a zero mean and unit standard deviation.
+This approach is especially useful if the decoder should be used as a generative model. E.g., we can then produce $\mathbf{c}$ samples directly, and decode them to obtain full states. 
+While this is very useful for applications such as constructing generative models for faces or other types of natural images, it is less crucial in a simulation setting. Here we want to obtain a latent space that facilitates the temporal prediction, rather than being able to easily produce samples from it.
 
 
 ## Time series
@@ -100,16 +96,16 @@ store the previous history of states it has seen.
 For the former variant, the prediction network $f_p$ receives more than 
 a single $\mathbf{c}_{t}$. For the latter variant, we can turn to algorithms
 from the subfield of _recurrent neural networks_ (RNNs). A variety of architectures 
-have been proposed to encode and store temporal states of a sytem, the most
+have been proposed to encode and store temporal states of a system, the most
 popular ones being 
-_long short-term memory_ (LSTM) network,
+_long short-term memory_ (LSTM) networks,
 _gated recurrent units_ (GRUs), or
-lately attenion-based _transformer_ networks.
+lately attention-based _transformer_ networks.
 No matter which variant is used, these approaches always work with fully-connected layers
 as the latent space vectors do not exhibit any spatial structure, but typically represent 
 a seemingly random collection of values.
 Due to the fully-connected layers, the prediction networks quickly grow in terms
-of their parameter count, and thus require relatively a small latent-space dimension $m$.
+of their parameter count, and thus require a relatively small latent-space dimension $m$.
 Luckily, this is in line with our main goals, as outlined at the top.
 
 ## End-to-end training
@@ -138,7 +134,7 @@ height: 300px
 name: timeseries-lss-subdiv-prediction
 ---
 Several time frames of an example prediction from {cite}`wiewel2020lsssubdiv`, which additionally couples the
-learned time evolution with an numerically solved advection step. 
+learned time evolution with a numerically solved advection step. 
 The learned prediction is shown at the top, the reference simulation at the bottom.
 ```
 

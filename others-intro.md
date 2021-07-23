@@ -2,7 +2,7 @@ Additional Topics
 =======================
 
 The next sections will give a shorter introduction to other topics that are highly 
-interesting in the context of physics-based deep learning. These topic (for now) do
+interesting in the context of physics-based deep learning. These topics (for now) do
 not come with executable notebooks, but we will still point to existing open source 
 implementations for each of them.
 
@@ -17,6 +17,5 @@ More specifically, we will look at:
 
 * Meshless methods and unstructured meshes are an important topic for classical simulations. Here, we'll look at a specific Lagrangian method that employs learning in the context of dynamic, particle-based representations.
 
-* Finally, metrics to robustly assess the quality of similarity of measurements and results are a central topic for all numerical methods, no matter whether they employ learning or not. In the last section we will look at how DL can be used to learn specialized and improved metrics.
-	TODO {cite}`kohl2020lsim`
+% * Finally, metrics to robustly assess the quality of similarity of measurements and results are a central topic for all numerical methods, no matter whether they employ learning or not. In the last section we will look at how DL can be used to learn specialized and improved metrics. {cite}`kohl2020lsim`
 

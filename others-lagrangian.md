@@ -1,7 +1,7 @@
 Meshless Methods
 =======================
 
-For all computers and based methods we need to find a suitable discrete representation.
+For all computer-based methods we need to find a suitable _discrete_ representation.
 While this is straight-forward for cases such as data consisting only of integers, it is more challenging
 for continuously changing quantities such as the temperature in a room. 
 While the previous examples have focused on aspects beyond discretization
@@ -52,9 +52,10 @@ amount of additional complexity in an implementation, and the arbitrary
 connectivities call for _message-passing_ approaches between the nodes of a graph.
 This message passing is usually realized using fully-connected layers, instead of convolutions.
 
-Thus, in the following, we will focus on a particle-based method, which offers
-the same flexibility in terms of spatial adaptivity as GNNs, but still
-employs a convolution operator for learning the physical relationships.
+Thus, in the following, we will focus on a particle-based method {cite}`ummenhofer2019contconv`, which offers
+the same flexibility in terms of spatial adaptivity as GNNs. These were previously employed for
+a very similar goal {cite}`sanchez2020learning`, however, the method below
+enables a real convolution operator for learning the physical relationships.
 
 
 ## Meshless and particle-based methods

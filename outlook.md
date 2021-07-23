@@ -1,13 +1,17 @@
 Outlook
 =======================
 
-Despite the lengthy discussions and numerous examples, 
-we've really just barely scratched the surface regarding the possibilities that arise in the context 
-of physics-based deep learning.
+Despite the lengthy discussions and numerous examples, we've really just barely scratched the surface regarding the possibilities that arise in the context of physics-based deep learning.
+
+Most importantly, the techniques that were explained in the previous chapter have a gigantic potential to influence all computational methods of the next decades. As demonstrated many times in the code examples, there's no magic involved, but deep learning gives us very powerful tools to represent and approximate non-linear functions. And deep learning by no means makes existing numerical methods deprecated. Rather, the two are an ideal combination.
+
+A topic that we have not touched at all so far is, that -- of course -- in the end our goal is to improve human understanding of our world. And here the view of neural networks as "black boxes" is clearly outdated. It is simply another numerical method that humans can employ, and the physical fields predicted by a network are as interpretable as the outcome of a traditional simulation
+
+**TODO**
 
 ![Divider](resources/divider2.jpg)
 
-The examples with Burgers equation and Navier-Stokes solvers are non-trivial, and good examples for advection-diffusion-type PDEs. However, there's a wide variety of other potential combinations. To name just a few promising examples from other fields:
+The examples with Burgers equation and Navier-Stokes solvers are clearly non-trivial, and good examples for advection-diffusion-type PDEs. However, there's a wide variety of other potential models that similar techniques could be applied to. To name just a few promising examples from other fields:
 
 * PDEs for chemical reactions often show complex behavior due to the interactions of multiple species. Here, and especially interesting direction is to train models that quickly learn to predict the evolution of an experiment or machine, and adjust control knobs to stabilize it, i.e., an online _control_ setting.
 

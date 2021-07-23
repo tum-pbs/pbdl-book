@@ -74,7 +74,7 @@ $$
 % | f_d( f_e(\mathbf{s};\theta_e) ;\theta_d) - \mathbf{s} |_2^2
 
 which, as outlined above, is a standard binary cross-entropy training for the class of real samples
-$\mathbf{y}$, and the generated ones $G(\mathbf{z}$. With the formulation above, the discriminator 
+$\mathbf{y}$, and the generated ones $G(\mathbf{z})$. With the formulation above, the discriminator 
 is trained to maximize the loss via producing an output of 1 for the real samples, and 0 for the generated ones.
 
 The key for the generator loss is to employ the discriminator and produce samples that are classified as
@@ -119,8 +119,8 @@ of possible high-resolution solutions that would fit the low-res input.
 If a data set contains multiple such cases, and we employ supervised training,
 the network will reliably learn the mean. This averaged solution usually is one
 that is clearly undesirable, and unlike any of the individual solutions from which it was 
-computed. This situation is sometime also called _multi-modal_, i.e. the different solutions
-can be seen as modes of the data. For fluids, this can, e.g., happen when 
+computed. This is the _multi-modality_ problem, i.e. different modes existing as valid 
+equally valid solutions to a problem. For fluids, this can, e.g., happen when 
 we're facing bifurcations, as discussed in {doc}`intro-teaser`.
 
 The following image shows a clear example of how well GANs can circumvent 
@@ -146,7 +146,7 @@ The following example compares the time derivatives of different solutions:
 ---
 name: GANs-tempoGAN-fig4
 ---
-F.l.t.r., time derivatives for: a spatial GAN (i.e. not time aware), a temporally supervised learning, a spatio-temporal GAN, and a reference solution.
+From left to right, time derivatives for: a spatial GAN (i.e. not time aware), a temporally supervised learning, a spatio-temporal GAN, and a reference solution.
 ```
 
 As can be seen, the GAN trained with spatio-temporal self-supervision (second from right) closely matches the reference solution on the far right. In this case the discriminator receives reference solutions over time (in the form of triplets), such that it can learn to judge whether the temporal evolution of a generated solution matches that of the reference.
@@ -183,7 +183,7 @@ GANs are a powerful learning tool. Note that the discriminator $D$ is really "ju
 loss function: we can completely discard it at inference time, once the generator is fully trained.
 Hence it's also not overly crucial how much resources it needs.
 
-However, despite being a very powerful tools, it is (given the current state-of-the-art) questionable
+However, despite being very powerful tools, it is (given the current state-of-the-art) questionable
 whether GANs make sense when we have access to a reasonable PDE model. If we can discretize the model
 equations and include them with a differentiable physics (DP) training (cf. {doc}`diffphys`), 
 this will most likely give

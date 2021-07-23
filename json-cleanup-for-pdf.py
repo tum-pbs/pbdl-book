@@ -48,6 +48,7 @@ for fnOut in fileList:
 	# remove TF / pytorch warnings
 	re1 = re.compile(r"WARNING:tensorflow:")
 	re2 = re.compile(r"UserWarning:")
+	re4 = re.compile(r"DeprecationWarning:")
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
 	re3 = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
@@ -91,6 +92,7 @@ for fnOut in fileList:
 						nums = []
 						nums.append( re1.search( d[t][i]["outputs"][j]["text"][k] ) )
 						nums.append( re2.search( d[t][i]["outputs"][j]["text"][k] ) )
+						nums.append( re4.search( d[t][i]["outputs"][j]["text"][k] ) )
 						if (nums[0] is None) and (nums[1] is None):
 							okay = okay+1
 						else: # delete line "dell"

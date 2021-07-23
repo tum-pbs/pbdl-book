@@ -45,7 +45,6 @@ parts:
   - file: others-timeseries.md
   - file: others-GANs.md
   - file: others-lagrangian.md
-  - file: others-metrics.md
 - caption: End Matter
   chapters:
   - file: outlook.md
