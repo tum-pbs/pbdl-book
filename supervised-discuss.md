@@ -50,6 +50,36 @@ as the most central hyperparameter.
 You'll probably need to reduce it later on, but you should at least get a 
 rough estimate of suitable values for $\eta$.
 
+### Know your data
+
+All data-driven methods obey the _garbage-in-garbage-out_ principle. Because of this it's important
+to work on getting to know the data you are dealing with. While there's no one-size-fits-all
+approach for how to best achieve this, we can strongly recommend to track
+a broad range of statistics of your data set. A good starting point are
+per quantity mean, standard deviation, min and max values. 
+If some of these contain unusual values, this is a first indicator of bad 
+samples in the dataset.
+
+These values can 
+also be easily visualized in terms of histograms, to track down
+unwanted outliers. A small number of such outliers 
+can easily skew a data set in undesirable ways.
+
+Finally, checking the relationships between different quantities 
+is often a good idea to get some intuition for what's contained in the
+data set. The next figure gives an example for this step.
+
+```{figure} resources/supervised-example-plot.jpg
+---
+height: 300px
+name: supervised-example-plot
+---
+An example from the airfoil case of the previous section: a visualization of a training data 
+set in terms of mean u and v velocity of 2D flow fields. It nicely shows that there are no extreme outliers,
+but there are a few entries with relatively low mean u velocity on the left side. 
+A second, smaller data set is shown on top in red, showing that its samples cover the range of mean motions quite well.
+```
+
 ### Where's the magic? 🦄 
 
 A comment that you'll often hear when talking about DL approaches, and especially

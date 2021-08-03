@@ -74,11 +74,15 @@ This project would not have been possible without the help of many people who co
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
 - [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
 
+Additional thanks go to 
+Georg Kohl for the nice divider images (cf. {cite}`kohl2020lsim`), 
+Li-Wei Chen for the airfoil data image, 
+and to 
+Chloe Paillard for proofreading parts of the document.
+
 % future:
 % - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
 
-% proofreading acks:
-% - Chloe Pailard
 
 ## Citation
 

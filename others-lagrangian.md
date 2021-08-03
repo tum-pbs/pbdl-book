@@ -1,4 +1,4 @@
-Meshless Methods
+Unstructured Meshes and Meshless Methods
 =======================
 
 For all computer-based methods we need to find a suitable _discrete_ representation.

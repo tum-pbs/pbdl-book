@@ -138,6 +138,8 @@ learned time evolution with a numerically solved advection step.
 The learned prediction is shown at the top, the reference simulation at the bottom.
 ```
 
+To summarize, DL allows us to move from linear subspaces to non-linear manifolds, and provides a basis for performing
+complex steps (such as time evolutions) in the resulting latent space.
 
 ## Source code
 

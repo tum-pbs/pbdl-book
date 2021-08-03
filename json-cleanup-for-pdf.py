@@ -49,6 +49,8 @@ for fnOut in fileList:
 	re1 = re.compile(r"WARNING:tensorflow:")
 	re2 = re.compile(r"UserWarning:")
 	re4 = re.compile(r"DeprecationWarning:")
+	re5 = re.compile(r"InsecureRequestWarning:") # for https download
+	# remove all "warnings.warn" from phiflow?
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
 	re3 = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
@@ -93,6 +95,7 @@ for fnOut in fileList:
 						nums.append( re1.search( d[t][i]["outputs"][j]["text"][k] ) )
 						nums.append( re2.search( d[t][i]["outputs"][j]["text"][k] ) )
 						nums.append( re4.search( d[t][i]["outputs"][j]["text"][k] ) )
+						nums.append( re5.search( d[t][i]["outputs"][j]["text"][k] ) )
 						if (nums[0] is None) and (nums[1] is None):
 							okay = okay+1
 						else: # delete line "dell"

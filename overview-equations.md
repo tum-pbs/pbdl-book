@@ -70,7 +70,7 @@ we'll be using later on in the DL examples.
 We typically target continuous PDEs denoted by $\mathcal P^*$
 whose solution is of interest in a spatial domain $\Omega \subset \mathbb{R}^d$ in $d \in {1,2,3} $ dimensions.
 In addition, wo often consider a time evolution for a finite time interval $t \in \mathbb{R}^{+}$.
-The corresponding fields are either d-dimensional vector fields, e.g. $\mathbf{u}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}^d$, 
+The corresponding fields are either d-dimensional vector fields, for instance $\mathbf{u}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}^d$, 
 or scalar $\mathbf{p}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}$.
 The components of a vector are typically denoted by $x,y,z$ subscripts, i.e.,
 $\mathbf{v} = (v_x, v_y, v_z)^T$ for $d=3$, while
@@ -203,8 +203,8 @@ in implementations, effectively computing an instantaneous pressure.
 An interesting variant is obtained by including the 
 [Boussinesq approximation](https://en.wikipedia.org/wiki/Boussinesq_approximation_(buoyancy))
 for varying densities, e.g., for simple temperature changes of the fluid.
-With a marker field $v$, e.g., indicating regions of high temperature,
-this yields the following set of equations:
+With a marker field $v$ that indicates regions of high temperature,
+it yields the following set of equations:
 
 $$\begin{aligned}
   \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{\Delta t}{\rho} \nabla p 
