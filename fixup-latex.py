@@ -71,7 +71,8 @@ rect.append( r'date{\\centering{\1}}' )
 
 # ---
 
-def parseF(inf,outf,reSkip,reSCnt):
+# only do replacements via recs for book.tex , via applyRecs=True
+def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 	print("Fixup, "+inf+" -> "+outf+" ")
 	with open(outf, 'w') as fout:
 		with open(inf, 'r') as f:
@@ -119,7 +120,7 @@ def parseF(inf,outf,reSkip,reSCnt):
 				# 	print("E " + format(t) + format(t.group(0)) )
 	print("Fixup -> "+outf+" done, skips: "+format(skipTot)  +" \n")
 
-parseF(inf,outf,reSkip,reSCnt)
+parseF(inf,outf,reSkip,reSCnt,applyRecs=True)
 
 #exit(1); print("debug exit!"); exit(1)
 

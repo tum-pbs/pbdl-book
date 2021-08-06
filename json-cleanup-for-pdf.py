@@ -87,7 +87,7 @@ for fnOut in fileList:
 
 				# images
 				if d[t][i]["outputs"][j]["output_type"]=="stream":
-					print(  len( d[t][i]["outputs"][j]["text"] ) )
+					#print("len "+  len( d[t][i]["outputs"][j]["text"] ) )
 
 					dell = [] # collect entries to delete
 					for k in range(  len( d[t][i]["outputs"][j]["text"] )  ):
@@ -106,7 +106,7 @@ for fnOut in fileList:
 					for dl in dell:
 						d[t][i]["outputs"][j]["text"].remove(dl)
 
-					print( format( len( d[t][i]["outputs"][j]["text"] )) + " A")
+					#print("len after "+format( len( d[t][i]["outputs"][j]["text"] )) + " A") # debug
 
 	if deletes==0:
 		print("Warning: Nothing found in "+fn+"!")
