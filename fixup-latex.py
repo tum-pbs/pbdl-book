@@ -95,13 +95,10 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 					fout.write("% SKIP due to RE #"+format(r)+" , L"+format(reSCnt[r]) +"   "+line)
 					#print("S "+line[:-1]) # debug
 				else:
-					# fix captions
-					for i in range(len(recs)):
-						line = recs[i].sub( rect[i], line )  # replace all
-
-					# line = rec1.sub( rec1t, line )  # replace 
-					# line = rec2.sub( rec2t, line )  # replace 
-					# line = rec3.sub( rec3t, line )  # replace 
+					if applyRecs:
+						# fix captions and apply other latex replacements
+						for i in range(len(recs)):
+							line = recs[i].sub( rect[i], line )  # replace all
 
 					fout.write(line)
 					#print(line[:-1]) # debug
