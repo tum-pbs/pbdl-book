@@ -4,7 +4,8 @@ echo
 echo WARNING - still requires one manual quit of first pdf/latex pass, use shift-x to quit
 echo
 
-# do clean git checkout?
+# do clean git checkout for changes from json-cleanup-for-pdf.py?
+# git checkout diffphys-code-burgers.ipynb diffphys-code-sol.ipynb physicalloss-code.ipynb bayesian-code.ipynb supervised-airfoils.ipynb
 
 # warning - modifies notebooks!
 python3.7 json-cleanup-for-pdf.py

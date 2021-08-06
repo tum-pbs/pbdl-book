@@ -30,15 +30,46 @@ reSkip.append( re.compile(r"unicode-math") ) ; reSCnt.append( 1 )
 #reSkip.append( re.compile(r"") )
 
 # ugly, manually fix citations in captions one by one
-rec1  = re.compile(r"example prediction from ....hyperlink.cite.references:id6..WKA.20...." )
-rec1t = 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id6}{WKA+20}{]}' # note, quad \ needed!
+recs = []; rect = []
+recs.append( re.compile(r"example prediction from ....hyperlink.cite.references:id6..WKA.20...." ) )
+rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id6}{WKA+20}{]}' ) # note, quad \ needed!
 
-rec2  = re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id2}{CTS.21}{\]}" )
-rec2t = "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id2}{CTS+21}{]}"
+recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id2}{CTS.21}{\]}" ) )
+rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id2}{CTS+21}{]}" )
 
-rec3  = re.compile(r"approach using continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" )
-rec3t = "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id12}{UPTK19}{]}"
+recs.append( re.compile(r"approach using continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" ) )
+rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id12}{UPTK19}{]}" )
 
+# fixup title , cumbersome...
+
+# fix backslashes...  saves at least typing a few of them! still needs manual \ -> \\ , could be done better
+tt =( 'hrule\n' + 
+	'\\vspace{5cm}\n' + 
+	'\\centering{\n' +
+	'\\sphinxstylestrong{\\Huge \\textsf{Physics-based Deep Learning}} \\vspace{0.2cm} \n' + 
+	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\vspace{2cm} \n' + 
+	'\\noindent\sphinxincludegraphics[height=220\\sphinxpxdimen]{{teaser}.jpg} \\vspace{2cm} \n' + 
+	'\\centering{ \\textsf{\\large N.\@{} Thuerey, P.\@{} Holl, M.\@{} Mueller, P.\@{} Schnell, F.\@{} Trost, K.\@{} Um}} \n' )
+#print(tt);
+recBST1 = re.compile(r"\\") 
+recBST1t = '\\\\\\\\'  
+tt = recBST1.sub( recBST1t, tt )  # replace all
+#print(tt); exit(1)
+
+# insert instead of sphinx version
+recs.append( re.compile(r"sphinxmaketitle") )
+rect.append( tt )
+
+# remove authors
+recs.append( re.compile(r"author{.*}") )
+rect.append( 'author{}' )
+
+# center date
+recs.append( re.compile(r"date{(.*)}") )
+rect.append( r'date{\\centering{\1}}' )
+
+
+# ---
 
 def parseF(inf,outf,reSkip,reSCnt):
 	print("Fixup, "+inf+" -> "+outf+" ")
@@ -64,9 +95,12 @@ def parseF(inf,outf,reSkip,reSCnt):
 					#print("S "+line[:-1]) # debug
 				else:
 					# fix captions
-					line = rec1.sub( rec1t, line )  # replace 
-					line = rec2.sub( rec2t, line )  # replace 
-					line = rec3.sub( rec3t, line )  # replace 
+					for i in range(len(recs)):
+						line = recs[i].sub( rect[i], line )  # replace all
+
+					# line = rec1.sub( rec1t, line )  # replace 
+					# line = rec2.sub( rec2t, line )  # replace 
+					# line = rec3.sub( rec3t, line )  # replace 
 
 					fout.write(line)
 					#print(line[:-1]) # debug
@@ -86,6 +120,8 @@ def parseF(inf,outf,reSkip,reSCnt):
 	print("Fixup -> "+outf+" done, skips: "+format(skipTot)  +" \n")
 
 parseF(inf,outf,reSkip,reSCnt)
+
+#exit(1); print("debug exit!"); exit(1)
 
 #---
 
