@@ -34,6 +34,7 @@ iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
 # finally run pdflatex, now it should work:
 # pdflatex -recorder book
 pdflatex book
+pdflatex book
 
 mv book.pdf ../../book-pdflatex.pdf
 

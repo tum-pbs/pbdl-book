@@ -25,6 +25,10 @@ reSkip.append( re.compile(r"set....font{Free") ) ; reSCnt.append( 7 )
 reSkip.append( re.compile(r"ucharclasses") ) ; reSCnt.append( 1 )
 reSkip.append( re.compile(r"unicode-math") ) ; reSCnt.append( 1 )
 
+# latex fixup, remove references chapter
+reSkip.append( re.compile(r"chapter.References" ) )
+reSkip.append( re.compile(r"detokenize.references.references" ) )
+
 #reSkip.append( re.compile(r"") )
 #reSkip.append( re.compile(r"") )
 #reSkip.append( re.compile(r"") )
@@ -44,12 +48,14 @@ rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink
 
 # fix backslashes...  saves at least typing a few of them! still needs manual \ -> \\ , could be done better
 tt =( 'hrule\n' + 
-	'\\vspace{5cm}\n' + 
-	'\\centering{\n' +
-	'\\sphinxstylestrong{\\Huge \\textsf{Physics-based Deep Learning}} \\vspace{0.2cm} \n' + 
-	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\vspace{2cm} \n' + 
-	'\\noindent\sphinxincludegraphics[height=220\\sphinxpxdimen]{{teaser}.jpg} \\vspace{2cm} \n' + 
-	'\\centering{ \\textsf{\\large N.\@{} Thuerey, P.\@{} Holl, M.\@{} Mueller, P.\@{} Schnell, F.\@{} Trost, K.\@{} Um}} \n' )
+	'\\vspace{4cm}\n' + 
+	'\\begin{center}\n' + 
+	'\\sphinxstylestrong{\\Huge \\textsf{Physics-based Deep Learning}} \\\\ \\vspace{0.5cm} \n' + 
+	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\\\ \\vspace{3cm} \n' + 
+	'\\noindent\\sphinxincludegraphics[height=220\\sphinxpxdimen]{{teaser}.jpg} \\\\ \\vspace{2cm} \n' + 
+	'\\textsf{\\large N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um} \n' + 
+	'\\end{center}\n' )
+
 #print(tt);
 recBST1 = re.compile(r"\\") 
 recBST1t = '\\\\\\\\'  
@@ -67,6 +73,7 @@ rect.append( 'author{}' )
 # center date
 recs.append( re.compile(r"date{(.*)}") )
 rect.append( r'date{\\centering{\1}}' )
+
 
 
 # ---
@@ -151,12 +158,14 @@ parseF(inf,outf,reSkip,reSCnt)
 
 #---
 
-inf  = "sphinxmanual-in.cls" 
-outf = "sphinxmanual.cls"
+# disable for now?
+if 0:
+	inf  = "sphinxmanual-in.cls" 
+	outf = "sphinxmanual.cls"
 
-# remove openright option from style
-reSkip = [] ; reSCnt = []
-reSkip.append( re.compile(r"PassOptionsToClass.openright...sphinxdocclass") ) ; reSCnt.append( 1 )
+	# remove openright option from style
+	reSkip = [] ; reSCnt = []
+	reSkip.append( re.compile(r"PassOptionsToClass.openright...sphinxdocclass") ) ; reSCnt.append( 1 )
 
-parseF(inf,outf,reSkip,reSCnt)
+	parseF(inf,outf,reSkip,reSCnt)
 
