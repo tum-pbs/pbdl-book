@@ -19,7 +19,7 @@ with simulations.
 height: 220px
 name: pbdl-teaser
 ---
-Some visual examples of numerically simulated time sequences. In this book, we aim for algorithms that use neural networks alongside numerical solvers.
+Some visual examples of numerically simulated time sequences. In this book, we explain how to realize algorithms that use neural networks alongside numerical solvers.
 ```
 
 ## Coming up

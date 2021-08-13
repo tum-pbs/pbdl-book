@@ -5,7 +5,7 @@ Despite the lengthy discussions and numerous examples, we've really just barely 
 
 Most importantly, the techniques that were explained in the previous chapter have an enormous potential to influence all computational methods of the next decades. As demonstrated many times in the code examples, there's no magic involved, but deep learning gives us very powerful tools to represent and approximate non-linear functions. And deep learning by no means makes existing numerical methods deprecated. Rather, the two are an ideal combination.
 
-A topic that we have not touched at all so far is, that -- of course -- in the end our goal is to improve human understanding of our world. And here the view of neural networks as "black boxes" is clearly outdated. It is simply another numerical method that humans can employ, and the physical fields predicted by a network are as interpretable as the outcome of a traditional simulation
+A topic that we have not touched at all so far is, that -- of course -- in the end our goal is to improve human understanding of our world. And here the view of neural networks as "black boxes" is clearly outdated. It is simply another numerical method that humans can employ, and the physical fields predicted by a network are as interpretable as the outcome of a traditional simulation. Nonetheless, it is important to further improve the tools for analyzing learned networks, and to extract condensed formulations of the patterns and regularities the networks have found in the solution manifolds.
 
 
 ![Divider](resources/divider2.jpg)

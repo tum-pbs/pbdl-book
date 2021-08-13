@@ -15,8 +15,9 @@ height: 240px
 name: overview-pano
 ---
 Understanding our environment, and predicting how it will evolve is one of the key challenges of humankind.
-A key tool for achieving these goals are simulations, and the next generation of simulation algorithms
-will rely heavily on deep learning components to yield even more accurate predictions about our world.
+A key tool for achieving these goals are simulations, and next-gen simulations
+could strongly profit from integrating deep learning components to make even 
+more accurate predictions about our world.
 ```
 
 ## Motivation
@@ -27,31 +28,34 @@ to the control of plasma fusion {cite}`maingi2019fesreport`,
 using numerical analysis to obtain solutions for physical models has
 become an integral part of science.  
 
-At the same time, machine learning technologies and deep neural networks in particular,
+In recent years, machine learning technologies and _deep neural networks_ in particular,
 have led to impressive achievements in a variety of fields:
 from image classification {cite}`krizhevsky2012` over
 natural language processing {cite}`radford2019language`, 
 and more recently also for protein folding {cite}`alquraishi2019alphafold`.
 The field is very vibrant and quickly developing, with the promise of vast possibilities.
 
-On the other hand, the successes of deep learning (DL) approaches 
+These success stories of deep learning (DL) approaches 
 have given rise to concerns that this technology has 
-the potential to replace the traditional, simulation-driven approach to
-science. Instead of relying on models that are carefully crafted
+the potential to replace the traditional, simulation-driven approach to science. 
+E.g., recent works show that NN-based surrogate models achieve accuracies required
+for real-world, industrial applications such as airfoil flows {cite}`chen2021highacc`, while at the
+same time outperforming traditional solvers by orders of magnitude in terms of runtime.
+
+Instead of relying on models that are carefully crafted
 from first principles, can data collections of sufficient size
 be processed to provide the correct answers?
-In short: this concern is unfounded. As we'll show in the next chapters,
-it is crucial to bring together both worlds: _classical numerical techniques_
-and _deep learning_.
+As we'll show in the next chapters, this concern is unfounded. 
+Rather, it is crucial for the next generation of simulation systems
+to bridge both worlds: to 
+combine _classical numerical_ techniques with _deep learning_ methods.
 
 One central reason for the importance of this combination is
-that DL approaches are simply not yet powerful enough by themselves.
-Given the current state of the art, the clear breakthroughs of DL
-in physical applications are outstanding. 
-The proposed techniques are novel, sometimes difficult to apply, and
-significant practical difficulties combing physics and DL persist.
-Also, many fundamental theoretical questions remain unaddressed, most importantly
-regarding data efficiency and generalization.
+that DL approaches are powerful, but at the same time strongly profit
+from domain knowledge in the form of physical models.
+DL techniques and NNs are novel, sometimes difficult to apply, and
+it is admittedly often non-trivial to properly integrate our understanding
+of physical processes into the learning algorithms.
 
 Over the course of the last decades,
 highly specialized and accurate discretization schemes have
@@ -66,15 +70,15 @@ is highly beneficial for DL to use them as much as possible.
 ```{admonition} Goals of this document
 :class: tip
 The key aspects that we want to address in the following are:
-- explain how to use deep learning techniques,
+- explain how to use deep learning techniques to solve PDE problems,
 - how to combine them with **existing knowledge** of physics,
-- without **throwing away** our knowledge about numerical methods.
+- without **discarding** our knowledge about numerical methods.
 ```
 
-Thus, we want to build on all the powerful techniques that we have
+Thus, our aim is to build on all the powerful techniques that we have
 at our disposal, and use them wherever we can.
-I.e., our goal is to _reconcile_ the data-centered
-viewpoint and the physical simulation viewpoint.
+As such, a central goal of this book is to _reconcile_ the data-centered
+viewpoint with physical simulations.
 
 The resulting methods have a huge potential to improve
 what can be done with numerical methods: in scenarios
