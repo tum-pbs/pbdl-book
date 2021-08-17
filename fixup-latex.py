@@ -2,13 +2,15 @@ import sys, os, re
 
 # fix jupyter book latex output
 
-#filter_mem = re.compile(r".+\|\s+(\d+)MiB\s+/\s+(\d+)MiB\s+\|")#')
-#ft2 = re.compile(r"tst")
-#ft3 = re.compile(r"’")
-#fte = re.compile(r"👋")
+# TODOs 
+# - check, remove full "name": "stderr" {} block?  (grep stderr *ipynb) ???
+# 		or whole warning/err empty blocks...
+# - replace phi symbol w text in phiflow
 
-# TODO check, remove full "name": "stderr" {} block?  (grep stderr *ipynb) ???
-# TODO , replace phi symbol w text in phiflow
+# older tests
+#ft1 = re.compile(r"’")
+#ft2 = re.compile(r"👋")
+
 
 inf  = "book-in.tex" 
 outf = "book-in2.tex"
@@ -26,12 +28,12 @@ reSkip.append( re.compile(r"ucharclasses") ) ; reSCnt.append( 1 )
 reSkip.append( re.compile(r"unicode-math") ) ; reSCnt.append( 1 )
 
 # latex fixup, remove references chapter
-reSkip.append( re.compile(r"chapter.References" ) )
-reSkip.append( re.compile(r"detokenize.references.references" ) )
+reSkip.append( re.compile(r"chapter.References" ) ); reSCnt.append( 1 )
+reSkip.append( re.compile(r"detokenize.references.references" ) ); reSCnt.append( 1 )
 
-#reSkip.append( re.compile(r"") )
-#reSkip.append( re.compile(r"") )
-#reSkip.append( re.compile(r"") )
+#reSkip.append( re.compile(r"") ); reSCnt.append( 1 )
+#reSkip.append( re.compile(r"") ); reSCnt.append( 1 )
+#reSkip.append( re.compile(r"") ); reSCnt.append( 1 )
 
 # ugly, manually fix citations in captions one by one
 recs = []; rect = []
@@ -43,6 +45,20 @@ rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id2}{
 
 recs.append( re.compile(r"approach using continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" ) )
 rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id12}{UPTK19}{]}" )
+
+# fixup unicode symbols 
+
+recs.append( re.compile(r"’" ) ) # unicode ' 
+rect.append( "\'" )
+
+recs.append( re.compile(r"Φ") ) # phiflow , ... differentiable simulation framework ...
+rect.append( "$\\\\phi$" )
+
+recs.append( re.compile(r"“") ) # "..."
+rect.append( "\'\'" )
+
+recs.append( re.compile(r"”") )
+rect.append( "\'\'" )
 
 # fixup title , cumbersome...
 
@@ -74,6 +90,9 @@ rect.append( 'author{}' )
 recs.append( re.compile(r"date{(.*)}") )
 rect.append( r'date{\\centering{\1}}' )
 
+#print(len(rect))
+#print(len(recs))
+#exit(1)
 
 
 # ---
@@ -81,6 +100,11 @@ rect.append( r'date{\\centering{\1}}' )
 # only do replacements via recs for book.tex , via applyRecs=True
 def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 	print("Fixup, "+inf+" -> "+outf+" ")
+
+	if len(reSkip) != len(reSCnt): # sanity check
+		print("Error for "+inf+" reSkip cnt: " + format([ len(reSkip), len(reSCnt) ]) )
+		exit(1)
+
 	with open(outf, 'w') as fout:
 		with open(inf, 'r') as f:
 			c = 0
@@ -89,6 +113,7 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 			for line in iter(f.readline, ''):
 
 				# skip lines?
+				rSkip = -1
 				if skip==0:
 					for r in range(len(reSkip)):
 						t = reSkip[r].search(str(line))
@@ -96,14 +121,16 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 							#print(format(c)+" skip due to '" + format(t) +"',  RE #"+format(r)+" , skip "+format(reSCnt[r]) )  # debug
 							skip = reSCnt[r]
 							skipTot += reSCnt[r]
+							rSkip = r
 
 				if skip>0:
 					skip = skip-1
-					fout.write("% SKIP due to RE #"+format(r)+" , L"+format(reSCnt[r]) +"   "+line)
+					fout.write("% SKIP due to RE #"+format(rSkip)+" , L"+format(reSCnt[rSkip]) +"   "+line)
 					#print("S "+line[:-1]) # debug
 				else:
 					if applyRecs:
 						# fix captions and apply other latex replacements
+						#print(len(rect)); print(len(recs))
 						for i in range(len(recs)):
 							line = recs[i].sub( rect[i], line )  # replace all
 
@@ -126,7 +153,7 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 
 parseF(inf,outf,reSkip,reSCnt,applyRecs=True)
 
-#exit(1); print("debug exit!"); exit(1)
+# print("debug exit!"); exit(1)
 
 #---
 
@@ -158,7 +185,7 @@ parseF(inf,outf,reSkip,reSCnt)
 
 #---
 
-# disable for now?
+# disable for now? keep openRight
 if 0:
 	inf  = "sphinxmanual-in.cls" 
 	outf = "sphinxmanual.cls"

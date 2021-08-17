@@ -5,7 +5,7 @@ echo WARNING - still requires one manual quit of first pdf/latex pass, use shift
 echo
 
 # do clean git checkout for changes from json-cleanup-for-pdf.py?
-# git checkout diffphys-code-burgers.ipynb diffphys-code-sol.ipynb physicalloss-code.ipynb bayesian-code.ipynb supervised-airfoils.ipynb
+# git checkout diffphys-code-burgers.ipynb diffphys-code-ns.ipynb diffphys-code-sol.ipynb physicalloss-code.ipynb bayesian-code.ipynb supervised-airfoils.ipynb
 
 # warning - modifies notebooks!
 python3.7 json-cleanup-for-pdf.py
@@ -28,7 +28,7 @@ mv sphinxmanual.cls sphinxmanual-in.cls
 python3.7 ../../fixup-latex.py
 # generates book-in2.tex
 
-# remove unicode chars
+# remove unicode chars via unix iconv
 iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
 
 # finally run pdflatex, now it should work:
@@ -36,8 +36,8 @@ iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
 pdflatex book
 pdflatex book
 
+# for convenience, archive results in main dir
 mv book.pdf ../../book-pdflatex.pdf
-
 tar czvf ../../pbdl-latex-for-arxiv.tar.gz *
 
 

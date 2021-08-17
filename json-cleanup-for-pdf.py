@@ -1,6 +1,6 @@
 import sys, json, re, os
 # usage: json-cleanup-for-pdf.py <int>
-# if int>0, disable PDF mode (only do WWW cleanup)
+# if int>0, disable PDF mode (only do WWW cleanup, note metadata.name still needs to be cleaned up manually)
 
 # disableWrites = True # debugging
 
@@ -13,12 +13,12 @@ if len(sys.argv)>1:
 		pdfMode = False
 
 fileList = [ 
-	"diffphys-code-burgers.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
+	"diffphys-code-burgers.ipynb", "diffphys-code-ns.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
 	"bayesian-code.ipynb", "supervised-airfoils.ipynb" # pytorch
 	]
 
 #fileList = [ "diffphys-code-burgers.ipynb"] # debug
-#fileList = [ "diffphys-code-sol.ipynb"] # debug
+#fileList = [ "diffphys-code-ns.ipynb"] # debug
 
 
 # main
@@ -45,16 +45,18 @@ for fnOut in fileList:
 
 	#print(d.keys()) #print(d["cells"][0].keys())
 
-	# remove TF / pytorch warnings
-	re1 = re.compile(r"WARNING:tensorflow:")
-	re2 = re.compile(r"UserWarning:")
-	re4 = re.compile(r"DeprecationWarning:")
-	re5 = re.compile(r"InsecureRequestWarning:") # for https download
+	# remove TF / pytorch warnings, build list of regular expressions to search for
+	res = []
+	res.append( re.compile(r"WARNING:tensorflow:") )
+	res.append( re.compile(r"UserWarning:") )
+	res.append( re.compile(r"DeprecationWarning:") )
+	res.append( re.compile(r"InsecureRequestWarning") ) # for https download
+	res.append( re.compile(r"Building wheel") ) # phiflow install, also gives weird unicode characters
 	# remove all "warnings.warn" from phiflow?
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
-	re3 = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
-	re3t = "[0.008612174447657694, 0.02584669669548606, 0.043136357266407785 ... ]"
+	reD = re.compile(r"\[0.008612174447657694, 0.02584669669548606, 0.043136357266407785.+\]" )
+	reDt = "[0.008612174447657694, 0.02584669669548606, 0.043136357266407785 ... ]"
 
 	t="cells"
 	okay = 0
@@ -75,7 +77,7 @@ for fnOut in fileList:
 				for j in range(len( d[t][i]["source"] )):
 					#print( d[t][i]["source"][j] )
 					#print( type(d[t][i]["source"][j] ))
-					dsOut = re3.sub( re3t, d[t][i]["source"][j] )  # replace long number string (only for burgers)
+					dsOut = reD.sub( reDt, d[t][i]["source"][j] )  # replace long number string (only for burgers)
 					d[t][i]["source"][j] = dsOut
 					deletes = deletes+1
 					#print( d[t][i]["source"][j] +"\n >>> \n" +d2 )
@@ -91,12 +93,14 @@ for fnOut in fileList:
 
 					dell = [] # collect entries to delete
 					for k in range(  len( d[t][i]["outputs"][j]["text"] )  ):
-						nums = []
-						nums.append( re1.search( d[t][i]["outputs"][j]["text"][k] ) )
-						nums.append( re2.search( d[t][i]["outputs"][j]["text"][k] ) )
-						nums.append( re4.search( d[t][i]["outputs"][j]["text"][k] ) )
-						nums.append( re5.search( d[t][i]["outputs"][j]["text"][k] ) )
-						if (nums[0] is None) and (nums[1] is None):
+						#print(" tout "+   d[t][i]["outputs"][j]["text"][k] ) # debug , print all lines
+						nums = []; all_good = True
+						for rr in range(len(res)):
+							nums.append( res[rr].search( d[t][i]["outputs"][j]["text"][k] ) )
+							if nums[-1] is not None:
+								all_good = False # skip!
+
+						if all_good:
 							okay = okay+1
 						else: # delete line "dell"
 							deletes = deletes+1
