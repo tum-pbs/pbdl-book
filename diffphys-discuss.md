@@ -14,14 +14,14 @@ additional properties, and summarize the pros and cons.
 
 ## Time steps and iterations
 
-When using DP approaches for learning application, 
+When using DP approaches for learning applications, 
 there is a lot of flexibility w.r.t. the combination of DP and NN building blocks. 
-As some of the differences are subtle, the following section will go into more detail
+As some of the differences are subtle, the following section will go into more detail.
+We'll especially focus on solvers that repeat the PDE and NN evaluations multiple times,
+e.g., to compute multiple states of the physical system over time.
 
-**XXX**
-
-To re-cap, this is the previous figure illustrating NNs with DP operators. 
-Here, these operators look like a loss term: they typically don't have weights,
+To re-cap, here's the previous figure about combining NNs and DP operators. 
+In the figure these operators look like a loss term: they typically don't have weights,
 and only provide a gradient that influences the optimization of the NN weights:
 
 ```{figure} resources/diffphys-shortened.jpg
@@ -37,7 +37,7 @@ Similar to the previously described _physical losses_ (from {doc}`physicalloss`)
 
 **Switching the Order** 
 
-However, with DP, there's no real reason to be limited to this setup. E.g., we could imagine to switch the NN and DP components, giving the following structure:
+However, with DP, there's no real reason to be limited to this setup. E.g., we could imagine a swap of the NN and DP components, giving the following structure:
 
 ```{figure} resources/diffphys-switched.jpg
 ---

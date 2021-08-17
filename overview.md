@@ -60,7 +60,7 @@ of physical processes into the learning algorithms.
 Over the course of the last decades,
 highly specialized and accurate discretization schemes have
 been developed to solve fundamental model equations such
-as the Navier-Stokes, Maxwell’s, or Schroedinger’s equations.
+as the Navier-Stokes, Maxwell's, or Schroedinger's equations.
 Seemingly trivial changes to the discretization can determine
 whether key phenomena are visible in the solutions or not.
 Rather than discarding the powerful methods that have been
