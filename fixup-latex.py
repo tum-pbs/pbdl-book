@@ -36,15 +36,19 @@ reSkip.append( re.compile(r"detokenize.references.references" ) ); reSCnt.append
 #reSkip.append( re.compile(r"") ); reSCnt.append( 1 )
 
 # ugly, manually fix citations in captions one by one
+# need manual IDs!
 recs = []; rect = []
-recs.append( re.compile(r"example prediction from ....hyperlink.cite.references:id6..WKA.20...." ) )
-rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id6}{WKA+20}{]}' ) # note, quad \ needed!
-
-recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id2}{CTS.21}{\]}" ) )
-rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id2}{CTS+21}{]}" )
-
-recs.append( re.compile(r"approach using continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" ) )
-rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id12}{UPTK19}{]}" )
+# ID4 CTS
+recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id4}{CTS.21}{\]}" ) )
+rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id4}{CTS+21}{]}" )
+# ID8 WKA
+recs.append( re.compile(r"example prediction from ....hyperlink.cite.references:id8..WKA.20...." ) )
+rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id8}{WKA+20}{]}' ) # note, quad \ needed!
+# ID14 UPTK
+recs.append( re.compile(r"approach using continuous convolutions {.}.hyperlink{cite.references:id14}{UPTK19}{.}" ) )
+rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id14}{UPTK19}{]}" )
+continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" ) )
+continuous convolutions {\[}\hyperlink{cite.references:id14}{UPTK19}{]}
 
 # fixup unicode symbols 
 
