@@ -47,8 +47,6 @@ rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.reference
 # ID14 UPTK
 recs.append( re.compile(r"approach using continuous convolutions {.}.hyperlink{cite.references:id14}{UPTK19}{.}" ) )
 rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id14}{UPTK19}{]}" )
-continuous convolutions {\[}.hyperlink{cite.references:id12}{UPTK19}{\]}" ) )
-continuous convolutions {\[}\hyperlink{cite.references:id14}{UPTK19}{]}
 
 # fixup unicode symbols 
 
@@ -59,10 +57,26 @@ recs.append( re.compile(r"Φ") ) # phiflow , ... differentiable simulation frame
 rect.append( "$\\\\phi$" )
 
 recs.append( re.compile(r"“") ) # "..."
-rect.append( "\'\'" )
+rect.append( "``" )
 
 recs.append( re.compile(r"”") )
 rect.append( "\'\'" )
+
+recs.append( re.compile(r"–") )
+rect.append( "-" )
+
+recs.append( re.compile(r"…") )
+rect.append( "..." )
+
+recs.append( re.compile(r"‘") )
+rect.append( "'" )
+
+recs.append( re.compile(r" ") ) # weird spaces in bib?
+rect.append( " " )
+
+# recs.append( re.compile(r"") )
+# rect.append( "" )
+
 
 # fixup title , cumbersome...
 

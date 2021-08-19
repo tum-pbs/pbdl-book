@@ -54,7 +54,7 @@ where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the s
 the residual term, respectively. We could of course add additional residual terms with suitable scaling factors here.
 
 It is instructive to note what the two different terms in equation {eq}`physloss-training` mean: The first term is a conventional, supervised L2-loss. If we were to optimize only this loss, our network would learn to approximate the training samples well, but might average multiple modes in the solutions, and do poorly in regions in between the sample points. 
-If we, instead, were to optimize only the second term (the physical residual), our neural network might be able to locally satisfy the PDE, but still could produce solutions that are still 'off' from our training data. This can happen due to "null spaces" in the solutions, i.e., different solutions that all satisfy the residuals.
+If we, instead, were to optimize only the second term (the physical residual), our neural network might be able to locally satisfy the PDE, but still could produce solutions that are still far away from our training data. This can happen due to "null spaces" in the solutions, i.e., different solutions that all satisfy the residuals.
 Therefore, we optimize both objectives simultaneously such that, in the best case, the network learns to approximate the specific solutions of the training data while still capturing knowledge about the underlying PDE.
 
 Note that, similar to the data samples used for supervised training, we have no guarantees that the
