@@ -28,7 +28,7 @@ the time evolution with $f_t$, and then decode the full spatial information with
 ```
 
 
-## Reduced Order Models 
+## Reduced order models 
 
 Reducing the dimension and complexity of computational models, often called _reduced order modeling_ (ROM) or _model reduction_, is a classic topic in the computational field. Traditional techniques often employ techniques such as principal component analysis to arrive at a basis for a chosen space of solution. However, being linear by construction, these approaches have inherent limitations when representing complex, non-linear solution manifolds. In practice, all "interesting" solutions are highly non-linear, and hence DL has received a substantial amount of interest as a way to learn non-linear representations. Due to the non-linearity, DL representations can potentially yield a high accuracy with fewer degrees of freedom in the reduced model compared to classic approaches.
 

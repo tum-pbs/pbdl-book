@@ -19,7 +19,7 @@ as the inference of super-resolution solutions where the range of possible
 results can be highly ambiguous.
 ```
 
-## Maximum Likelihood Estimation
+## Maximum likelihood estimation
 
 To train a GAN we have to briefly turn to classification problems.
 For these, the learning objective takes a slightly different form than the
@@ -50,7 +50,7 @@ The takeaway message here is that the wide-spread training via cross entropy
 is effectively a maximum likelihood estimation for probabilities over the inputs,
 as defined in equation {eq}`mle-prob`.
 
-## Adversarial Training
+## Adversarial training
 
 MLE is a crucial component for GANs: here we have a _generator_ that is typically
 similar to a decoder network, e.g., the second half of an autoencoder from {doc}`others-timeseries`.
