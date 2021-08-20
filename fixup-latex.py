@@ -49,6 +49,7 @@ recs.append( re.compile(r"approach using continuous convolutions {.}.hyperlink{c
 rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id14}{UPTK19}{]}" )
 
 # fixup unicode symbols 
+# compare book-in2.tex -> book.tex after iconv 
 
 recs.append( re.compile(r"’" ) ) # unicode ' 
 rect.append( "\'" )
@@ -73,6 +74,12 @@ rect.append( "'" )
 
 recs.append( re.compile(r" ") ) # weird spaces in bib?
 rect.append( " " )
+
+# recs.append( re.compile(r"") )
+# rect.append( "" )
+
+# recs.append( re.compile(r"") )
+# rect.append( "" )
 
 # recs.append( re.compile(r"") )
 # rect.append( "" )
