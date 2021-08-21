@@ -89,13 +89,13 @@ a neural network that supports the repeated solves. Based on the
 domain-specific specialization of this network, such a hybrid
 could vastly outperform traditional, generic solvers. And despite
 the many open questions, first publications have demonstrated
-that this goal is not overly far away. 
+that this goal is not overly far away {cite}`um2020sol,kochkov2021`. 
 
 Another way to look at it is that all mathematical models of our nature
 are idealized approximations and contain errors. A lot of effort has been
 made to obtain very good model equations, but in order to make the next 
 big step forward, DL methods offer a very powerful tool to close the
-remaining gap towards reality.
+remaining gap towards reality {cite}`akkaya2019solving`.
 
 ## Categorization
 
