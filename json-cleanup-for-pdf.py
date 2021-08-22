@@ -14,11 +14,12 @@ if len(sys.argv)>1:
 
 fileList = [ 
 	"diffphys-code-burgers.ipynb", "diffphys-code-ns.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
-	"bayesian-code.ipynb", "supervised-airfoils.ipynb" # pytorch
+	"bayesian-code.ipynb", "supervised-airfoils.ipynb", # pytorch
+	"reinflearn-code.ipynb", # phiflow
 	]
 
-#fileList = [ "diffphys-code-burgers.ipynb"] # debug
-#fileList = [ "diffphys-code-ns.ipynb"] # debug
+#fileList = [ "diffphys-code-burgers.ipynb"] # debug, only 1 file
+#fileList = [ "diffphys-code-ns.ipynb"] # debug, only 1 file
 
 
 # main
@@ -28,8 +29,7 @@ for fnOut in fileList:
 	fn0 = fnOut[:-5] + "bak"
 	fn = fn0 + "0"; cnt = 0
 	while os.path.isfile(fn):
-		#print("Error: "+fn+" already exists!")
-		#exit(1)
+		#print("Error: "+fn+" already exists!"); exit(1)
 		print("Warning: "+fn+" already exists!")
 		fn = fn0 + format(cnt); cnt=cnt+1
 
@@ -52,6 +52,7 @@ for fnOut in fileList:
 	res.append( re.compile(r"DeprecationWarning:") )
 	res.append( re.compile(r"InsecureRequestWarning") ) # for https download
 	res.append( re.compile(r"Building wheel") ) # phiflow install, also gives weird unicode characters
+	res.append( re.compile(r"warnings.warn") )  # phiflow warnings
 	# remove all "warnings.warn" from phiflow?
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
