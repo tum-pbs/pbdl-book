@@ -19,7 +19,7 @@ In its simplest form, the learning goal for reinforcement learning tasks can be 
 
 $$
 \text{arg max}_{\theta} \mathbb{E}_{a \sim \pi(;s,\theta_p)} \big[ \sum_t r_t \big], 
-$$ (learn-l2)
+$$ (rl-learn-l2)
 
 where the reward at time $t$ (denoted by $r_t$ above) is the result of an action $a$ performed by an agent. 
 The agents choose their actions based on a neural network policy which decides via a set of given observations. 

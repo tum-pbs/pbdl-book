@@ -4,12 +4,12 @@ Welcome ...
 Welcome to the _Physics-based Deep Learning Book_ 👋
 
 **TL;DR**: 
-This document targets a practical and comprehensive introduction to the latest concepts
-for combining physical simulations with deep learning.
-As much as possible, the algorithms will come with hands-on code examples to quickly get started.
+This document targets a practical and comprehensive introduction of everything
+related to deep learning in the context of physical simulations.
+As much as possible, all topics come with hands-on code examples in the form of Jupyter notebooks to quickly get started.
 Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
-more tightly coupled learning algorithms with _differentiable simulations_, as well as extensions such
-as reinforcement learning and uncertainty modeling.
+more tightly coupled learning algorithms with _differentiable simulations_, as well as 
+reinforcement learning and uncertainty modeling.
 We live in exciting times: these methods have a huge potential to fundamentally change what we can achieve
 with simulations.
 
@@ -24,7 +24,7 @@ Some visual examples of numerically simulated time sequences. In this book, we e
 
 ## Coming up
 
-As a _sneak preview_, in the next chapters will show:
+As a _sneak preview_, the next chapters will show:
 
 - How to train networks to infer a fluid flow around shapes like airfoils, and estimate the uncertainty of the prediction. This gives a _surrogate model_ that replaces a traditional numerical simulation.
 
@@ -32,11 +32,11 @@ As a _sneak preview_, in the next chapters will show:
 
 - How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
 
-Over the course of the next
-chapters we will introduce different approaches for introducing physical models
+Throughout this text,
+we will introduce different approaches for introducing physical models
 into deep learning, i.e., _physics-based deep learning_ (PBDL) approaches.
 These algorithmic variants will be introduced in order of increasing
-tightness of the integration, and  pros and cons of the different approaches
+tightness of the integration, and the pros and cons of the different approaches
 will be discussed. It's important to know in which scenarios each of the
 different techniques is particularly useful.
 
@@ -52,11 +52,11 @@ and we're eager to improve it. Thanks in advance 😀! Btw., we also maintain a 
 
 ```{admonition} Executable code, right here, right now
 :class: tip
-We focus on jupyter notebooks, a key advantage of which is that all code examples
+We focus on Jupyter notebooks, a key advantage of which is that all code examples
 can be executed _on the spot_, from your browser. You can modify things and 
 immediately see what happens -- give it a try...
 <br><br>
-Plus, jupyter notebooks are great because they're a form of [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
+Plus, Jupyter notebooks are great because they're a form of [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
 ```
 
 
@@ -91,7 +91,7 @@ If you find this book useful, please cite it via:
 @book{thuerey2021pbdl,
   title={Physics-based Deep Learning},
   author={Nils Thuerey and Philipp Holl and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
-  url={http://physicsbaseddeeplearning.org},
+  url={https://physicsbaseddeeplearning.org},
   year={2021},
   publisher={WWW}
 }
