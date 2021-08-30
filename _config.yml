@@ -4,11 +4,10 @@
 title: Physics-based Deep Learning
 author: N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um
 logo: resources/logo.jpg
+copyright: "2021"
+only_build_toc_files: true
 
-# Force re-execution of notebooks on each build.
-# See https://jupyterbook.org/content/execute.html
 execute:
-  # Whether to execute notebooks at build time. Must be one of ("auto", "force", "cache", "off")
   execute_notebooks: off
 
 # Define the name of the latex output file for PDF builds
@@ -23,7 +22,6 @@ bibtex_bibfiles:
 # Information about where the book exists on the web
 repository:
   url: https://github.com/tum-pbs/pbdl-book/ # Online location of your book
-  #path_to_book: docs  # Optional path to your book, relative to the repository root
   branch: master  # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
@@ -31,3 +29,4 @@ repository:
 html:
   use_issues_button: true
   use_repository_button: true
+  favicon: "favicon.ico"

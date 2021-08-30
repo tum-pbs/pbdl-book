@@ -57,7 +57,7 @@ DL techniques and NNs are novel, sometimes difficult to apply, and
 it is admittedly often non-trivial to properly integrate our understanding
 of physical processes into the learning algorithms.
 
-Over the course of the last decades,
+Over the last decades,
 highly specialized and accurate discretization schemes have
 been developed to solve fundamental model equations such
 as the Navier-Stokes, Maxwell's, or Schroedinger's equations.
@@ -69,7 +69,7 @@ is highly beneficial for DL to use them as much as possible.
 
 ```{admonition} Goals of this document
 :class: tip
-The key aspects that we want to address in the following are:
+The key aspects that we will address in the following are:
 - explain how to use deep learning techniques to solve PDE problems,
 - how to combine them with **existing knowledge** of physics,
 - without **discarding** our knowledge about numerical methods.
@@ -93,7 +93,7 @@ that this goal is not overly far away {cite}`um2020sol,kochkov2021`.
 
 Another way to look at it is that all mathematical models of our nature
 are idealized approximations and contain errors. A lot of effort has been
-made to obtain very good model equations, but in order to make the next 
+made to obtain very good model equations, but to make the next 
 big step forward, DL methods offer a very powerful tool to close the
 remaining gap towards reality {cite}`akkaya2019solving`.
 
@@ -131,7 +131,7 @@ techniques:
   an output from a deep neural network; this requires a fully differentiable
   simulator and represents the tightest coupling between the physical system and
   the learning process. Interleaved differentiable physics approaches are especially important for
-  temporal evolutions, where they can yield an estimate of future behavior of the
+  temporal evolutions, where they can yield an estimate of the future behavior of the
   dynamics.
 
 Thus, methods can be roughly categorized in terms of forward versus inverse
@@ -173,7 +173,7 @@ give introductions into the differentiable simulation framework _Φ<sub>Flow</su
 these examples, you should have a good overview of what's available in current APIs, such that
 the best one can be selected for new tasks.
 
-As we're (in most jupyter notebook examples) dealing with stochastic optimizations, many of the following code examples will produce slightly different results each time they're run. This is fairly common with NN training, but it's important to keep in mind when executing the code. It also means that the numbers discussed in the text might not exactly match the numbers you'll see after re-running the examples.
+As we're (in most Jupyter notebook examples) dealing with stochastic optimizations, many of the following code examples will produce slightly different results each time they're run. This is fairly common with NN training, but it's important to keep in mind when executing the code. It also means that the numbers discussed in the text might not exactly match the numbers you'll see after re-running the examples.
 
 ---
 <br>
