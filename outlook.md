@@ -26,5 +26,12 @@ And while the examples with Burgers equation and Navier-Stokes solvers are clear
 
 ## Closing remarks
 
-So overall, there's lots of exciting research work left to do - the next years and decades definitely won't be boring 👍
+So overall, there's lots of exciting research work left to do - the next years and decades definitely won't be boring. 👍
+
+```{figure} resources/logo.jpg
+---
+height: 200px
+name: pbdl-logo-small
+---
+```
 

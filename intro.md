@@ -1,6 +1,12 @@
 Welcome ... 
 ============================
 
+```{figure} resources/logo-xl.jpg
+---
+name: pbdl-logo-large
+---
+```
+
 Welcome to the _Physics-based Deep Learning Book_ 👋
 
 **TL;DR**: 
