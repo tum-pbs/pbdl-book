@@ -35,6 +35,8 @@ natural language processing {cite}`radford2019language`,
 and more recently also for protein folding {cite}`alquraishi2019alphafold`.
 The field is very vibrant and quickly developing, with the promise of vast possibilities.
 
+### Replacing traditional simulations?
+
 These success stories of deep learning (DL) approaches 
 have given rise to concerns that this technology has 
 the potential to replace the traditional, simulation-driven approach to science. 
@@ -67,6 +69,37 @@ Rather than discarding the powerful methods that have been
 developed in the field of numerical mathematics, it 
 is highly beneficial for DL to use them as much as possible.
 
+### Black boxes and magic?
+
+People who are unfamiliear with DL methods often associate neural networks 
+with _black boxes_, and see the training processes as something that is beyond the grasp
+of human understanding. However, these viewpoints typically stem from
+relying on hearsay and not dealing with the topic enough.
+
+Rather, the situation is a very common one in science: we are facing a new class of methods,
+and "all the gritty details" are not yet fully worked out. However, this is pretty common 
+for scientific advances.
+Numerical methods themselves are a good example. Around 1950, numerical approximations
+and solvers had a tough standing. E.g., to cite H. Goldstine, 
+numerical instabilies were considered to be a "constant source of 
+anxiety in the future" {cite}`goldstine1990history`. 
+By now we have a pretty good grasp of these instabilities, and numerical methods 
+are ubiquitous, and well established.
+
+Thus, it is important to be aware of the fact that -- in a way -- there is nothing
+magical or otherworldly to deep learning methods. They're simply another set of 
+numerical tools. That being said, they're clearly fairly new, and right now 
+definitely the most powerful set of tools we have for non-linear problems.
+Just because all the details aren't fully worked out and nicely written up,
+that shouldn't stop us from including these powerful methods in our numerical toolbox.
+
+### Reconciling DL and simulations
+
+Taking a step back, the aim of this book is to build on all the powerful techniques that we have
+at our disposal for numerical simulations, and use them wherever we can in conjunction
+with deep learning.
+As such, a central goal is to _reconcile_ the data-centered viewpoint with physical simulations.
+
 ```{admonition} Goals of this document
 :class: tip
 The key aspects that we will address in the following are:
@@ -74,11 +107,6 @@ The key aspects that we will address in the following are:
 - how to combine them with **existing knowledge** of physics,
 - without **discarding** our knowledge about numerical methods.
 ```
-
-Thus, our aim is to build on all the powerful techniques that we have
-at our disposal, and use them wherever we can.
-As such, a central goal of this book is to _reconcile_ the data-centered
-viewpoint with physical simulations.
 
 The resulting methods have a huge potential to improve
 what can be done with numerical methods: in scenarios
@@ -142,9 +170,9 @@ that leverage _differentiable physics_ allow for very tight integration
 of deep learning and numerical simulation methods.
 
 
-## More specifically
+## Looking ahead
 
-_Physical simulations_ are a huge field, and we won't cover all possible types of physical models and simulations in the following.
+_Physical simulations_ are a huge field, and we won't be able to cover all possible types of physical models and simulations.
 
 ```{note} Rather, the focus of this book lies on:
 - _Field-based simulations_ (no Lagrangian methods)

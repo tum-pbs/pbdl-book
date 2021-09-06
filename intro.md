@@ -19,14 +19,7 @@ reinforcement learning and uncertainty modeling.
 We live in exciting times: these methods have a huge potential to fundamentally change what we can achieve
 with simulations.
 
-
-```{figure} resources/teaser.jpg
 ---
-height: 220px
-name: pbdl-teaser
----
-Some visual examples of numerically simulated time sequences. In this book, we explain how to realize algorithms that use neural networks alongside numerical solvers.
-```
 
 ## Coming up
 
@@ -47,15 +40,6 @@ will be discussed. It's important to know in which scenarios each of the
 different techniques is particularly useful.
 
 
-## Comments and suggestions
-
-This _book_, where "book" stands for a collection of digital texts and code examples,
-is maintained by the
-[TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us 
-if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).
-If you find mistakes, please also let us know! We're aware that this document is far from perfect,
-and we're eager to improve it. Thanks in advance 😀! Btw., we also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
-
 ```{admonition} Executable code, right here, right now
 :class: tip
 We focus on Jupyter notebooks, a key advantage of which is that all code examples
@@ -66,7 +50,24 @@ Plus, Jupyter notebooks are great because they're a form of [literate programmin
 ```
 
 
-![Divider](resources/divider3.jpg)
+
+## Comments and suggestions
+
+This _book_, where "book" stands for a collection of digital texts and code examples,
+is maintained by the
+[TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us 
+if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).
+If you find mistakes, please also let us know! We're aware that this document is far from perfect,
+and we're eager to improve it. Thanks in advance 😀! Btw., we also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
+
+
+```{figure} resources/divider-mult.jpg
+---
+height: 220px
+name: divider-mult
+---
+Some visual examples of numerically simulated time sequences. In this book, we explain how to realize algorithms that use neural networks alongside numerical solvers.
+```
 
 
 ## Thanks!
@@ -88,7 +89,6 @@ Chloe Paillard for proofreading parts of the document.
 
 % future:
 % - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
-
 
 ## Citation
 
