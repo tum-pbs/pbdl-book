@@ -3,7 +3,7 @@ Physical Loss Terms
 
 The supervised setting of the previous sections can quickly 
 yield approximate solutions with a fairly simple training process. However, what's
-quite sad to see here is that we only use physical models and numerics
+quite sad to see here is that we only use physical models and numerical methods 
 as an "external" tool to produce a big pile of data 😢.
 
 We as humans have a lot of knowledge about how to describe physical processes
@@ -29,16 +29,17 @@ $$
 $$
 
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
-of higher and higher order (this can of course also include mixed derivatives with respect to different axes).
+of higher and higher order (this can of course also include mixed derivatives with respect to different axes). \mathbf{u}_t denotes the changes over time.
 
-In this context, we can approximate the unknown u itself with a neural network. If the approximation, which we call $\tilde{\mathbf{u}}$, is accurate, the PDE should be satisfied naturally. In other words, the residual R should be equal to zero:
+In this context, we can approximate the unknown $\mathbf{u}$ itself with a neural network. If the approximation, which we call $\tilde{\mathbf{u}}$, is accurate, the PDE should be satisfied naturally. In other words, the residual R should be equal to zero:
 
 $$
   R = \mathbf{u}_t - \mathcal F ( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} ) = 0 .
 $$
 
-This nicely integrates with the objective for training a neural network: similar to before
-we can collect sample solutions 
+This nicely integrates with the objective for training a neural network: we can train for 
+minimizing this residual in combination with direct loss terms.
+Similar to before, we can make use of sample solutions 
 $[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(\mathbf{x})=y$. 
 This is typically important, as most practical PDEs we encounter do not have unique solutions
 unless initial and boundary conditions are specified. Hence, if we only consider $R$ we might
@@ -47,7 +48,7 @@ therefore help to _pin down_ the solution in certain places.
 Now our training objective becomes
 
 $$
-\text{arg min}_{\theta} \ \alpha_0 \sum_i (f(x_i ; \theta)-y_i)^2 + \alpha_1 R(x_i) ,
+\text{arg min}_{\theta} \ \alpha_0 \sum_i \big( f(x_i ; \theta)-y_i \big)^2 + \alpha_1 R(x_i) ,
 $$ (physloss-training)
 
 where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 

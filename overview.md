@@ -66,12 +66,13 @@ as the Navier-Stokes, Maxwell's, or Schroedinger's equations.
 Seemingly trivial changes to the discretization can determine
 whether key phenomena are visible in the solutions or not.
 Rather than discarding the powerful methods that have been
-developed in the field of numerical mathematics, it 
-is highly beneficial for DL to use them as much as possible.
+developed in the field of numerical mathematics, this book will 
+show that it is highly beneficial to use them as much as possible
+when applying DL.
 
 ### Black boxes and magic?
 
-People who are unfamiliear with DL methods often associate neural networks 
+People who are unfamiliar with DL methods often associate neural networks 
 with _black boxes_, and see the training processes as something that is beyond the grasp
 of human understanding. However, these viewpoints typically stem from
 relying on hearsay and not dealing with the topic enough.
@@ -81,10 +82,10 @@ and "all the gritty details" are not yet fully worked out. However, this is pret
 for scientific advances.
 Numerical methods themselves are a good example. Around 1950, numerical approximations
 and solvers had a tough standing. E.g., to cite H. Goldstine, 
-numerical instabilies were considered to be a "constant source of 
+numerical instabilities were considered to be a "constant source of 
 anxiety in the future" {cite}`goldstine1990history`. 
 By now we have a pretty good grasp of these instabilities, and numerical methods 
-are ubiquitous, and well established.
+are ubiquitous and well established.
 
 Thus, it is important to be aware of the fact that -- in a way -- there is nothing
 magical or otherworldly to deep learning methods. They're simply another set of 
@@ -142,8 +143,8 @@ the most crucial differentiation for the following topics lies in the
 nature of the integration  between DL techniques
 and the domain knowledge, typically in the form of model equations
 via partial differential equations (PDEs).
-Taking a global perspective, the following three categories can be
-identified to categorize _physics-based deep learning_ (PBDL)
+The following three categories can be
+identified to roughly categorize _physics-based deep learning_ (PBDL)
 techniques:
 
 - _Supervised_: the data is produced by a physical system (real or simulated),
@@ -162,12 +163,11 @@ techniques:
   temporal evolutions, where they can yield an estimate of the future behavior of the
   dynamics.
 
-Thus, methods can be roughly categorized in terms of forward versus inverse
+Thus, methods can be categorized in terms of forward versus inverse
 solve, and how tightly the physical model is integrated into the
 optimization loop that trains the deep neural network. Here, especially 
-the interleaved approaches
-that leverage _differentiable physics_ allow for very tight integration
-of deep learning and numerical simulation methods.
+interleaved approaches that leverage _differentiable physics_ allow for 
+very tight integration of deep learning and numerical simulation methods.
 
 
 ## Looking ahead
@@ -176,8 +176,8 @@ _Physical simulations_ are a huge field, and we won't be able to cover all possi
 
 ```{note} Rather, the focus of this book lies on:
 - _Field-based simulations_ (no Lagrangian methods)
-- Combinations with _deep learning_ (plenty of other interesting ML techniques, but not here)
-- Experiments as _outlook_ (i.e., replace synthetic data with real-world observations)
+- Combinations with _deep learning_ (plenty of other interesting ML techniques exist, but won't be discussed here)
+- Experiments are left as an _outlook_ (i.e., replacing synthetic data with real-world observations)
 ```
 
 It's also worth noting that we're starting to build the methods from some very

@@ -27,7 +27,7 @@ $$
 $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
-with a stochastic gradient descent (SGD) optimizer of your choice, e.g. Adam {cite}`kingma2014adam`.
+with a stochastic gradient descent (SGD) optimizer of choice, e.g. Adam {cite}`kingma2014adam`.
 We'll rely on auto-diff to compute the gradient w.r.t. weights, $\partial f / \partial \theta$,
 We will also assume that $e$ denotes a _scalar_ error function (also
 called cost, or objective function).
@@ -39,7 +39,7 @@ introduce scalar loss, always(!) scalar...  (also called *cost* or *objective* f
 For training we distinguish: the **training** data set drawn from some distribution, 
 the **validation** set (from the same distribution, but different data),
 and **test** data sets with _some_ different distribution than the training one.
-The latter distinction is important! For the test set we want 
+The latter distinction is important. For the test set we want 
 _out of distribution_ (OOD) data to check how well our trained model generalizes.
 Note that this gives a huge range of possibilities for the test data set: 
 from tiny changes that will certainly work,
@@ -131,7 +131,8 @@ and the abbreviations used in: {doc}`notation`.
 We solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
 The solution can be expressed as a function of $\mathbf{u}$ and its derivatives:
 $\mathbf{u}(\mathbf{x},t+\Delta t) = 
-\mathcal{P}(\mathbf{u}(\mathbf{x},t), \mathbf{u}(\mathbf{x},t)',\mathbf{u}(\mathbf{x},t)'',...)$.
+\mathcal{P}( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} )$, where
+  $\mathbf{u}_{x}$ denotes the spatial derivatives $\partial \mathbf{u}(\mathbf{x},t) / \partial \mathbf{x}$.
 
 For all PDEs, we will assume non-dimensional parametrizations as outlined below,
 which could be re-scaled to real world quantities with suitable scaling factors.

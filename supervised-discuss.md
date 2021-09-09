@@ -92,8 +92,8 @@ models at training time later on, the NNs just adjust their weights to represent
 they receive, and reproduce it.
 
 Due to the hype and numerous success stories, people not familiar with DL often have 
-the impression that DL works like a human mind, and is able to detect fundamental
-and general principles in data sets (["messages from god"](https://dilbert.com/strip/2000-01-03) anyone?).
+the impression that DL works like a human mind, and is able to extract fundamental
+and general principles from data sets (["messages from god"](https://dilbert.com/strip/2000-01-03) anyone?).
 That's not what happens with the current state of the art. Nonetheless, it's
 the most powerful tool we have to approximate complex, non-linear functions.
 It is a great tool, but it's important to keep in mind, that once we set up the training
@@ -119,8 +119,8 @@ As a rule of thumb: make sure you actually train the NN on the
 inputs that are as similar as possible to those you want to use at inference time.
 
 This is important to keep in mind during the next chapters: e.g., if we
-want an NN to work in conjunction with another solver or simulation environment,
-it's important to actually bring the solver into the training process, otherwise
+want an NN to work in conjunction with a certain simulation environment,
+it's important to actually include the simulator in the training process. Otherwise,
 the network might specialize on pre-computed data that differs from what is produced
 when combining the NN with the solver, i.e it will suffer from _distribution shift_.
 

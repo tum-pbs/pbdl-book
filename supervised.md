@@ -78,5 +78,5 @@ is a very attractive and interesting direction.
 
 ## Show me some code!
 
-Let's directly look at an example for this: we'll replace a full solver for
-_turbulent flows around airfoils_ with a surrogate model from {cite}`thuerey2020dfp`. 
+Let's finally look at a code example that trains a neural network:
+we'll replace a full solver for _turbulent flows around airfoils_ with a surrogate model from {cite}`thuerey2020dfp`. 
