@@ -7,7 +7,9 @@ logo: resources/logo.jpg
 copyright: "2021"
 only_build_toc_files: true
 
-use_binder_button: false
+launch_buttons:
+  colab_url: https://colab.research.google.com
+  binderhub_url: "" # not supported for now
 
 execute:
   execute_notebooks: off
