@@ -29,7 +29,7 @@ $$
 $$
 
 where the $_{\mathbf{x}}$ subscripts denote spatial derivatives with respect to one of the spatial dimensions
-of higher and higher order (this can of course also include mixed derivatives with respect to different axes). \mathbf{u}_t denotes the changes over time.
+of higher and higher order (this can of course also include mixed derivatives with respect to different axes). $\mathbf{u}_t$ denotes the changes over time.
 
 In this context, we can approximate the unknown $\mathbf{u}$ itself with a neural network. If the approximation, which we call $\tilde{\mathbf{u}}$, is accurate, the PDE should be satisfied naturally. In other words, the residual R should be equal to zero:
 
