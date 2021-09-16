@@ -89,11 +89,11 @@ rect.append( " " )
 
 # fix backslashes...  saves at least typing a few of them! still needs manual \ -> \\ , could be done better
 tt =( 'hrule\n' + 
-	'\\vspace{4cm}\n' + 
+	'\\vspace{3cm}\n' + 
 	'\\begin{center}\n' + 
 	'\\sphinxstylestrong{\\Huge \\textsf{Physics-based Deep Learning}} \\\\ \\vspace{0.5cm} \n' + 
-	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\\\ \\vspace{3cm} \n' + 
-	'\\noindent\\sphinxincludegraphics[height=220\\sphinxpxdimen]{{teaser}.jpg} \\\\ \\vspace{2cm} \n' + 
+	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\\\ \\vspace{2cm} \n' + 
+	'\\noindent\\sphinxincludegraphics[height=420\\sphinxpxdimen]{{logo-xl}.jpg} \\\\ \\vspace{1cm} \n' + 
 	'\\textsf{\\large N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um} \n' + 
 	'\\end{center}\n' )
 
@@ -102,6 +102,9 @@ recBST1 = re.compile(r"\\")
 recBST1t = '\\\\\\\\'  
 tt = recBST1.sub( recBST1t, tt )  # replace all
 #print(tt); exit(1)
+
+# skip html version logo-xl , todo: remove figure env around it, move divider-mult image above "Coming up" para
+reSkip.append( re.compile(r"noindent.sphinxincludegraphics..logo-xl..jpg" ) ); reSCnt.append( 1 )
 
 # insert instead of sphinx version
 recs.append( re.compile(r"sphinxmaketitle") )

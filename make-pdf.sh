@@ -1,5 +1,9 @@
 # source this file with "." in a shell
 
+# note this script assumes the following paths/versions
+# python3.7
+# /Users/thuerey/Library/Python/3.7/bin/jupyter-book
+
 echo
 echo WARNING - still requires one manual quit of first pdf/latex pass, use shift-x to quit
 echo

@@ -56,10 +56,11 @@ Plus, Jupyter notebooks are great because they're a form of [literate programmin
 
 This _book_, where "book" stands for a collection of digital texts and code examples,
 is maintained by the
-[TUM Physics-based Simulation Group](https://ge.in.tum.de). Feel free to contact us 
-if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).
+[Physics-based Simulation Group](https://ge.in.tum.de) at [TUM](https://www.tum.de). 
+Feel free to contact us if you have any comments, e.g., via [old fashioned email](mailto:i15ge@cs.tum.edu).
 If you find mistakes, please also let us know! We're aware that this document is far from perfect,
-and we're eager to improve it. Thanks in advance 😀! Btw., we also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
+and we're eager to improve it. Thanks in advance 😀! 
+Btw., we also maintain a [link collection](https://github.com/thunil/Physics-Based-Deep-Learning) with recent research papers.
 
 
 ```{figure} resources/divider-mult.jpg
