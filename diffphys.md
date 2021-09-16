@@ -10,7 +10,7 @@ The central goal of these methods is to use existing numerical solvers, and equi
 them with functionality to compute gradients with respect to their inputs.
 Once this is realized for all operators of a simulation, we can leverage 
 the autodiff functionality of DL frameworks with backpropagation to let gradient 
-information flow from from a simulator into an NN and vice versa. This has numerous 
+information flow from a simulator into an NN and vice versa. This has numerous 
 advantages such as improved learning feedback and generalization, as we'll outline below.
 
 In contrast to physics-informed loss functions, it also enables handling more complex
