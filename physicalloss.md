@@ -39,9 +39,10 @@ $$
 
 This nicely integrates with the objective for training a neural network: we can train for 
 minimizing this residual in combination with direct loss terms.
-Similar to before, we can make use of sample solutions 
-$[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(\mathbf{x})=y$. 
-This is typically important, as most practical PDEs we encounter do not have unique solutions
+Similar to before, we can use pre-computed solutions 
+$[x_0,y_0], ...[x_n,y_n]$ for $\mathbf{u}$ with $\mathbf{u}(\mathbf{x})=y$ as constraints
+in addition to the residual terms. 
+This is typically important, as most practical PDEs do not have unique solutions
 unless initial and boundary conditions are specified. Hence, if we only consider $R$ we might
 get solutions with random offset or other undesirable components. The supervised sample points
 therefore help to _pin down_ the solution in certain places.
@@ -71,7 +72,7 @@ In order to compute the residuals at training time, it would be possible to stor
 the unknowns of $\mathbf{u}$ on a computational mesh, e.g., a grid, and discretize the equations of
 $R$ there. This has a fairly long "tradition" in DL, and was proposed by Tompson et al. {cite}`tompson2017` early on.
 
-A popular variant of employing physical soft-constraints {cite}`raissi2018hiddenphys`
+A popular variant of employing physical soft-constraints {cite}`raissi2019pinn`
 instead uses fully connected NNs to represent $\mathbf{u}$. This has some interesting pros and cons that we'll outline in the following, and we will also focus on it in the following code examples and comparisons.
 
 The central idea here is that the aforementioned general function $f$ that we're after in our learning problems
