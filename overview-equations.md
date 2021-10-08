@@ -69,7 +69,7 @@ The following section will give a brief outlook for the model equations
 we'll be using later on in the DL examples.
 We typically target continuous PDEs denoted by $\mathcal P^*$
 whose solution is of interest in a spatial domain $\Omega \subset \mathbb{R}^d$ in $d \in {1,2,3} $ dimensions.
-In addition, wo often consider a time evolution for a finite time interval $t \in \mathbb{R}^{+}$.
+In addition, we often consider a time evolution for a finite time interval $t \in \mathbb{R}^{+}$.
 The corresponding fields are either d-dimensional vector fields, for instance $\mathbf{u}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}^d$, 
 or scalar $\mathbf{p}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}$.
 The components of a vector are typically denoted by $x,y,z$ subscripts, i.e.,
