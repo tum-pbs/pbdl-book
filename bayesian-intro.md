@@ -1,7 +1,7 @@
 Introduction to Posterior Inference
 =======================
 
-We should keep in mind that for all measurements, models, and discretizations we have uncertainties. For measurements and observations, this typically appears in the form of measurement errors. Model equations equations, on the other hand, usually encompass only parts of a system we're interested in (leaving the remainder as an uncertainty), while for numerical simulations we inherently introduce discretization errors. So a very important question to ask here is how we can be sure that an answer we obtain is the correct one. From a statisticians viewpoint, we'd like to know the posterior pobability distribution, a distribution that captures possible uncertainties we have about our model or data.
+We should keep in mind that for all measurements, models, and discretizations we have uncertainties. For measurements and observations, this typically appears in the form of measurement errors. Model equations equations, on the other hand, usually encompass only parts of a system we're interested in (leaving the remainder as an uncertainty), while for numerical simulations we inherently introduce discretization errors. So a very important question to ask here is how we can be sure that an answer we obtain is the correct one. From a statisticians viewpoint, we'd like to know the posterior probability distribution, a distribution that captures possible uncertainties we have about our model or data.
 
 ## Uncertainty 
 
@@ -12,7 +12,7 @@ yields a _maximum likelihood estimation_ (MLE) for the parameters of the network
 However, this MLE viewpoint does not take any of the uncertainties mentioned above into account:
 for DL training, we likewise have a numerical optimization, and hence an inherent
 approximation error and uncertainty regarding the learned representation.
-Ideally, we should reformulate our the learning process such that it takes 
+Ideally, we should reformulate the learning process such that it takes 
 its own uncertainties into account, and it should make
 _posterior inference_ possible,
 i.e. learn to produce the full output distribution. However, this turns out to be an

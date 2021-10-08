@@ -43,8 +43,6 @@ The objective of the actor inherently depends on the output of the critic networ
 
 This interdependence can promote instabilities, e.g., as strongly over- or underestimated state values can give wrong impulses during learning. Actions yielding higher rewards often also contribute to reaching states with higher informational value. As a consequence, when the - possibly incorrect - value estimate of individual samples are allowed to unrestrictedly affect the agent's behavior, the learning progress can collapse.
 
-DEBUG TEST t’s t’s agent’s vs's TODO remove!!!
-
 PPO was introduced as a method to specifically counteract this problem. The idea is to restrict the influence that individual state value estimates can have on the change of the actor's behavior during learning. PPO is a popular choice especially when working on continuous action spaces. This can be attributed to the fact that it tends to achieve good results with a stable learning progress, while still being comparatively easy to implement. 
 
 ### PPO-clip

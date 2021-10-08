@@ -72,7 +72,7 @@ $$
 $$
 
 where the prediction network is denoted by $f_p$ to distinguish it from encoder and decoder, above.
-This already implies that we're facing a recurrent task: any $ith$ step is
+This already implies that we're facing a recurrent task: any $i$th step is
 the result of $i$ evaluations of $f_p$, i.e. $\mathbf{c}_{t+i} = f_p^{(i)}( \mathbf{c}_{t};\theta_p)$.
 As there is an inherent per-evaluation error, it is typically important to train this process
 for more than a single step, such that the $f_p$ network "sees" the drift it produces in terms
