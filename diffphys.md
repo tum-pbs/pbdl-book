@@ -238,8 +238,8 @@ The $\frac{ \partial L }{ \partial d}$ component is typically simple enough: we'
 
 $$ 
 \frac{ \partial L }{ \partial d} 
-    = \partial | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2 / \partial d 
-    = 2 (d(t^e)-d^{\text{target}}).
+    = \frac{ \partial | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2 }{ \partial d }
+    = 2 \big( d(t^e)-d^{\text{target}} \big).
 $$
 
 If $d$ is represented as a vector, e.g., for one entry per cell of a mesh, 
@@ -284,8 +284,8 @@ gives the following:
 
 $$ \begin{aligned}
     & d_i(t+\Delta t) = d_i - u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \text{ with }  \\
-    & u_i^+ = \text{max}(u_i \Delta t / \Delta x,0) \\
-    & u_i^- = \text{min}(u_i \Delta t / \Delta x,0)
+    & u_i^+ = \text{min}(u_i \Delta t / \Delta x,0) \\
+    & u_i^- = \text{max}(u_i \Delta t / \Delta x,0)
 \end{aligned} $$
 
 ```{figure} resources/diffphys-advect1d.jpg
@@ -296,7 +296,8 @@ name: advection-upwind
 1st-order upwinding uses a simple one-sided finite-difference stencil that takes into account the direction of the motion
 ```
 
-Thus, for a positive $u_i$ we have 
+Thus, for a negative $u_i$, we're using $u_i^+$ to look in the opposite direction of the velocity, i.e., _backward_ in terms of the motion. $u_i^-$ will be zero in this case. For positive $u_i$ it's vice versa, and we'll get a zero'ed $u_i^+$, and a backward difference stencil via $u_i^-$.
+To pick the former case, for a negative $u_i$ we get 
 
 $$
     \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t) = (1 + \frac{u_i \Delta t }{ \Delta x}) d_i - \frac{u_i \Delta t }{ \Delta x} d_{i+1}
@@ -357,16 +358,16 @@ will give us a contribution to $\Delta \mathbf{u}$ which we can accumulate for a
 $$ \begin{aligned}
     \Delta \mathbf{u} =& 
         \frac{ \partial d(t^e) }{ \partial \mathbf{u} }
-        \frac{ \partial L }{ \partial d(t^e) }
-        +
+        \frac{ \partial L }{ \partial d(t^e) } \\
+    &    + \
         \frac{ \partial d(t^e - \Delta t) }{ \partial \mathbf{u}}
         \frac{ \partial d(t^e) }{ \partial d(t^e - \Delta t) }
         \frac{ \partial L }{ \partial d(t^e)}
         \\
     & 
-        + \ \cdots \ + \\
+        + \ \cdots \ \\
     & 
-       \Big( \frac{ \partial d(t^0) }{ \partial \mathbf{u}} \cdots 
+       + \ \Big( \frac{ \partial d(t^0) }{ \partial \mathbf{u}} \cdots 
         \frac{ \partial d(t^e - \Delta t) }{ \partial d(t^e - 2 \Delta t) }
         \frac{ \partial d(t^e) }{ \partial d(t^e - \Delta t) }
         \frac{ \partial L }{ \partial d(t^e)} \Big)
