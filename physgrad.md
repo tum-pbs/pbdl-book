@@ -3,15 +3,45 @@ Physical Gradients
 
 **Note, this chapter is very preliminary - probably not for the first version of the book. move after RL, before BNNs?**
 
-The next chapter will questions some fundamental aspects of the formulations so far -- namely the gradients -- and aim for an even tighter integration of physics and learning.
-The approaches explained previously all integrate physical models into deep learning algorithms.
-Either as a physics-informed (PI) loss function or via differentiable physics (DP) operators embedded into the network.
-In the PI case, the simulator is only required at training time, while for DP approaches, it also employed at inference time, it actually enables an end-to-end training of NNs and numerical solvers. Both employ first order derivatives to drive optimizations and learning processes, and we haven't questioned at all whether this is the best choice so far.
+The next chapter will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
+To re-cap, the approaches explained in the previous chapters either dealt with pure data, integrated the physical model as a physical loss term or included it via differentiable physics (DP) operators embedded into the network. 
+Supervised training with physical data is straight-forward.
+The latter two methods share similarities, but in the loss term case, the evaluations are only required at training time. For DP approaches, the solver itself is also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, the latter two also using them for the physical model terms.
+This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually a good choice.
 
-A central insight the following chapter is that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
-Treating network and simulator as separate systems instead of a single black box, we'll derive a different update step that replaces the gradient of the simulator.
-As this gradient is closely related to a regular gradient, but computed via physical model equations, 
-we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the {\em physical gradient} (PG).
+Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
+It turns out that both supervised and DP gradients have their pros and cons. In the following, we'll analyze this in more detail. In particular, we'll illustrate how the multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. Then we'll show how scaling problems of DP gradients affect NN training. Finally, we'll explain several alternatives to prevent these problems. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
+
+
+```{admonition} A preview of this chapter
+:class: tip
+
+Below, we'll proceed in the following steps:
+- We'll illustrate how the multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs
+- Then we'll show how scaling problems of DP gradients affect NN training. 
+- Finally we'll explain several alternatives to prevent these problems. 
+- It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
+
+```
+
+%- 2 remedies coming up:
+%    1) Treating network and simulator as separate systems instead of a single black box, we'll derive different and improved update steps that replaces the gradient of the simulator. As this gradient is closely related to a regular gradient, but computed via physical model equations, we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the {\em physical gradient} (PG).
+%        [toolbox, but requires perfect inversion]
+%    2) Treating them jointly, -> HIGs
+%        [analytical, more practical approach]
+
+
+
+XXX   PG physgrad chapter notes  from dec 23   XXX
+- recap formulation P(x)=z , L() ... etc. rename z to y?
+- intro after dL/dx bad, Newton? discussion is repetitive
+[older commment - more intro to quasi newton?]
+- GD - is "diff. phys." , rename? add supervised before?
+comparison:
+- why z, rename to y?
+- add legends to plot
+- summary "tighest possible" bad -> rather, illustrates what ideal direction can do
+
 
 ```{admonition} Looking ahead
 :class: tip
@@ -117,7 +147,7 @@ stabilize the training. On the other hand, it also makes the learning process di
 Quasi-Newton methods, such as BFGS and its variants, evaluate the gradient $\frac{\partial L}{\partial x}$ and Hessian $\frac{\partial^2 L}{\partial x^2}$ to solve a system of linear equations. The resulting update can be written as
 
 $$
-\Delta x = \eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x}.
+\Delta x = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x}.
 $$ (quasi-newton-update)
 
 where $\eta$, the scalar step size, takes the place of GD's learning rate and is typically determined via a line search.
@@ -252,7 +282,7 @@ In fact, it is believed that information in our universe cannot be destroyed so 
 
 While evaluating the IGs directly can be done through matrix inversion or taking the derivative of an inverse simulator, we now consider what happens if we use the inverse simulator directly in backpropagation.
 Let $z = \mathcal P(x)$ be a forward simulation, and $\mathcal P(z)^{-1}=x$ its inverse (we assume it exists for now, but below we'll relax that assumption). 
-Equipped with the inverse we now define an update that we'll call the **physical gradient** (PG) in the following as
+Equipped with the inverse we now define an update that we'll call the **physical gradient** (PG) {cite}`holl2021pg` in the following as
 
 % Original: \begin{equation} \label{eq:pg-def}  \frac{\Delta x}{\Delta z} \equiv \mathcal P_{(x_0,z_0)}^{-1} (z_0 + \Delta z) - x_0 = \frac{\partial x}{\partial z} + \mathcal O(\Delta z^2)
 

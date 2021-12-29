@@ -1,7 +1,7 @@
 format: jb-book
 root: intro.md
 parts:
-- caption: Introduction
+- caption: Introduction bla
   chapters:
   - file: intro-teaser.ipynb
   - file: overview.md
@@ -31,6 +31,14 @@ parts:
   - file: diffphys-code-sol.ipynb
   - file: diffphys-control.ipynb
   - file: diffphys-outlook.md
+- caption: Improved Gradients
+  chapters:
+  - file: physgrad.md
+  - file: physgrad-comparison.ipynb
+  - file: physgrad-nn.md
+  - file: physgrad-hig.md
+  - file: physgrad-hig-code.ipynb
+  - file: physgrad-discuss.md
 - caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
