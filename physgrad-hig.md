@@ -25,7 +25,7 @@ In contrast to regular gradients, they use the full Jacobian matrix, though. So 
 ## Derivation
 
 As mentioned during the derivation of PGs in {eq}`quasi-newton-update`, the update for regular Newton steps 
-uses the inverse Hessian matrix. If we rewrite its update for the network weights $\theta$, and neglect the mixed derivative terms, we arrive at the _Gauss-Newton_ method:
+uses the inverse Hessian matrix. If we rewrite its update for the network weights $\theta$, and neglect the mixed derivative terms, we arrive at the _Gauss-Newton_ (GN) method:
 
 % \Delta \theta_{GN} = -\eta {\partial x}.
 $$
@@ -108,14 +108,14 @@ We'll use a small neural network with a single hidden layer consisting of 7 neur
 
 ## Well conditioned
 
-Let's first look at the well-conditioned case with $\lambda=1$. In the following image, we'll compare Adam as the most popular SGD-representative, Gauss-Newton as "classical" method, and the HIGs. These methods are evaluated w.r.t. three aspects: naturally, it's interesting to see how the loss evolves. In addition, we'll consider the distribution of neuron activations from the resulting neural network states (more on that below). Finally, it's also interesting to observe how the optimization influences the resulting target states produced by the neural network in $y$ space. Note that the $y$-space graph below shows only a single but fairly representative $x,y$ pair, while the other two show quantities of a larger set of validation inputs.
+Let's first look at the well-conditioned case with $\lambda=1$. In the following image, we'll compare Adam as the most popular SGD-representative, Gauss-Newton (GN) as "classical" method, and the HIGs. These methods are evaluated w.r.t. three aspects: naturally, it's interesting to see how the loss evolves. In addition, we'll consider the distribution of neuron activations from the resulting neural network states (more on that below). Finally, it's also interesting to observe how the optimization influences the resulting target states produced by the neural network in $y$ space. Note that the $y$-space graph below shows only a single but fairly representative $x,y$ pair, while the other two show quantities of a larger set of validation inputs.
 
 ```{figure} resources/placeholder.png
 ---
 height: 270px
 name: hig-toy-example-well
 ---
-TODO, HIG toy, well cond
+The example problem comparing Adam, GN, and HIGs for a well-conditioned case.
 ```
 
 As seen here, all three methods fare okay for the well conditioned case: the loss decreases to around $10^{-2}$ and $10^{-3}$. In addition, the neuron activations, which are shown in terms of mean and standard deviation, all show a broad range of values (as indicated by the solidly shaded regions of the standard deviation). This means that the neurons of all three networks produce a wide range of values. While it's difficult to interpret specific values here, it's a good sign that different values are produced by different inputs. 
@@ -124,22 +124,27 @@ If this was not the case, i.e., different inputs producing constant values (desp
  
 Finally, the third graph on the right shows the evolution in terms of a single input-output pair. The starting point from the initial network state is shown in light gray, while the ground truth target $\hat{y}$ is shown as a black dot. Most importantly, all three methods reach the black dot in the end. For this simple example, it's not overly impressive to see this. However, it's still interesting that both GN and HIG exhibit large jumps in the initial stages of the learning process (the first few segments leaving the gray dot). This is caused by the fairly bad initial state, and the inversion, which leads to significant changes of the NN state and its outputs. In contrast, the momentum terms of Adam reduce this jumpiness: the initial jumps in the light blue line are smaller than those of the other two.
 
-Overall, the behavior of all three methods is largely in line with the desired behavior: while the loss surely could go down more, and some of the steps in $y$ seem to momentarily do in the wrong direction, all three methods cope quite well with this well conditioned case. Not surprisingly, this picture will change when making things harder with a more ill-conditioned Jacobian resulting from a small $\lambda$
+Overall, the behavior of all three methods is largely in line with what we'd expect: while the loss surely could go down more, and some of the steps in $y$ seem to momentarily do in the wrong direction, all three methods cope quite well with this case. Not surprisingly, this picture will change when making things harder with a more ill-conditioned Jacobian resulting from a small $\lambda$
 
-## Bad conditioned
+## Ill conditioned
 
-Now we can consider a less well-conditioned case with $\lambda=0.01$. The conditioning could be much worse in real-world settings, but interestingly, this factor of $1/100$ is sufficient to illustrate the problems that arise in practice.
+xxx CONTINUE xxx
+
+Now we can consider a less well-conditioned case with $\lambda=0.01$. The conditioning could be much worse in real-world PDE solvers, but interestingly, this factor of $1/100$ is sufficient to illustrate the problems that arise in practice. Here are the same 3 graphs for the ill-conditioned case:
 
 ```{figure} resources/placeholder.png
 ---
 height: 270px
 name: hig-toy-example-bad
 ---
-TODO, HIG toy, bad con
+The example problem comparing Adam, GN, and HIGs for an ill-conditioned case.
 ```
 
-bad cond
+The loss curves now show a different behavior: both Adam and GN do not manage to decrease the loss beyond a level of around 0.2 (compared to the 0.01 and better from before). Adam has significant problems with the bad scaling of the $y^2$ component, and fails to properly converge. For GN, the complete inversion of the Jacobians causes gradient explosions, which destroy the positive effects of the inversion. Even worse, they cause the neural network to effectively get stuck.
 
+This becomes even clearer in the middle graph, showing the activations statistics. Now the red curve of GN saturates at 1 without any variance. Hence, all neurons have saturated, and do not produce meaningful signals anymore. This not only means that the target function isn't approximated well, it also means all future gradients will effectively be zero, and these neurons are lost to all future learning iterations. Hence, this is a highly undesirable case that we want to avoid in practice. It's also worth pointing out that this doesn't always happen for GN. However it regularly happens, e.g. when individual samples in a batch lead to vectors in the Jacobian that are linearly dependent (or very close to it), and thus makes GN a sub-optimal choice.
+
+The last graph of figure {ref}`hig-toy-example-bad`
 
 
 %We've kept the $\eta$ in here for consistency, but in practice $\eta=1$ is used for Gauss-Newton
