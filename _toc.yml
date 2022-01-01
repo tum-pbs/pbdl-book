@@ -36,6 +36,7 @@ parts:
   - file: physgrad.md
   - file: physgrad-comparison.ipynb
   - file: physgrad-nn.md
+  - file: physgrad-code.ipynb
   - file: physgrad-hig.md
   - file: physgrad-hig-code.ipynb
   - file: physgrad-discuss.md

@@ -106,7 +106,7 @@ Here $y^1$ and $y^2$ denote the first, and second component of $y$ (in contrast 
 
 We'll use a small neural network with a single hidden layer consisting of 7 neurons with _tanh()_ activations and the objective to learn $\hat{y}$. 
 
-## Well conditioned
+## Well-conditioned
 
 Let's first look at the well-conditioned case with $\lambda=1$. In the following image, we'll compare Adam as the most popular SGD-representative, Gauss-Newton (GN) as "classical" method, and the HIGs. These methods are evaluated w.r.t. three aspects: naturally, it's interesting to see how the loss evolves. In addition, we'll consider the distribution of neuron activations from the resulting neural network states (more on that below). Finally, it's also interesting to observe how the optimization influences the resulting target states produced by the neural network in $y$ space. Note that the $y$-space graph below shows only a single but fairly representative $x,y$ pair, while the other two show quantities of a larger set of validation inputs.
 
@@ -126,9 +126,7 @@ Finally, the third graph on the right shows the evolution in terms of a single i
 
 Overall, the behavior of all three methods is largely in line with what we'd expect: while the loss surely could go down more, and some of the steps in $y$ seem to momentarily do in the wrong direction, all three methods cope quite well with this case. Not surprisingly, this picture will change when making things harder with a more ill-conditioned Jacobian resulting from a small $\lambda$
 
-## Ill conditioned
-
-xxx CONTINUE xxx
+## Ill-conditioned
 
 Now we can consider a less well-conditioned case with $\lambda=0.01$. The conditioning could be much worse in real-world PDE solvers, but interestingly, this factor of $1/100$ is sufficient to illustrate the problems that arise in practice. Here are the same 3 graphs for the ill-conditioned case:
 
@@ -144,14 +142,13 @@ The loss curves now show a different behavior: both Adam and GN do not manage to
 
 This becomes even clearer in the middle graph, showing the activations statistics. Now the red curve of GN saturates at 1 without any variance. Hence, all neurons have saturated, and do not produce meaningful signals anymore. This not only means that the target function isn't approximated well, it also means all future gradients will effectively be zero, and these neurons are lost to all future learning iterations. Hence, this is a highly undesirable case that we want to avoid in practice. It's also worth pointing out that this doesn't always happen for GN. However it regularly happens, e.g. when individual samples in a batch lead to vectors in the Jacobian that are linearly dependent (or very close to it), and thus makes GN a sub-optimal choice.
 
-The last graph of figure {ref}`hig-toy-example-bad`
+The third graph on the right side of figure {numref}`hig-toy-example-bad` shows the resulting behavior in terms of the outputs. As already indicated by the loss values, both Adam and GN do not reach the target (the black dot). Interestingly, it's also apparent that both have much more problems along the $y^2$ direction, which we used to cause the bad conditioning: they both make some progress along the x-axis of the graph ($y^1$), but don't move much towards the $y^2$ target value. This is illustrating the discussions above: GN gets stuck due to its saturated neurons, while Adam struggles to undo the scaling of $y^2$.
 
 
 %We've kept the $\eta$ in here for consistency, but in practice $\eta=1$ is used for Gauss-Newton
 
+## Summary of Half-Inverse Gradients
 
-%PGs higher order, custom inverse , chain PDE & NN together
+Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. For the physical gradients, we even need them to provide an inverse solver. Thus, the HIGs described above share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-code-control`, than with {doc}`physgrad-code`.
 
-%HIG more generic, numerical inversion , joint physics & NN
-
-
+This is a good time to give a specific code example of how to train physical NNs with HIGs: we'll look at a classic case, a system of coupled oscillators.

@@ -1,6 +1,16 @@
 Discussion
 =======================
 
+
+xxx TODO update , include HIG discussion xxx
+... discarded supervised, and PIs
+
+PGs higher order, custom inverse , chain PDE & NN together
+
+HIG more generic, numerical inversion , joint physics & NN
+
+
+
 In a way, the learning via physical gradients provide the tightest possible coupling
 of physics and NNs: the full non-linear process of the PDE model directly steers
 the optimization of the NN.
