@@ -78,12 +78,12 @@ of human understanding. However, these viewpoints typically stem from
 relying on hearsay and not dealing with the topic enough.
 
 Rather, the situation is a very common one in science: we are facing a new class of methods,
-and "all the gritty details" are not yet fully worked out. However, this is pretty common 
-for scientific advances.
+and "all the gritty details" are not yet fully worked out. This is pretty common 
+for all kinds of scientific advances.
 Numerical methods themselves are a good example. Around 1950, numerical approximations
 and solvers had a tough standing. E.g., to cite H. Goldstine, 
-numerical instabilities were considered to be a "constant source of 
-anxiety in the future" {cite}`goldstine1990history`. 
+numerical instabilities were considered to be a 
+"constant source of anxiety in the future" {cite}`goldstine1990history`. 
 By now we have a pretty good grasp of these instabilities, and numerical methods 
 are ubiquitous and well established.
 
@@ -170,6 +170,25 @@ interleaved approaches that leverage _differentiable physics_ allow for
 very tight integration of deep learning and numerical simulation methods.
 
 
+### Naming
+
+It's worth pointing out that what we'll call "differentiable physics"
+in the following appears under a variety of different names in other resources
+and research papers. The differentiable physics name is motivated by the differentiable
+programming paradigm in deep learning. Here we, e.g., also have "differentiable rendering
+approaches", which deal with simulating how light leads forms the images we see as humans.
+In contrast, we'll focus on _physical_ simulations from now on, hence the name.
+
+When coming from other backgrounds, other names are more common however. E.g., the differentiable
+physics approach is equivalent to using the adjoint method, and coupling it with a deep learning
+procedure. Effectively, it is also equivalent to apply backpropagation / reverse-mode differentiation 
+to a numerical simulation. However, as mentioned above, motivated by the deep learning viewpoint, 
+we'll refer to all these as "differentiable physics" approaches from now on.
+
+
+---
+
+
 ## Looking ahead
 
 _Physical simulations_ are a huge field, and we won't be able to cover all possible types of physical models and simulations.
@@ -203,9 +222,6 @@ the best one can be selected for new tasks.
 
 As we're (in most Jupyter notebook examples) dealing with stochastic optimizations, many of the following code examples will produce slightly different results each time they're run. This is fairly common with NN training, but it's important to keep in mind when executing the code. It also means that the numbers discussed in the text might not exactly match the numbers you'll see after re-running the examples.
 
----
-<br>
-<br>
 
 <!-- ## A brief history of PBDL in the context of Fluids
 
