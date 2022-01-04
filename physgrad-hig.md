@@ -87,6 +87,9 @@ To summarize, compute the HIG update requires evaluating the individual Jacobian
 
 % 
 
+![Divider](resources/divider6.jpg)
+
+
 ## Properties Illustrated via a Toy Example
 
 This is a good time to illustrate the properties mentioned in the previous paragraphs with a real example. 
@@ -144,17 +147,18 @@ This becomes even clearer in the middle graph, showing the activations statistic
 
 The third graph on the right side of figure {numref}`hig-toy-example-bad` shows the resulting behavior in terms of the outputs. As already indicated by the loss values, both Adam and GN do not reach the target (the black dot). Interestingly, it's also apparent that both have much more problems along the $y^2$ direction, which we used to cause the bad conditioning: they both make some progress along the x-axis of the graph ($y^1$), but don't move much towards the $y^2$ target value. This is illustrating the discussions above: GN gets stuck due to its saturated neurons, while Adam struggles to undo the scaling of $y^2$.
 
+---
 
 %We've kept the $\eta$ in here for consistency, but in practice $\eta=1$ is used for Gauss-Newton
 
 ## Summary of Half-Inverse Gradients
 
-Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. For the physical gradients, we even need them to provide an inverse solver. Thus, the HIGs described above share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-code-control`, than with {doc}`physgrad-code`.
+Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. For the physical gradients, we even need them to provide an inverse solver. Thus, the HIGs described above share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-control`, than with {doc}`physgrad-code`.
 
 This is a good time to give a specific code example of how to train physical NNs with HIGs: we'll look at a classic case, a system of coupled oscillators.
 
 
-## xxx TODO , merge into code later on xxx
+## xxx TODO , merge into HIG example code later on xxx
 
 As example problem for the Half-Inverse Gradients (HIGs) we'll consider controlling a system of coupled oscillators. This is a classical problem in physics, and a good case to evaluate the HIGs due to it's smaller size. We're using two mass points, and thus we'll only have four degrees of freedom for position and velocity of both points (compared to, e.g., the $32\times32\times2$ unknowns we'd get even for "only" a small fluid simulation with 32 cells along x and y). Nonetheless, the oscillators are a highly-non trivial case: we aim for applying a control such that the initial state is reached again after a chosen time interval. Here we'll 96 steps of a fourth-order Runge-Kutta scheme, and hence the NN has to learn how to best "nudge" the two mass points over the course of all time steps, so that they end up at the desired position with the right velocity at the right time.
 
@@ -166,6 +170,5 @@ $$
 
 ... which provides the basis for the RK4 time integration.
 
-continue with notebook text ...
-
+xxx
 

@@ -31,6 +31,10 @@ parts:
   - file: diffphys-code-sol.ipynb
   - file: diffphys-control.ipynb
   - file: diffphys-outlook.md
+- caption: Reinforcement Learning
+  chapters:
+  - file: reinflearn-intro.md
+  - file: reinflearn-code.ipynb
 - caption: Improved Gradients
   chapters:
   - file: physgrad.md
@@ -40,10 +44,6 @@ parts:
   - file: physgrad-hig.md
   - file: physgrad-hig-code.ipynb
   - file: physgrad-discuss.md
-- caption: Reinforcement Learning
-  chapters:
-  - file: reinflearn-intro.md
-  - file: reinflearn-code.ipynb
 - caption: PBDL and Uncertainty
   chapters:
   - file: bayesian-intro.md

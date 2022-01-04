@@ -85,7 +85,8 @@ name: pg-training
 TODO, visual overview of PG training
 ```
 
----
+![Divider](resources/divider3.jpg)
+
 
 ## Traditional optimization methods
 
@@ -207,8 +208,7 @@ are still a very active research topic, and hence many extensions have been prop
 
 
 
----
-
+![Divider](resources/divider4.jpg)
 
 
 ## Derivation of Physical Gradients
@@ -333,6 +333,8 @@ This effectively amounts to _smoothing the objective landscape_ of an optimizati
 
 The equations naturally generalize to higher dimensions by replacing the integral with a path integral along any differentiable path connecting $x_0$ and $x_0 + \Delta x$ and replacing the local gradient by the local gradient in the direction of the path.
 
+
+![Divider](resources/divider5.jpg)
 
 
 

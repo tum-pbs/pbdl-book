@@ -1,38 +1,57 @@
 Discussion
 =======================
 
+At this point it's a good time to take another step back, and assess the different methods of the previous chapters. For deep learning applications, we can broadly distinguish three approaches: the _regular_ differentiable physics (DP) training, the training with half-inverse gradients (HIGs), and using the physical gradients (PGs). Unfortunately, we can't simply discard two of them, and focus on a single approach for all future endeavours. However, discussing the pros and cons sheds light on some fundamental aspects of physics-based deep learning, so here we go...
 
-xxx TODO update , include HIG discussion xxx
-... discarded supervised, and PIs
+![Divider](resources/divider7.jpg)
 
-PGs higher order, custom inverse , chain PDE & NN together
+## Addressing scaling issues
 
-HIG more generic, numerical inversion , joint physics & NN
+First and foremost, a central motivation for improved updates is the need to address the scaling issues of the learning problems. This is not a completely new problem: numerous deep learning algorithms were proposed to address these for training NNs. However, the combination of NNs with physical simulations brings new challenges that provide new angles to tackle this problem. On the negative side, we have additional, highly non-linear operators from the PDE models. On the positive side, these operators typically do not have free parameters during learning, and thus can be treated with different, tailored methods.
+
+This is exactly where HIGs and PGs come in: instead of treating the physical simulation like the rest of the NNs (this is the DP approach), they show how much can be achieved with custom inverse solvers (PGs) or a custom numerical inversion (HIGs).
+
+## Computational Resources
+
+Both cases usually lead to more complicated and resource intensive training. However, assuming that we can re-use a trained model many times after the training has been completed, there are many areas of applications where this can quickly pay off: the trained NNs, despite being identical in runtime to those obtained from other training methods, often achieve significantly improved accuracies. Achieving similar levels of accuracy with regular Adam and DP-based training can be infeasible. 
+
+When such a trained NN is used, e.g., as a surrogate model for an inverse problem, it might be executed a large number of times, and the improved accuracy can save correspondingly large amounts of computational resources in such a follow up stage. 
+A good potential example are shape optimizations for the drag reduction of bodies immersed in a fluid {cite}`chen2021numerical`.
 
 
-
-In a way, the learning via physical gradients provide the tightest possible coupling
-of physics and NNs: the full non-linear process of the PDE model directly steers
-the optimization of the NN.
-
-Naturally, this comes at a cost - invertible simulators are more difficult to build
-(and less common) than the first-order gradients from
-deep learning and adjoint optimizations. Nonetheless, if they're available,
-invertible simulators can speed up convergence, and yield models that have an inherently better performance.
-Thus, once trained, these models can give a performance that we simply can't obtain
-by, e.g., training longer with a simpler approach. So, if we plan to evaluate these
-models often (e.g., ship them in an application), this increased one-time cost
-can pay off in the long run.
 
 ![Divider](resources/divider1.jpg)
 
-## Summary
 
-✅ Pro: 
-- Very accurate "gradient" information for learning and optimization.
+## Summary 
+
+% DP basic, generic, 
+% PGs higher order, custom inverse , chain PDE & NN together
+% HIG more generic, numerical inversion , joint physics & NN
+
+xxx old xxx
+
+%In a way, the learning via physical gradients provide the tightest possible coupling of physics and NNs: the full non-linear process of the PDE model directly steers the optimization of the NN.
+
+PG old: Naturally, this comes at a cost - invertible simulators are more difficult to build (and less common) than the first-order gradients from deep learning and adjoint optimizations. Nonetheless, if they're available, invertible simulators can speed up convergence, and yield models that have an inherently better performance. Thus, once trained, these models can give a performance that we simply can't obtain by, e.g., training longer with a simpler approach. So, if we plan to evaluate these models often (e.g., ship them in an application), this increased one-time cost can pay off in the long run.
+
+---
+
+✅ Pro HIG: 
+- Robustly addresses scaling issues, jointly for physical models and NN.
 - Improved convergence and model performance.
-- Tightest possible coupling of model PDEs and learning.
 
-❌ Con: 
+❌ Con HIG: 
+- Requires SVD
+- mem req
+
+---
+
+✅ Pro PG: 
+- Very accurate "gradient" information for physical simulations.
+- Strongly improved convergence and model performance.
+
+❌ Con PG: 
 - Requires inverse simulators (at least local ones).
 - Less wide-spread availability than, e.g., differentiable physics simulators.
+
