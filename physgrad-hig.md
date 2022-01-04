@@ -153,7 +153,9 @@ The third graph on the right side of figure {numref}`hig-toy-example-bad` shows 
 
 ## Summary of Half-Inverse Gradients
 
-Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. For the physical gradients, we even need them to provide an inverse solver. Thus, the HIGs described above share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-control`, than with {doc}`physgrad-code`.
+Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. 
+
+In contrast, for training with physical gradients (from {doc}`physgrad`), we even needed to provide a full inverse solver. As shown there, this has advantages, but differentiates PGs from DP and HIGs. Thus, the HIGs share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-control`, than with the example {doc}`physgrad-code`.
 
 This is a good time to give a specific code example of how to train physical NNs with HIGs: we'll look at a classic case, a system of coupled oscillators.
 

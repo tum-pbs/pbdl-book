@@ -25,33 +25,42 @@ A good potential example are shape optimizations for the drag reduction of bodie
 
 ## Summary 
 
-% DP basic, generic, 
-% PGs higher order, custom inverse , chain PDE & NN together
-% HIG more generic, numerical inversion , joint physics & NN
+To summarize, the physical gradients showed the importance of the inversion. Even when it is only done for the physics simulation component, it can substantially improve the learning process. When we can employ a custom inverse solver, we can often do even better. These methods employed higher-order information.
 
-xxx old xxx
+✅ Pro PG: 
+- Very accurate "gradient" information for physical simulations.
+- Often strongly improved convergence and model performance.
 
-%In a way, the learning via physical gradients provide the tightest possible coupling of physics and NNs: the full non-linear process of the PDE model directly steers the optimization of the NN.
-
-PG old: Naturally, this comes at a cost - invertible simulators are more difficult to build (and less common) than the first-order gradients from deep learning and adjoint optimizations. Nonetheless, if they're available, invertible simulators can speed up convergence, and yield models that have an inherently better performance. Thus, once trained, these models can give a performance that we simply can't obtain by, e.g., training longer with a simpler approach. So, if we plan to evaluate these models often (e.g., ship them in an application), this increased one-time cost can pay off in the long run.
+❌ Con PG: 
+- Requires inverse simulators (at least local ones).
+- Less wide-spread availability than, e.g., differentiable physics simulators.
 
 ---
+
+The HIGs on the other hand, go back to first order information in the form of Jacobians. They showed how useful the inversion can be even without any higher order terms. At the same time, they make use of a combined inversion of NN and physics, taking into account all samples of a mini-batch.
 
 ✅ Pro HIG: 
 - Robustly addresses scaling issues, jointly for physical models and NN.
 - Improved convergence and model performance.
 
 ❌ Con HIG: 
-- Requires SVD
-- mem req
+- Requires an SVD for potentially large Jacobian matrix.
+- This can also lead to significant memory requirements.
 
 ---
 
-✅ Pro PG: 
-- Very accurate "gradient" information for physical simulations.
-- Strongly improved convergence and model performance.
+In both cases, the resulting models can give a performance that we simply can't obtain by, e.g., training longer with a simpler DP or supervised approach. So, if we plan to evaluate these models often, e.g., shipping them in an application, this increased one-time cost can pay off in the long run.
 
-❌ Con PG: 
-- Requires inverse simulators (at least local ones).
-- Less wide-spread availability than, e.g., differentiable physics simulators.
+xxx TODO, connect to uncert. chapter xxx
+
+% DP basic, generic, 
+% PGs higher order, custom inverse , chain PDE & NN together
+% HIG more generic, numerical inversion , joint physics & NN
+
+%In a way, the learning via physical gradients provide the tightest possible coupling of physics and NNs: the full non-linear process of the PDE model directly steers the optimization of the NN.
+
+%PG old: Naturally, this comes at a cost - invertible simulators are more difficult to build (and less common) than the first-order gradients from deep learning and adjoint optimizations. Nonetheless, if they're available, invertible simulators can speed up convergence, and yield models that have an inherently better performance. 
+
+
+
 
