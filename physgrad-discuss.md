@@ -51,7 +51,9 @@ The HIGs on the other hand, go back to first order information in the form of Ja
 
 In both cases, the resulting models can give a performance that we simply can't obtain by, e.g., training longer with a simpler DP or supervised approach. So, if we plan to evaluate these models often, e.g., shipping them in an application, this increased one-time cost can pay off in the long run.
 
+
 xxx TODO, connect to uncert. chapter xxx
+
 
 % DP basic, generic, 
 % PGs higher order, custom inverse , chain PDE & NN together
