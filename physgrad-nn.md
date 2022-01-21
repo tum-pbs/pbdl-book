@@ -8,7 +8,7 @@ In this section, we will first show how PGs can be integrated into the optimizat
 
 ## Physical Gradients and loss functions
 
-As before, we consider a scalar objective function $L(z)$ that depends on the result of an invertible simulator $z = \mathcal P(x)$. In {doc}`physgrad` we've outlined the inverse gradient (IG) update $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$, where $\Delta L$ denotes a step to take in terms of the loss. 
+As before, we consider a scalar objective function $L(y)$ that depends on the result of an invertible simulator $y = \mathcal P(x)$. In {doc}`physgrad` we've outlined the inverse gradient (IG) update $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$, where $\Delta L$ denotes a step to take in terms of the loss. 
 
 By applying the chain rule and substituting the IG $\frac{\partial x}{\partial L}$ for the PG, we obtain 
 
@@ -17,27 +17,27 @@ $$
     \Delta x
     &= \frac{\partial x}{\partial L} \cdot \Delta L
     \\
-    &= \frac{\partial x}{\partial z} \left( \frac{\partial z}{\partial L} \cdot \Delta L \right)
+    &= \frac{\partial x}{\partial y} \left( \frac{\partial y}{\partial L} \cdot \Delta L \right)
     \\
-    &= \frac{\partial x}{\partial z} \cdot \Delta z
+    &= \frac{\partial x}{\partial y} \cdot \Delta y
     \\
-    &= \mathcal P^{-1}_{(x_0,z_0)}(z_0 + \Delta z) - x_0 + \mathcal O(\Delta z^2)
+    &= \mathcal P^{-1}_{(x_0,y_0)}(y_0 + \Delta y) - x_0 + \mathcal O(\Delta y^2)
     .
 \end{aligned}
 $$
 
-This equation has turned the step w.r.t. $L$ into a step in $z$ space: $\Delta z$. 
-However, it does not prescribe a unique way to compute $\Delta z$ since the derivative $\frac{\partial z}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial z}$ puts almost no restrictions on $\Delta z$.
-Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta z$ where $\eta$ controls the step size of the optimization steps.
+This equation has turned the step w.r.t. $L$ into a step in $y$ space: $\Delta y$. 
+However, it does not prescribe a unique way to compute $\Delta y$ since the derivative $\frac{\partial y}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial y}$ puts almost no restrictions on $\Delta y$.
+Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps.
 
 Here an obvious questions is: Doesn't this leave us with the disadvantage of having to compute the inverse Hessian, as discussed before?
-Luckily, unlike with regular Newton or quasi-Newton methods, where the Hessian of the full system is required, here, the Hessian is needed only for $L(z)$. Even better, for many typical $L$ its computation can be completely forgone.
+Luckily, unlike with regular Newton or quasi-Newton methods, where the Hessian of the full system is required, here, the Hessian is needed only for $L(y)$. Even better, for many typical $L$ its computation can be completely forgone.
 
-E.g., consider the case $L(z) = \frac 1 2 || z^\textrm{predicted} - z^\textrm{target}||_2^2$ which is the most common supervised objective function.
-Here $\frac{\partial L}{\partial z} = z^\textrm{predicted} - z^\textrm{target}$ and $\frac{\partial^2 L}{\partial z^2} = 1$.
-Using equation {eq}`quasi-newton-update`, we get $\Delta z = \eta \cdot (z^\textrm{target} - z^\textrm{predicted})$ which can be computed without evaluating the Hessian.
+E.g., consider the case $L(y) = \frac 1 2 || y^\textrm{predicted} - y^\textrm{target}||_2^2$ which is the most common supervised objective function.
+Here $\frac{\partial L}{\partial y} = y^\textrm{predicted} - y^\textrm{target}$ and $\frac{\partial^2 L}{\partial y^2} = 1$.
+Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^\textrm{target} - y^\textrm{predicted})$ which can be computed without evaluating the Hessian.
 
-Once $\Delta z$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and PGs for the PDE in {doc}`physgrad-comparison`.
+Once $\Delta y$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and PGs for the PDE in {doc}`physgrad-comparison`.
 
 
 ## NN training 
@@ -50,8 +50,8 @@ we aim for using PGs to accurately optimize through the simulation.
 
 Consider the following setup: 
 A neural network makes a prediction $x = \mathrm{NN}(a \,;\, \theta)$ about a physical state based on some input $a$ and the network weights $\theta$.
-The prediction is passed to a physics simulation that computes a later state $z = \mathcal P(x)$, and hence
-the objective $L(z)$ depends on the result of the simulation. 
+The prediction is passed to a physics simulation that computes a later state $y = \mathcal P(x)$, and hence
+the objective $L(y)$ depends on the result of the simulation. 
 
 
 ```{admonition} Combined training algorithm
@@ -59,27 +59,27 @@ the objective $L(z)$ depends on the result of the simulation.
 
 To train the weights $\theta$ of the NN, we then perform the following updates:
 
-* Evaluate $\Delta z$ via a Newton step as outlined above
-* Compute the PG $\Delta x = \mathcal P^{-1}_{(x, z)}(z + \Delta z) - x$ using an inverse simulator
+* Evaluate $\Delta y$ via a Newton step as outlined above
+* Compute the PG $\Delta x = \mathcal P^{-1}_{(x, y)}(y + \Delta y) - x$ using an inverse simulator
 * Use GD or a GD-based optimizer to compute the updates to the network weights, $\Delta\theta = \eta_\textrm{NN} \cdot \frac{\partial y}{\partial\theta} \cdot \Delta y$
 
 ```
 
-The combined optimization algorithm depends on both the **learning rate** $\eta_\textrm{NN}$ for the network as well as the step size $\eta$ from above, which factors into $\Delta z$.
+The combined optimization algorithm depends on both the **learning rate** $\eta_\textrm{NN}$ for the network as well as the step size $\eta$ from above, which factors into $\Delta y$.
 To first order, the effective learning rate of the network weights is $\eta_\textrm{eff} = \eta \cdot \eta_\textrm{NN}$.
 We recommend setting $\eta$ as large as the accuracy of the inverse simulator allows, before choosing $\eta_\textrm{NN} = \eta_\textrm{eff} / \eta$ to achieve the target network learning rate.
 This allows for nonlinearities of the simulator to be maximally helpful in adjusting the optimization direction.
 
 
 **Note:**
-For simple objectives like a loss of the form $L=|z - z^*|^2$, this procedure can be easily integrated into an  GD autodiff pipeline by replacing the gradient of the simulator only.
+For simple objectives like a loss of the form $L=|y - y^*|^2$, this procedure can be easily integrated into an  GD autodiff pipeline by replacing the gradient of the simulator only.
 This gives an effective objective function for the network
 
 $$
-L_\mathrm{NN} = \frac 1 2  | x - \mathcal P_{(x,z)}^{-1}(z + \Delta z) |^2
+L_\mathrm{NN} = \frac 1 2  | x - \mathcal P_{(x,y)}^{-1}(y + \Delta y) |^2
 $$
 
-where $\mathcal P_{(x,z)}^{-1}(z + \Delta z)$ is treated as a constant.
+where $\mathcal P_{(x,y)}^{-1}(y + \Delta y)$ is treated as a constant.
 
 
 ## Iterations and time dependence
