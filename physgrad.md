@@ -1,18 +1,18 @@
-Physical Gradients
+Towards Gradient Inversion
 =======================
 
 **Note, this chapter is very preliminary - probably not for the first version of the book. move after RL, before BNNs?**
 
 The next chapter will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
-To re-cap, the approaches explained in the previous chapters either dealt with pure data, integrated the physical model as a physical loss term or included it via differentiable physics (DP) operators embedded into the network. 
-Supervised training with physical data is straight-forward.
-The latter two methods share similarities, but in the loss term case, the evaluations are only required at training time. For DP approaches, the solver itself is also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, the latter two also using them for the physical model terms.
+To re-cap, the approaches explained in the previous chapters either dealt with purely _supervised_ training, integrated the physical model as a _physical loss term_ or included it via _differentiable physics_ (DP) operators embedded into the training graph. 
+For supervised training with data from physical simulations standard procedure apply.
+The latter two methods are more relevant in the context of this book. They share similarities, but in the loss term case, the physics evaluations are only required at training time. For DP approaches, the solver itself is usually also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, and the latter two also using them for the physics terms.
 This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually a good choice.
 
 Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
 It turns out that both supervised and DP gradients have their pros and cons. In the following, we'll analyze this in more detail. In particular, 
 we'll show how scaling problems of DP gradients affect NN training. 
-Then, we'll also illustrate how the multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. 
+Then, we'll also illustrate how multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. 
 Finally, we'll explain several alternatives to prevent these problems. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
 
 
@@ -20,10 +20,9 @@ Finally, we'll explain several alternatives to prevent these problems. It turns 
 :class: tip
 
 Below, we'll proceed in the following steps:
-- We'll show how scaling problems of DP gradients affect NNs,
-- and how multi-modal problems (cf. {doc}`intro-teaser`) deteriorate NN training
-- Finally we'll explain several alternatives to prevent these problems. 
-- What's missing in our GD/Adam&Co. runs so far is a proper _inversion_ of the Jacobian matrix.
+- Show how scaling issues and multi-modality can negatively affect NNs.
+- Explain two alternatives to prevent these problems.
+- Preview: What was missing in our training runs with GD or Adam so far is a proper _inversion_ of the Jacobian matrix.
 
 ```
 
@@ -35,13 +34,12 @@ Below, we'll proceed in the following steps:
 
 
 XXX   PG physgrad chapter notes  from dec 23   XXX
-[? recap formulation P(x)=z , L() ?]
-- intro after dL/dx bad, Newton? discussion is repetitive
-[older commment - more intro to quasi newton?]
-- GD - is "diff. phys." , rename? add supervised before?
-comparison notebook:
-- add legends to plot
-- summary "tighest possible" bad -> rather, illustrates what ideal direction can do
+-  GD - is "diff. phys." , rename? add supervised before?
+- comparison notebook: add legends to plot
+- summary "tightest possible" bad -> rather, illustrates what ideal direction can do
+- double check func-comp w QNewton, "later" derivatives of backprop means what?
+- remove IGs? 
+
 
 %```{admonition} Looking ahead
 %:class: tip
@@ -69,10 +67,10 @@ $$
 $$ (loss-deriv)
 
 We've shown that using $\partial L/\partial x$ works, but
-in the field of classical optimization, other algorithms are more widely used than GD (so-called quasi-Newton methods), and they use different updates.
+in the field of classical optimization, other algorithms are more widely used than GD: popular are so-called quasi-Newton methods, and they use different updates.
 Hence in the following we'll revisit GD, and discuss the pros and cons of the different methods on a theoretical level. Among others, it's interesting to discuss why classical optimization algorithms aren't widely used for NN training despite having some obvious advantages.
 
-Note that we exclusively consider multivariate functions, and hence all symbols represent vector-valued expressions unless specified otherwise.
+Note that we exclusively consider multivariate functions, and hence all symbols represent vector-valued expressions unless noted otherwise.
 
 %techniques such as Newton's method or BFGS variants are commonly used to optimize numerical processes since they can offer better convergence speed and stability. These methods likewise employ gradient information, but substantially differ from GD in the way they compute the update step, typically via higher order derivatives.
 
@@ -121,10 +119,9 @@ have $c \ll 1$, or even worse $c \gg 1$, and then our optimization will be in tr
 
 More specifically, if we look at how the loss changes, the expansion around $x$ for
 the update step of GD gives:
-$L(x+\Delta x) = L(x)  + \Delta x \frac{\partial L}{\partial x}  + \cdots $.
+$L(x+\Delta x_{\text{GD}}) = L(x)  + \Delta x_{\text{GD}} \frac{\partial L}{\partial x}  + \cdots $.
 This first-order step causes a change in the loss of
-$\big( L(x) - L(x+\Delta x) \big) = -\eta \cdot (\frac{\partial L}{\partial x})^2 + \mathcal O(\Delta x^2)$ . Hence the loss changes by the squared derivative, instead of being proportional to it, as one
-might expect when applying SGD without much thought.
+$\big( L(x) - L(x+\Delta x_{\text{GD}}) \big) = -\eta \cdot (\frac{\partial L}{\partial x})^2 + \mathcal O(\Delta x^2)$. Hence the loss changes by the squared derivative, which leads to the $c^2$ factor mentioned above. Even worse, in practice we'd like to have a normalized quantity here. For a scaling of the gradients by $c$, we'd like our optimizer to compute a quantity like $1/c^2$, in order to get a reliable update from the gradient. 
 
 This demonstrates that
 for sensitive functions, i.e. functions where _small changes_ in $x$ cause _large_ changes in $L$, GD counter-intuitively produces large $\Delta x_{\text{GD}}$. This causes even larger steps in $L$, and leads to exploding gradients.
@@ -156,27 +153,31 @@ $$
 \Delta x_{\text{QN}} = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x}.
 $$ (quasi-newton-update)
 
-where $\eta$, the scalar step size, takes the place of GD's learning rate and is typically determined via a line search.
+where $\eta$, the scalar step size, takes the place of GD's learning rate. As a further improvement, it is typically determined via a line search in many Quasi-Newton methods.
 This construction solves some of the problems of gradient descent from above, but has other drawbacks.
 
-**Units** 📏
+**Units and Sensitivity** 📏
 
 Quasi-Newton methods definitely provide a much better handling of physical units than GD.
 The quasi-Newton update from equation {eq}`quasi-newton-update`
-produces the correct units for all parameters to be optimized. As a consequence, $\eta$ can stay dimensionless.
+produces the correct units for all parameters to be optimized. 
+As a consequence, $\eta$ can stay dimensionless.
+
+If we now consider how the loss changes via
+$L(x+\Delta x_{\text{QN}}) = L(x) + -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} \frac{\partial L}{\partial x}  + \cdots $ , the second term correctly cancels out the $x$ quantities, and leaves us with a scalar update in terms of $L$. Thinking back to the example with a scaling factor $c$ from the GD section, the inverse Hessian in Newton's methods successfully gives us a factor of $1/c^2$ to couteract the undesirable scaling of our updates.
 
 **Convergence near optimum** 💎
 
 Quasi-Newton methods also exhibit much faster convergence when the loss landscape is relatively flat.
-Instead of slowing down, they instead take larger steps, even when $\eta$ is fixed.
-This is because the eigenvalues of the inverse Hessian scale inversely with the eigenvalues of the Hessian, increasing with the flatness of the loss landscape.
+Instead of slowing down, they take larger steps, even when $\eta$ is fixed.
+This is thanks to the eigenvalues of the inverse Hessian, which scale inversely with the eigenvalues of the Hessian, and hence increase with the flatness of the loss landscape.
 
 
 **Consistency in function compositions** 
 
 So far, quasi-Newton methods address both shortcomings of GD. 
 However, similar to GD, the update of an intermediate space still depends on all functions before that.
-This behavior stems from the fact that the Hessian of a function composition carries non-linear terms of the gradient.
+This behavior stems from the fact that the Hessian of a composite function carries non-linear terms of the gradient.
 
 Consider a function composition $L(y(x))$, with $L$ as above, and an additional function $y(x)$.
 Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial y^2} \left( \frac{\partial y}{\partial x} \right)^2 + \frac{\partial L}{\partial y} \cdot \frac{\partial^2 y}{\partial x^2}$ depends on the square of the inner gradient $\frac{\partial y}{\partial x}$. 
@@ -188,7 +189,7 @@ and as a consequence, the update of any latent space is unknown during the compu
 
 **Dependence on Hessian** 🎩
 
-In addition, a fundamental disadvantage of quasi-Newton methods is their dependence on the Hessian of the full function.
+In addition, a fundamental disadvantage of quasi-Newton methods that becomes apparent from the discussion above is their dependence on the Hessian. It plays a crucial role for all the improvements discussed so far.
 
 The first obvious drawback is the _computational cost_.
 While evaluating the exact Hessian only adds one extra pass to every optimization step, this pass involves higher-dimensional tensors than the computation of the gradient.
@@ -218,8 +219,8 @@ are still a very active research topic, and hence many extensions have been prop
 
 ## Derivation of Physical Gradients
 
-As a first step towards _physical_ gradients, we introduce _inverse_ gradients (IGs), 
-which already solve many of the aforementioned problems. Unfortunately, they come with their own set of problems, which is why they only represent an intermediate step.
+As a first step towards _physical_ gradients, we'll consider what we'll call _inverse_ gradients (IGs).
+They already solve many of the aforementioned problems. Unfortunately, they come with their own set of problems, which is why they only represent an intermediate step (we'll revisit them in a more pracitcal form later on).
 
 Instead of $L$ (which is scalar), let's consider a general, potentially non-scalar function $y(x)$. 
 This will typically be the physical simulator later on, but to keep things general we'll call it $y$ for now.
@@ -232,7 +233,7 @@ $$ (IG-def)
 to be the IG update.
 Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inverse of the GD update above, encodes how the inputs must change in order to obtain a small change $\Delta y$ in the output.
 %
-The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible (a drawback we'll get back to below). However, if we can invert it, this has some very nice properties.
+The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible. This is a problem somewhat similar to the inversion of the Hessian, and we'll revisit this issue below. However, if we can invert the Jacobian, this has some very nice properties.
 
 Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$. This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. Effectively, $\Delta y$ plays the same role as the learning rate, i.e., it controls the step size of the optimization.
 
@@ -261,16 +262,14 @@ The change in $x$ is $\Delta x_{\text{IG}} = \Delta L \cdot \frac{\partial x}{\p
 The change in intermediate spaces is independent of their respective dependencies, at least up to first order.
 Consequently, the change to these spaces can be estimated during backpropagation, before all gradients have been computed.
 
-Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll directly get the correctly scaled direction at a given layer, without "helpers" such as the inverse Hessian.
+Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll directly get the correctly scaled direction at a given layer, without helper quantities such as the inverse Hessian.
 
 **Limitations**
 
 So far so good.
 The above properties make the advantages of IGs clear, but we're not done, unfortunately. There are strong limitations to their applicability.
-%
-The IG $\frac{\partial x}{\partial y}$ is only well-defined for square Jacobians, i.e. for functions $y$ with the same inputs and output dimensions.
+The inverse of the Jacobian, $\frac{\partial x}{\partial y}$, is only well-defined for square Jacobians, meaning for functions $y$ with the same inputs and output dimensions.
 In optimization, however, the input is typically high-dimensional while the output is a scalar objective function.
-%
 And, somewhat similar to the Hessians of quasi-Newton methods, 
 even when the $\frac{\partial y}{\partial x}$ is square, it may not be invertible.
 
@@ -287,7 +286,11 @@ The Jacobian of the simulator is, therefore, necessarily square.
 As long as the physical process does _not destroy_ information, the Jacobian is non-singular.
 In fact, it is believed that information in our universe cannot be destroyed so any physical process could in theory be inverted as long as we have perfect knowledge of the state.
 
-While evaluating the IGs directly can be done through matrix inversion or taking the derivative of an inverse simulator, we now consider what happens if we use the inverse simulator directly in backpropagation.
+??? While evaluating the IGs directly can be done through matrix inversion or taking the derivative of an inverse simulator,  ???
+
+We now consider a somewhat theoretical construct: what can we do if we have access to an 
+
+what happens if we use the inverse simulator directly in backpropagation.
 Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ its inverse (we assume it exists for now, but below we'll relax that assumption). 
 Equipped with the inverse we now define an update that we'll call the **physical gradient** (PG) {cite}`holl2021pg` in the following as
 
