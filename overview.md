@@ -153,7 +153,7 @@ techniques:
 - _Loss-terms_: the physical dynamics (or parts thereof) are encoded in the
   loss function, typically in the form of differentiable operations. The
   learning process can repeatedly evaluate the loss, and usually receives
-  gradients from a PDE-based formulation. These soft-constraints sometimes also go
+  gradients from a PDE-based formulation. These soft constraints sometimes also go
   under the name "physics-informed" training.
 
 - _Interleaved_: the full physical simulation is interleaved and combined with

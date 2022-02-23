@@ -158,7 +158,7 @@ To summarize, supervised training has the following properties.
 - Interactions with external "processes" (such as embedding into a solver) are difficult.
 
 The next chapters will explain how to alleviate these shortcomings of supervised training.
-First, we'll look at bringing model equations into the picture via soft-constraints, and afterwards
+First, we'll look at bringing model equations into the picture via soft constraints, and afterwards
 we'll revisit the challenges of bringing together numerical simulations and learned approaches.
 
 
