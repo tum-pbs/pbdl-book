@@ -137,7 +137,7 @@ Due to the lack of explicit spatial sampling points, an MLP, i.e., fully-connect
 
 To pick a simple example, Burgers equation in 1D,
 $\frac{\partial u}{\partial{t}} + u \nabla u = \nu \nabla \cdot \nabla u $ , we can directly
-formulate a loss term $R = \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} - \nu \frac{\partial^2 u}{\partial x^2} u$ that should be minimized as much as possible at training time. For each of the terms, e.g. $\frac{\partial u}{\partial x}$,
+formulate a loss term $R = \frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} - \nu \frac{\partial^2 u}{\partial x^2}$ that should be minimized as much as possible at training time. For each of the terms, e.g. $\frac{\partial u}{\partial x}$,
 we can simply query the DL framework that realizes $u$ to obtain the corresponding derivative. 
 For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we can simply query the derivative function of the framework multiple times. In the following section, we'll give a specific example of how that works in tensorflow.
 
