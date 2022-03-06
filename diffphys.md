@@ -3,8 +3,8 @@ Introduction to Differentiable Physics
 
 As a next step towards a tighter and more generic combination of deep learning
 methods and physical simulations we will target incorporating _differentiable 
-simulations_ into the learning process. In the following, we'll shorten
-that to "differentiable physics" (DP).
+numerical simulations_ into the learning process. In the following, we'll shorten
+these "differentiable numerical simulations of physical systems" to just "differentiable physics" (DP).
 
 The central goal of these methods is to use existing numerical solvers, and equip
 them with functionality to compute gradients with respect to their inputs.
@@ -42,15 +42,15 @@ for discretizing continuous models.
 Let's assume we have a continuous formulation $\mathcal P^*(\mathbf{x}, \nu)$ of the physical quantity of 
 interest $\mathbf{u}(\mathbf{x}, t): \mathbb R^d \times \mathbb R^+ \rightarrow \mathbb R^d$,
 with model parameters $\nu$ (e.g., diffusion, viscosity, or conductivity constants).
-The component of $\mathbf{u}$ will be denoted by a numbered subscript, i.e.,
+The components of $\mathbf{u}$ will be denoted by a numbered subscript, i.e.,
 $\mathbf{u} = (u_1,u_2,\dots,u_d)^T$.
 %and a corresponding discrete version that describes the evolution of this quantity over time: $\mathbf{u}_t = \mathcal P(\mathbf{x}, \mathbf{u}, t)$.
 Typically, we are interested in the temporal evolution of such a system.
 Discretization yields a formulation $\mathcal P(\mathbf{x}, \nu)$
-that we can re-arrange to compute a future state after a time step $\Delta t$. 
+that we re-arrange to compute a future state after a time step $\Delta t$. 
 The state at $t+\Delta t$ is computed via sequence of
 operations $\mathcal P_1, \mathcal P_2 \dots \mathcal P_m$ such that
-$\mathbf{u}(t+\Delta t) = \mathcal P_1 \circ \mathcal P_2 \circ \dots \mathcal P_m ( \mathbf{u}(t),\nu )$,
+$\mathbf{u}(t+\Delta t) = \mathcal P_m \circ \dots \mathcal P_2 \circ \mathcal P_1 ( \mathbf{u}(t),\nu )$,
 where $\circ$ denotes function decomposition, i.e. $f(g(x)) = f \circ g(x)$.
 
 ```{note} 
@@ -93,7 +93,7 @@ $\mathbf{u}$ to another, the Jacobian is square and symmetric here. Of course th
 for general model equations, but non-square Jacobian matrices would not cause any problems for differentiable 
 simulations.
 
-In practice, we can rely on the _reverse mode_ differentiation that all modern DL
+In practice, we rely on the _reverse mode_ differentiation that all modern DL
 frameworks provide, and focus on computing a matrix vector product of the Jacobian transpose
 with a vector $\mathbf{a}$, i.e. the expression: 
 $
@@ -158,7 +158,7 @@ Thus, if we want to employ DL for model equations that we don't have a proper gr
 idea to directly go for learning via a DP approach. However, if we don't really understand our model, we probably
 should go back to studying it a bit more anyway...
 
-Also, in practice we can be _greedy_ with the derivative operators, and only 
+Also, in practice we should be _greedy_ with the derivative operators, and only 
 provide those which are relevant for the learning task. E.g., if our network 
 never produces the parameter $\nu$ in the example above, and it doesn't appear in our
 loss formulation, we will never encounter a $\partial/\partial \nu$ derivative
@@ -186,7 +186,7 @@ $$
   \frac{\partial d}{\partial{t}} + \mathbf{u} \cdot \nabla d = 0 
 $$
 
-Instead of using this formulation as a residual equation right away (as in {doc}`physicalloss`), 
+Instead of using this formulation as a residual equation right away (as in v2 of {doc}`physicalloss`), 
 we can discretize it with our favorite mesh and discretization scheme,
 to obtain a formulation that updates the state of our system over time. This is a standard
 procedure for a _forward_ solve.
@@ -201,20 +201,20 @@ $$
 $$
 
 As a simple example of an inverse problem and learning task, let's consider the problem of
-finding an unknown motion $\mathbf{u}$: 
-this motion should transform a given initial scalar density state $d^{~0}$ at time $t^0$ 
+finding a velocity field $\mathbf{u}$.
+This velocity should transform a given initial scalar density state $d^{~0}$ at time $t^0$ 
 into a state that's evolved by $\mathcal P$ to a later "end" time $t^e$ 
 with a certain shape or configuration $d^{\text{target}}$.
-Informally, we'd like to find a motion that deforms $d^{~0}$ through the PDE model into a target state.
+Informally, we'd like to find a flow that deforms $d^{~0}$ through the PDE model into a target state.
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
 to minimize the loss function $L=|d(t^e) - d^{\text{target}}|^2$. 
 
 Note that as described here this inverse problem is a pure optimization task: there's no NN involved,
-and our goal is to obtain $\mathbf{u}$. We do not want to apply this motion to other, unseen _test data_,
+and our goal is to obtain $\mathbf{u}$. We do not want to apply this velocity to other, unseen _test data_,
 as would be custom in a real learning task.
 
 The final state of our marker density $d(t^e)$ is fully determined by the evolution 
-of $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem:
+from $\mathcal P$ via $\mathbf{u}$, which gives the following minimization problem:
 
 $$
     \text{arg min}_{~\mathbf{u}} | \mathcal P ( d^{~0}, \mathbf{u}, t^e) - d^{\text{target}}|^2
@@ -225,11 +225,15 @@ _gradient descent_ (GD), where the
 gradient is determined by the differentiable physics approach described earlier in this chapter.
 Once things are working with GD, we can relatively easily switch to better optimizers or bring
 an NN into the picture, hence it's always a good starting point.
+To make things easier to read below, we'll omit the transpose of the Jacobians in the following. 
+Unfortunately, the Jacobian is defined this way, but we actually never need the un-transposed one.
+Keep in mind that in practice we're dealing with tranposed Jacobians $\big( \frac{ \partial a }{ \partial b} \big)^T$
+that are "abbreviated" by $\frac{ \partial a }{ \partial b}$.
 
 As the discretized velocity field $\mathbf{u}$ contains all our degrees of freedom,
 all we need to do is to update the velocity by an amount 
 $\Delta \mathbf{u} = \partial L / \partial \mathbf{u}$, 
-which can be decomposed into 
+which is decomposed into 
 $\Delta \mathbf{u} = 
 \frac{ \partial d }{ \partial \mathbf{u}}
 \frac{ \partial L }{ \partial d} $.
@@ -244,7 +248,7 @@ $$
 
 If $d$ is represented as a vector, e.g., for one entry per cell of a mesh, 
 $\frac{ \partial L }{ \partial d}$ will likewise be a column vector of equivalent size.
-This is thanks to the fact that $L$ is always a scalar loss function, and hence the Jacobian
+This stems from the fact that $L$ is always a scalar loss function, and so the Jacobian
 matrix will have a dimension of 1 along the $L$ dimension.
 Intuitively, this vector will simply contain the differences between $d$ at the end time
 in comparison to the target densities $d^{\text{target}}$.
@@ -293,7 +297,7 @@ $$ \begin{aligned}
 height: 150px
 name: advection-upwind
 ---
-1st-order upwinding uses a simple one-sided finite-difference stencil that takes into account the direction of the motion
+1st-order upwinding uses a simple one-sided finite-difference stencil that takes into account the direction of the flow
 ```
 
 Thus, for a negative $u_i$, we're using $u_i^+$ to look in the opposite direction of the velocity, i.e., _backward_ in terms of the motion. $u_i^-$ will be zero in this case. For positive $u_i$ it's vice versa, and we'll get a zero'ed $u_i^+$, and a backward difference stencil via $u_i^-$.
@@ -309,16 +313,13 @@ the change of the velocity $u_i$ depends on the spatial derivatives of the densi
 Due to the first order upwinding, we only include two neighbors (higher order methods would depend on
 additional entries of $d$)
 
-% velocity derivative , Just for completeness: another derivative we could compute here is
-
 In practice this step is equivalent to evaluating a transposed matrix multiplication.
 If we rewrite the calculation above as 
 $ \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t) = A \mathbf{u}$, 
-then $\partial \mathcal P / \partial \mathbf{u} = A^T$.
+then $\big( \partial \mathcal P / \partial \mathbf{u} \big)^T = A^T$.
 However, in many practical cases, a matrix free implementation of this multiplication might 
 be preferable to actually constructing $A$.
 
-% density derivative
 Another derivative that we can consider for the advection scheme is that w.r.t. the previous
 density state, i.e. $d_i(t)$, which is $d_i$ in the shortened notation.
 $\partial \mathcal P / \partial d_i$ for cell $i$ from above gives $1 + \frac{u_i \Delta t }{ \Delta x}$. However, for the full gradient we'd need to add the potential contributions from cells $i+1$ and $i-1$, depending on the sign of their velocities. This derivative will come into play in the next section.
@@ -337,23 +338,23 @@ state. This can involve a large number of evaluations of our advection scheme vi
 
 This sounds challenging at first:
 e.g., one could try to insert equation {eq}`eq:advection` at time $t-\Delta t$
-into equation {eq}`eq:advection` at $t$ and repeat this process recursively until
+into equation {eq}`eq:advection` at time $t$ and repeat this process recursively until
 we have a single expression relating $d^{~0}$ to the targets. However, thanks
-to the linear nature of the Jacobians, we can treat each advection step, i.e.,
+to the linear nature of the Jacobians, we treat each advection step, i.e.,
 each invocation of our PDE $\mathcal P$ as a seperate, modular
 operation. And each of these invocations follows the procedure described 
 in the previous section.
 
-Hence, given the machinery above, the backtrace is fairly simple to realize: 
+Given the machinery above, the backtrace is fairly simple to realize: 
 for each of the advection steps
-in $\mathcal P$ we can compute a Jacobian product with the _incoming_ vector of derivatives
+in $\mathcal P$ we compute a Jacobian product with the _incoming_ vector of derivatives
 from the loss $L$ or a previous advection step. We repeat this until we have traced the chain from the
 loss with $d^{\text{target}}$ all the way back to $d^{~0}$. 
-Theoretically, the velocity $\mathbf{u}$ could be a function of time, in which
-case we'd get a gradient $\Delta \mathbf{u}(t)$ for every time step $t$. To simplify things
+Theoretically, the velocity $\mathbf{u}$ could be a function of time like $d$, in which
+case we'd get a gradient $\Delta \mathbf{u}(t)$ for every time step $t$. However, to simplify things
 below, let's we assume we have field that is constant in time, i.e., we're
 reusing the same velocities $\mathbf{u}$ for every advection via $\mathcal P$. Now, each time step
-will give us a contribution to $\Delta \mathbf{u}$ which we can accumulate for all steps.
+will give us a contribution to $\Delta \mathbf{u}$ which we accumulate for all steps.
 
 $$ \begin{aligned}
     \Delta \mathbf{u} =& 
@@ -375,12 +376,15 @@ $$ \begin{aligned}
 
 Here the last term above contains the full backtrace of the marker density to time $t^0$. 
 The terms of this sum look unwieldy 
-at first, but they contain a lot of similar Jacobians, and in practice can be computed efficiently
-by backtracing through the sequence of computational steps in the forward evaluation of our PDE.
+at first, but looking closely, each line simply adds an additional Jacobian for one time step on the left hand side.
+This follows from the chain rule, as shown in the two-operator case above.
+So the terms of the sum contain a lot of similar Jacobians, and in practice can be computed efficiently
+by backtracing through the sequence of computational steps that resulted from the forward evaluation of our PDE.
+(Note that, as mentioned above, we've omitted the tranpose of the Jacobians here.)
 
 This structure also makes clear that the process is very similar to the regular training
-process of an NN: the evaluations of these Jacobian vector products is exactly what
-a deep learning framework does for training an NN (we just have weights $\theta$ instead
+process of an NN: the evaluations of these Jacobian vector products from nested function calls
+is exactly what a deep learning framework does for training an NN (we just have weights $\theta$ instead
 of a velocity field there). And hence all we need to do in practice is to provide a custom 
 function the Jacobian vector product for $\mathcal P$.
 
@@ -401,25 +405,27 @@ For fluids, we typically have
 $\mathbf{u}^{n} = \mathbf{u} - \nabla p$, with
 $\nabla^2 p = \nabla \cdot \mathbf{u}$. Here, $\mathbf{u}^{n}$ denotes the _new_, divergence-free
 velocity field. This step is typically crucial to enforce the hard-constraint $\nabla \cdot \mathbf{u}=0$,
-and is often called _Chorin Projection_, or _Helmholtz decomposition_. It is also closely related to the fundamental theorem of vector calculus.
+and also goes under the name of _Chorin Projection_, or _Helmholtz decomposition_. 
+It is a direct consequence of the fundamental theorem of vector calculus.
 
 If we now introduce an NN that modifies $\mathbf{u}$ in a solver, we inevitably have to
 backpropagate through the Poisson solve. I.e., we need a gradient for $\mathbf{u}^{n}$, which in this
 notation takes the form $\partial \mathbf{u}^{n} / \partial \mathbf{u}$.
 
-In combination, $\mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients are simple to compute. The main difficulty lies in obtaining the
-matrix inverse $(\nabla^2)^{-1}$ from Poisson's equation for pressure (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
+In combination, we aim for computing $\mathbf{u}^{n} = \mathbf{u} - \nabla \left(  (\nabla^2)^{-1} \nabla \cdot \mathbf{u} \right)$. The outer gradient (from $\nabla p$) and the inner divergence ($\nabla \cdot \mathbf{u}$) are both linear operators, and their gradients are simple to compute. The main difficulty lies in obtaining the
+matrix inverse $(\nabla^2)^{-1}$ from Poisson's equation (we'll keep it a bit simpler here, but it's often time-dependent, and non-linear). 
 
-In practice, the matrix vector product for $(\nabla^2)^{-1} b$ with $b=\nabla \cdot \mathbf{u}$ is not explicitly computed via matrix operations, but approximated with a (potentially matrix-free) iterative solver. E.g., conjugate gradient (CG) methods are a very popular choice here. Thus, we could treat this iterative solver as a function $S$,
-with $p = S(\nabla \cdot \mathbf{u})$. Note that matrix inversion is a non-linear process, despite the matrix itself being linear. As solvers like CG are also based on matrix and vector operations, we could decompose $S$ into a sequence of simpler operations $S(x) = S_n( S_{n-1}(...S_{1}(x)))$, and backpropagate through each of them. This is certainly possible, but not a good idea: it can introduce numerical problems, and can be very slow.
-As mentioned above, by default DL frameworks store the internal states for every differentiable operator like the $S_i()$ in this example, and hence we'd organize and keep $n$ intermediate states in memory. These states are completely uninteresting for our original PDE, though. They're just intermediate states of the CG solver.
+In practice, the matrix vector product for $(\nabla^2)^{-1} b$ with $b=\nabla \cdot \mathbf{u}$ is not explicitly computed via matrix operations, but approximated with a (potentially matrix-free) iterative solver. E.g., conjugate gradient (CG) methods are a very popular choice here. Thus, we theoretically could treat this iterative solver as a function $\mathcal{S}$,
+with $p = \mathcal{S}(\nabla \cdot \mathbf{u})$. 
+It's worth noting that matrix inversion is a non-linear process, despite the matrix itself being linear. As solvers like CG are also based on matrix and vector operations, we could decompose $\mathcal{S}$ into a sequence of simpler operations over the course of all solver iterations as $\mathcal{S}(x) = \mathcal{S}_n( \mathcal{S}_{n-1}(...\mathcal{S}_{1}(x)))$, and backpropagate through each of them. This is certainly possible, but not a good idea: it can introduce numerical problems, and will be very slow.
+As mentioned above, by default DL frameworks store the internal states for every differentiable operator like the $\mathcal{S}_i()$ in this example, and hence we'd organize and keep a potentially huge number of intermediate states in memory. These states are completely uninteresting for our original PDE, though. They're just intermediate states of the CG solver.
 
 If we take a step back and look at $p = (\nabla^2)^{-1} b$, it's gradient $\partial p / \partial b$
-is just $((\nabla^2)^{-1})^T$. And in this case, $(\nabla^2)$ is a symmetric matrix, and so $((\nabla^2)^{-1})^T=(\nabla^2)^{-1}$. This is the identical inverse matrix that we encountered in the original equation above, and hence we can re-use our unmodified iterative solver to compute the gradient. We don't need to take it apart and slow it down by storing intermediate states. However, the iterative solver computes the matrix-vector-products for $(\nabla^2)^{-1} b$. So what is $b$ during backpropagation? In an optimization setting we'll always have our loss function $L$ at the end of the forward chain. The backpropagation step will then give a gradient for the output, let's assume it is $\partial L/\partial p$ here, which needs to be propagated to the earlier operations of the forward pass. Thus, we can simply invoke our iterative solve during the backward pass to compute $\partial p / \partial b = S(\partial L/\partial p)$. And assuming that we've chosen a good solver as $S$ for the forward pass, we get exactly the same performance and accuracy in the backwards pass.
+is just $((\nabla^2)^{-1})^T$. And in this case, $(\nabla^2)$ is a symmetric matrix, and so $((\nabla^2)^{-1})^T=(\nabla^2)^{-1}$. This is the identical inverse matrix that we encountered in the original equation above, and hence we re-use our unmodified iterative solver to compute the gradient. We don't need to take it apart and slow it down by storing intermediate states. However, the iterative solver computes the matrix-vector-products for $(\nabla^2)^{-1} b$. So what is $b$ during backpropagation? In an optimization setting we'll always have our loss function $L$ at the end of the forward chain. The backpropagation step will then give a gradient for the output, let's assume it is $\partial L/\partial p$ here, which needs to be propagated to the earlier operations of the forward pass. Thus, we simply invoke our iterative solve during the backward pass to compute $\partial p / \partial b = \mathcal{S}(\partial L/\partial p)$. And assuming that we've chosen a good solver as $\mathcal{S}$ for the forward pass, we get exactly the same performance and accuracy in the backwards pass.
 
 If you're interested in a code example, the [differentiate-pressure example]( https://github.com/tum-pbs/PhiFlow/blob/master/demos/differentiate_pressure.py) of phiflow uses exactly this process for an optimization through a pressure projection step: a flow field that is constrained on the right side, is optimized for the content on the left, such that it matches the target on the right after a pressure projection step.
 
-The main take-away here is: it is important _not to blindly backpropagate_ through the forward computation, but to think about which steps of the analytic equations for the forward pass to compute gradients for. In cases like the above, we can often find improved analytic expressions for the gradients, which we can then compute numerically.
+The main take-away here is: it is important _not to blindly backpropagate_ through the forward computation, but to think about which steps of the analytic equations for the forward pass to compute gradients for. In cases like the above, we can often find improved analytic expressions for the gradients, which we then approximate numerically.
 
 ```{admonition} Implicit Function Theorem & Time
 :class: tip
@@ -429,11 +435,9 @@ The process above essentially yields an _implicit derivative_. Instead of explic
 
 **Time**: we _can_ actually consider the steps of an iterative solver as a virtual "time",
 and backpropagate through these steps. In line with other DP approaches, this enables an NN to _interact_ with an iterative solver. An example is to learn initial guesses of CG solvers from {cite}`um2020sol`. 
-[Details can be found here](https://github.com/tum-pbs/CG-Solver-in-the-Loop)
+[Details and code can be found here.](https://github.com/tum-pbs/CG-Solver-in-the-Loop)
 ```
 
-
----
 
 ## Summary of differentiable physics so far
 
@@ -444,9 +448,13 @@ this makes it possible to let NNs seamlessly interact with physical solvers.
 
 We'd previously fully discard our physical model and solver
 once the NN is trained: in the example from {doc}`physicalloss-code` 
-the NN gives us the solution directly, bypassing
-any solver or model equation. With the DP approach we can train an NN alongside
+the NN gives us the solution directly, bypassing any solver or model equation. 
+The DP approach substantially differs from the physics-informed NNs (v2) from {doc}`physicalloss`,
+it has more in common with the controlled discretizations (v1). They are essentially a subset, or partial
+application of DP training.
+
+However in contrast to both residual approaches, DP makes it possible to train an NN alongside
 a numerical solver, and thus we can make use of the physical model (as represented by 
 the solver) later on at inference time. This allows us to move beyond solving single
-inverse problems, and can yield NNs that quite robustly generalize to new inputs.
-Let's revisit this sample problem in the context of DPs.
+inverse problems, and yields NNs that quite robustly generalize to new inputs.
+Let's revisit the example problem from {doc}`physicalloss-code` in the context of DPs.

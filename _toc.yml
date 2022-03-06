@@ -22,15 +22,14 @@ parts:
   chapters:
   - file: diffphys.md
   - file: diffphys-code-burgers.ipynb
-  - file: diffphys-discuss.md
-  - file: diffphys-code-ns.ipynb
   - file: diffphys-dpvspinn.md
-- caption: Complex Examples with DP
+  - file: diffphys-code-ns.ipynb
+- caption: Differentiable Physics with NNs
   chapters:
   - file: diffphys-examples.md
   - file: diffphys-code-sol.ipynb
-  - file: diffphys-control.ipynb
-  - file: diffphys-outlook.md
+  - file: diffphys-code-control.ipynb
+  - file: diffphys-discuss.md
 - caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
