@@ -1,7 +1,7 @@
 Towards Gradient Inversion
 =======================
 
-**Note, this chapter is very preliminary - probably not for the first version of the book. move after RL, before BNNs?**
+**Note, this chapter is very preliminary - to be finalized**
 
 The next chapter will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
 To re-cap, the approaches explained in the previous chapters either dealt with purely _supervised_ training, integrated the physical model as a _physical loss term_ or included it via _differentiable physics_ (DP) operators embedded into the training graph. 
