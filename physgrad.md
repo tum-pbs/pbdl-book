@@ -3,15 +3,15 @@ Towards Gradient Inversion
 
 **Note, this chapter is very preliminary - to be finalized**
 
-The next chapter will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
+In the following we will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
 To re-cap, the approaches explained in the previous chapters either dealt with purely _supervised_ training, integrated the physical model as a _physical loss term_ or included it via _differentiable physics_ (DP) operators embedded into the training graph. 
 For supervised training with data from physical simulations standard procedure apply.
 The latter two methods are more relevant in the context of this book. They share similarities, but in the loss term case, the physics evaluations are only required at training time. For DP approaches, the solver itself is usually also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, and the latter two also using them for the physics terms.
-This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually a good choice.
+This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually the best choice.
 
 Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
-It turns out that both supervised and DP gradients have their pros and cons. In the following, we'll analyze this in more detail. In particular, 
-we'll show how scaling problems of DP gradients affect NN training. 
+It turns out that both supervised and DP gradients have their pros and cons, and leave room for custom methods that are aware of the physics operators. 
+In particular, we'll show in the following how scaling problems of DP gradients affect NN training. 
 Then, we'll also illustrate how multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. 
 Finally, we'll explain several alternatives to prevent these problems. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
 
@@ -20,14 +20,14 @@ Finally, we'll explain several alternatives to prevent these problems. It turns 
 :class: tip
 
 Below, we'll proceed in the following steps:
-- Show how scaling issues and multi-modality can negatively affect NNs.
-- Explain two alternatives to prevent these problems.
-- Preview: What was missing in our training runs with GD or Adam so far is a proper _inversion_ of the Jacobian matrix.
+- Show how scaling issues and multi-modality can negatively affect NN training.
+- Spoiler: What was missing in our training runs with GD or Adam so far is a proper _inversion_ of the Jacobian matrix.
+- We'll explain two alternatives to prevent these problems: an anlytical full, and a numerical half-inversion.
 
 ```
 
 %- 2 remedies coming up:
-%    1) Treating network and simulator as separate systems instead of a single black box, we'll derive different and improved update steps that replaces the gradient of the simulator. As this gradient is closely related to a regular gradient, but computed via physical model equations, we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the {\em physical gradient} (PG).
+%    1) Treating network and simulator as separate systems instead of a single black box, we'll derive different and improved update steps that replaces the gradient of the simulator. As this gradient is closely related to a regular gradient, but computed via physical model equations, we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the _physical gradient_ (PG).
 %        [toolbox, but requires perfect inversion]
 %    2) Treating them jointly, -> HIGs
 %        [analytical, more practical approach]
@@ -53,22 +53,22 @@ XXX   PG physgrad chapter notes  from dec 23   XXX
 ![Divider](resources/divider3.jpg)
 
 
-## Overview - Traditional optimization methods
+## Traditional optimization methods
 
 As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. The different versions of $\Delta x$ will be denoted by a subscript.
 
-All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backpropagation was also employed for the PDE solver (_simulator_) $\mathcal P$. As a central quantitiy, this gives the composite gradient 
+All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$, with an evaluation chain $L(\mathcal P(x))$. As a central quantity, this gives the composite gradient 
 $(\partial L / \partial x)^T$ of the loss function $L$:
 
 $$
 \Big( \frac{\partial L}{\partial x} \Big)^T = 
-    \Big( \frac{\partial \mathcal P(x)}{\partial x} \Big)^T
-    \Big( \frac{\partial L}{\partial \mathcal P(x)} \Big)^T
+    \Big( \frac{\partial \mathcal P}{\partial x} \Big)^T
+    \Big( \frac{\partial L}{\partial \mathcal P} \Big)^T
 $$ (loss-deriv)
 
 We've shown that using $\partial L/\partial x$ works, but
-in the field of classical optimization, other algorithms are more widely used than GD: popular are so-called quasi-Newton methods, and they use different updates.
-Hence in the following we'll revisit GD, and discuss the pros and cons of the different methods on a theoretical level. Among others, it's interesting to discuss why classical optimization algorithms aren't widely used for NN training despite having some obvious advantages.
+in the field of classical optimization, other algorithms are more widely used than GD: popular are so-called Quasi-Newton methods, which use fundamentally different updates.
+Hence, in the following we'll revisit GD along with Quasi-Newton methods and Inverse Jacobians as a third alternative. We'll focus on the pros and cons of the different methods on a theoretical level. Among others, it's interesting to discuss why classical optimization algorithms aren't widely used for NN training despite having some obvious advantages.
 
 Note that we exclusively consider multivariate functions, and hence all symbols represent vector-valued expressions unless noted otherwise.
 
@@ -85,7 +85,7 @@ Note that we exclusively consider multivariate functions, and hence all symbols 
 
 
 
-### Gradient descent
+## Gradient descent
 
 The optimization updates $\Delta x_{\text{GD}}$ of GD scale with the derivative of the objective w.r.t. the inputs,
 
@@ -105,7 +105,7 @@ Assume two parameters $x_1$ and $x_2$ have different physical units.
 Then the GD parameter updates scale with the inverse of these units because the parameters appear in the denominator for the GD update above ($\cdots / \partial x$).
 The learning rate $\eta$ could compensate for this discrepancy but since $x_1$ and $x_2$ have different units, there exists no single $\eta$ to produce the correct units for both parameters.
 
-One could argue that units aren't very important for the parameters of NNs, but nonetheless it's unnerving from a physics perspective that they're wrong.
+One could argue that units aren't very important for the parameters of NNs, but nonetheless it's unnerving from a physics perspective that they're wrong, and it hints at some more fundamental problems.
 
 **Function sensitivity** 🔍
 
@@ -145,15 +145,15 @@ stabilize the training. On the other hand, it makes the learning process difficu
 
 
 
-### Quasi-Newton methods
+## Quasi-Newton methods
 
-Quasi-Newton methods, such as BFGS and its variants, evaluate the gradient $\frac{\partial L}{\partial x}$ and Hessian $\frac{\partial^2 L}{\partial x^2}$ to solve a system of linear equations. The resulting update can be written as
+Quasi-Newton methods, such as BFGS and its variants, employ the gradient $\frac{\partial L}{\partial x}$ and the inverse of the Hessian $\frac{\partial^2 L}{\partial x^2}$ for the update 
 
 $$
-\Delta x_{\text{QN}} = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x}.
+\Delta x_{\text{QN}} = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} , 
 $$ (quasi-newton-update)
 
-where $\eta$, the scalar step size, takes the place of GD's learning rate. As a further improvement, it is typically determined via a line search in many Quasi-Newton methods.
+where $\eta$, the scalar step size, takes the place of GD's learning rate. As a further improvement, it is typically determined via a line search in many Quasi-Newton methods (we'll leave out this step for now).
 This construction solves some of the problems of gradient descent from above, but has other drawbacks.
 
 **Units and Sensitivity** 📏
@@ -181,7 +181,7 @@ This behavior stems from the fact that the Hessian of a composite function carri
 
 Consider a function composition $L(y(x))$, with $L$ as above, and an additional function $y(x)$.
 Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial y^2} \left( \frac{\partial y}{\partial x} \right)^2 + \frac{\partial L}{\partial y} \cdot \frac{\partial^2 y}{\partial x^2}$ depends on the square of the inner gradient $\frac{\partial y}{\partial x}$. 
-This means that the Hessian is influenced by the _later_ derivatives of a backpropagation pass, 
+This means that the Hessian is influenced by the _later_ derivatives of a backprop pass, 
 and as a consequence, the update of any latent space is unknown during the computation of the gradients.
 
 % chain of function evaluations: Hessian of an outer function is influenced by inner ones; inversion corrects and yields quantity similar to IG, but nonetheless influenced by "later" derivatives
@@ -217,10 +217,11 @@ are still a very active research topic, and hence many extensions have been prop
 ![Divider](resources/divider4.jpg)
 
 
-## Derivation of Physical Gradients
+## Inverse Gradients
 
-As a first step towards _physical_ gradients, we'll consider what we'll call _inverse_ gradients (IGs).
-They already solve many of the aforementioned problems. Unfortunately, they come with their own set of problems, which is why they only represent an intermediate step (we'll revisit them in a more pracitcal form later on).
+As a first step towards fixing the aforementioned issues,
+we'll consider what we'll call _inverse_ gradients (IGs).
+Unfortunately, they come with their own set of problems, which is why they only represent an intermediate step (we'll revisit them in a more practical form later on).
 
 Instead of $L$ (which is scalar), let's consider a general, potentially non-scalar function $y(x)$. 
 This will typically be the physical simulator later on, but to keep things general we'll call it $y$ for now.
@@ -239,20 +240,19 @@ Note that instead of using a learning rate, here the step size is determined by 
 
 
 
-% **Units**
-
-**Positive Aspects** 
+% **Positive Aspects** 
+**Units** 📏
 
 IGs scale with the inverse derivative. Hence the updates are automatically of the same units as the parameters without requiring an arbitrary learning rate: $\frac{\partial x}{\partial y}$ times $\Delta y$ has the units of $x$.
 
-% **Function sensitivity**
+**Function sensitivity** 🔍
 
 They also don't have problems with normalization as the parameter updates from the example $L(x) = c \cdot x$ above now scale with $c^{-1}$.
 Sensitive functions thus receive small updates while insensitive functions get large updates.
 
-% **Convergence near optimum**
+**Convergence near optimum and function compositions** 💎
 
-IGs show the opposite behavior of GD close to an optimum: they typically produce very accurate updates, which don't vanish near an optimum. This leads to fast convergence, as we will demonstrate in more detail below.
+IGs show the opposite behavior of GD close to an optimum: they produce updates that still progress the optimization. This leads to fast convergence, as we will demonstrate in more detail below.
 
 % **Consistency in function compositions**
 
@@ -260,21 +260,25 @@ Additionally, IGs are consistent in function composition.
 The change in $x$ is $\Delta x_{\text{IG}} = \Delta L \cdot \frac{\partial x}{\partial y} \frac{\partial y}{\partial L}$ and the approximate change in $y$ is $\Delta y = \Delta L  \cdot \frac{\partial y}{\partial x} \frac{\partial x}{\partial y} \frac{\partial y}{\partial L} = \Delta L \frac{\partial y}{\partial L}$.
 % In the example in table~\ref{tab:function-composition-example}, the change $\Delta y$ is the same no matter what space is used as optimization target.
 The change in intermediate spaces is independent of their respective dependencies, at least up to first order.
-Consequently, the change to these spaces can be estimated during backpropagation, before all gradients have been computed.
+Consequently, the change to these spaces can be estimated during backprop, before all gradients have been computed.
 
 Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll directly get the correctly scaled direction at a given layer, without helper quantities such as the inverse Hessian.
 
-**Limitations**
+% **Limitations**
+**Dependence on the inverse Jacobian** 🎩
 
-So far so good.
-The above properties make the advantages of IGs clear, but we're not done, unfortunately. There are strong limitations to their applicability.
-The inverse of the Jacobian, $\frac{\partial x}{\partial y}$, is only well-defined for square Jacobians, meaning for functions $y$ with the same inputs and output dimensions.
+So far so good. The above properties are clearly advantageous, but unfortunately IGs
+require the inverse of the Jacobian, $\frac{\partial x}{\partial y}$.
+It is only well-defined for square Jacobians, meaning for functions $y$ with the same inputs and output dimensions.
 In optimization, however, the input is typically high-dimensional while the output is a scalar objective function.
 And, somewhat similar to the Hessians of quasi-Newton methods, 
 even when the $\frac{\partial y}{\partial x}$ is square, it may not be invertible.
 
 Thus, we now consider the fact that inverse gradients are linearizations of inverse functions and show that using inverse functions provides additional advantages while retaining the same benefits.
 
+% --- split --- ?
+
+---
 
 
 ### Inverse simulators
@@ -286,11 +290,15 @@ The Jacobian of the simulator is, therefore, necessarily square.
 As long as the physical process does _not destroy_ information, the Jacobian is non-singular.
 In fact, it is believed that information in our universe cannot be destroyed so any physical process could in theory be inverted as long as we have perfect knowledge of the state.
 
+XXX
+
 ??? While evaluating the IGs directly can be done through matrix inversion or taking the derivative of an inverse simulator,  ???
 
 We now consider a somewhat theoretical construct: what can we do if we have access to an 
 
-what happens if we use the inverse simulator directly in backpropagation.
+XXX
+
+... what happens if we use the inverse simulator directly in backpropagation.
 Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ its inverse (we assume it exists for now, but below we'll relax that assumption). 
 Equipped with the inverse we now define an update that we'll call the **physical gradient** (PG) {cite}`holl2021pg` in the following as
 
@@ -359,7 +367,7 @@ $\mathcal P_{(x_0,y_0)}^{-1}(y)$, defined at the point $(x_0, y_0)$. This local 
 easier to obtain, as it only needs to exist near a given $y_0$, and not for all $y$. 
 For $\mathcal P^{-1}$ to exist $\mathcal P$ would need to be globally invertible.
 
-By contrast, a \emph{local inverse}, defined at point $(x_0, y_0)$, only needs to be accurate in the vicinity of that point.
+By contrast, a _local inverse_, defined at point $(x_0, y_0)$, only needs to be accurate in the vicinity of that point.
 If a global inverse $\mathcal P^{-1}(y)$ exists, the local inverse approximates it and matches it exactly as $y \rightarrow y_0$.
 More formally, $\lim_{y \rightarrow y_0} \frac{\mathcal P^{-1}_{(x_0, y_0)}(y) - P^{-1}(y)}{|y - y_0|} = 0$.
 Local inverse functions can exist, even when a global inverse does not.
