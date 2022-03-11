@@ -101,6 +101,7 @@ The Jacobian $\frac{\partial L}{\partial x}$ describes how the loss reacts to sm
 Surprisingly, this very widely used update has a number of undesirable properties that we'll highlight in the following. Note that we've naturally applied this update in supervised settings such as {doc}`supervised-airfoils`, but we've also used it in the differentiable physics approaches. E.g., in {doc}`diffphys-code-sol` we've computed the derivative of the fluid solver. In the latter case, we've still only updated the NN parameters, but the fluid solver Jacobian was part of {eq}`GD-update`, as shown in {eq}`loss-deriv`.
 
 
+
 **Units** 📏
 
 A first indicator that something is amiss with GD is that it inherently misrepresents dimensions.
@@ -315,13 +316,16 @@ This expression yields a first iterative method that makes use of $\mathcal P^{-
 
 ## Summary
 
-The update obtained with a regular gradient descent method has surprising shortcomings.
+The update obtained with a regular gradient descent method has surprising shortcomings due to scaling issues.
 Classical, inversion-based methods like IGs and Newton's method remove some of these shortcomings,
 with the somewhat theoretical construct of the update from inverse simulators ($\Delta x_{\text{PG}}$)
 including the most higher-order terms.
 As such, it is interesting to consider as an "ideal" setting for improved (inverted) update steps. 
+It get's all of the aspect above right: units 📏, function sensitivity 🔍, compositions, and convergence near optima 💎.
+It provides a _scale-invariant_ update.
+This comes at the cost of requiring an expression and discretization for a local inverse solver 🎩.
 
-In contrast to the second- and first-order approximations from Newton's method and IGs, it can potentially take highly nonlinear effects into account. This comes at the cost of requiring an expression and discretization for a local inverse solver, but the main goal of the following sections is to illustrate how much we can gain from including all the higher-order information. Note that all three methods successfully include a rescaling of the search direction via inversion, in contrast to the previously discussed GD training. All of these methods represent different forms of differentiable physics, though.
+In contrast to the second- and first-order approximations from Newton's method and IGs, it can potentially take highly nonlinear effects into account. Due to the potentially difficult construct of the inverse simulator, the main goal of the following sections is to illustrate how much we can gain from including all the higher-order information. Note that all three methods successfully include a rescaling of the search direction via inversion, in contrast to the previously discussed GD training. All of these methods represent different forms of differentiable physics, though.
 
 Before moving on to including improved updates in NN training processes, we will discuss some additional theoretical aspects, 
 and then illustrate the differences between these approaches with a practical example.
@@ -331,7 +335,7 @@ and then illustrate the differences between these approaches with a practical ex
 ```{note} 
 The following sections will provide an in-depth look ("deep-dive"), into 
 optimizations with inverse solvers. If you're interested in practical examples
-and connections to NNs, feel free to skip ahead to {doc}`physgrad-code` or 
+and connections to NNs, feel free to skip ahead to {doc}`physgrad-comparison` or 
 {doc}`physgrad-nn`, respectively.
 ```
 
