@@ -23,7 +23,7 @@ This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimiz
 In the simplest case, we can use an $L^2$ error, giving
 
 $$
-\text{arg min}_{\theta} | f(x;\theta) - y^* |_2^2
+\text{arg min}_{\theta} | f(x;\theta) - y^* |_2^2 . 
 $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 

@@ -22,24 +22,23 @@ Finally, we'll explain several alternatives to prevent these problems. It turns 
 Below, we'll proceed in the following steps:
 - Show how scaling issues and multi-modality can negatively affect NN training.
 - Spoiler: What was missing in our training runs with GD or Adam so far is a proper _inversion_ of the Jacobian matrix.
-- We'll explain two alternatives to prevent these problems: an anlytical full, and a numerical half-inversion.
+- We'll explain two alternatives to prevent these problems: an analytical full-, and a numerical half-inversion.
 
 ```
+
+
+XXX  notes, open issues  XXX
+-  GD - is "diff. phys." , rename? add supervised before?
+- comparison notebook: add legends to plot
+- double check func-comp w QNewton, "later" derivatives of backprop means what?
+
+
 
 %- 2 remedies coming up:
 %    1) Treating network and simulator as separate systems instead of a single black box, we'll derive different and improved update steps that replaces the gradient of the simulator. As this gradient is closely related to a regular gradient, but computed via physical model equations, we refer to this update (proposed by Holl et al. {cite}`holl2021pg`) as the _physical gradient_ (PG).
 %        [toolbox, but requires perfect inversion]
 %    2) Treating them jointly, -> HIGs
 %        [analytical, more practical approach]
-
-
-XXX   PG physgrad chapter notes  from dec 23   XXX
--  GD - is "diff. phys." , rename? add supervised before?
-- comparison notebook: add legends to plot
-- summary "tightest possible" bad -> rather, illustrates what ideal direction can do
-- double check func-comp w QNewton, "later" derivatives of backprop means what?
-- remove IGs? 
-
 
 %```{admonition} Looking ahead
 %:class: tip
@@ -57,7 +56,11 @@ XXX   PG physgrad chapter notes  from dec 23   XXX
 
 As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. The different versions of $\Delta x$ will be denoted by a subscript.
 
-All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$, with an evaluation chain $L(\mathcal P(x))$. As a central quantity, this gives the composite gradient 
+All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$. 
+% , with an evaluation chain $L(\mathcal P(x))$. 
+When we simplify the setting, and leave out the NN for a moment, this gives the minimization problem
+$\text{arg min}_{x} L(x)$ with $L(x) = \frac 1 2 \| \mathcal P(x) - y^* \|_2^2$.
+As a central quantity, we have the composite gradient 
 $(\partial L / \partial x)^T$ of the loss function $L$:
 
 $$
@@ -280,51 +283,79 @@ Thus, we now consider the fact that inverse gradients are linearizations of inve
 
 ---
 
+## Inverse simulators
 
-### Inverse simulators
+So far we've discussed the problems of existing methods, and a common theme among the methods that do better, Newton and IGs, is that the regular gradient is not sufficient. We somehow need to address it's problems with some form of _inversion_. Before going into details of NN training and numerical methods to perform this inversion, we will consider one additional "special" case that will further illustrate the need for inversion: if we can make use of an _inverse simulator_, this likewise addresses many of the inherent issues of GD. It actually represents the ideal setting for computing update steps for the physics simulation part.
 
+Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ denote its inverse. 
+In contrast to the inversion of Jacobian or Hessian matrices from before, $\mathcal P(^{-1}$ denotes a full inverse of all functions of $\mathcal P$. 
+Employing the inverse solver in the minimization problem above yields
+
+$$ 
+    \text{arg min}_{x} \frac 1 2 \| \mathcal P^{-1}(y^*) \|_2^2 , 
+$$ (pg-inverse-problem)
+
+which, somewhat surprisingly, is not a minimization problem anymore if we consider single cases with one $x,y^*$ pair. We basically just need to solve the inverse problem by evaluating $\mathcal P^{-1}(y^*)$ to obtain $x$. As we plan to bring back NNs and more complex scenarios soon, let's assume that we are still dealing with a collection of $y^*$ targets, and non-obvious solutions $x$. One example could be that we're looking for an $x$ that yields multiple $y^*$ targets with minimal distortions in terms of $L^2$.
+
+Now, instead of evaluating $\mathcal P^{-1}$ once to obtain the solution, we can iteratively update a current approximation of the solution $x_0$ with an update that we'll call $\Delta x_{\text{PG}}$ when employing the inverse physical simulator.
+
+It also turns out to be a good idea to employ a _local_ inverse that is conditioned on an initial guess for the solution $x$. We'll denote this local inverse with $\mathcal P^{-1}(y^*; x)$. As there are potentially large regions in $x$-space that satisfy reaching $y^*$, we'd like to find the one closest to the current guess. This is important to obtain well behaved solutions in multi-modal settings, where we'd like to avoid the solution manifold to consist of a set of very scattered points.
+
+Equipped with these changes, we can formulate an optimization problem where a current state of the optimization $x_0$, with $y_0 = \mathcal P(x_0)$, is updated with 
+
+$$
+    \frac{\Delta x_{\text{PG}} }{\Delta y}   \equiv  \big( \mathcal P^{-1} (y_0 + \Delta y; x_0) - x_0  \big)  . 
+$$ (PG-def)
+
+Here the step in $y$-space, $\Delta y$, is either the full distance $y^*-y_0$ or a part of it, in line with the learning rate from above, the the $y$-step used for IGs. 
+When applying the update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y_0 + \Delta y) - x_0$ it will produce $\mathcal P(x_0 + \Delta x) = y_0 + \Delta y$ exactly, despite $\mathcal P$ being a potentially highly nonlinear function.
+When rewriting this update in the typical gradient format, $\frac{\Delta x_{\text{PG}}}{\Delta y}$ replaces the gradient from the IG update above {eq}`IG-def`, and gives $\Delta x$.
+
+This expression yields a first iterative method that makes use of $\mathcal P^{-1}$, and as such leverages all its information, such as higher-order terms. 
+
+## Summary
+
+The update obtained with a regular gradient descent method has surprising shortcomings.
+Classical, inversion-based methods like IGs and Newton's method remove some of these shortcomings,
+with the somewhat theoretical construct of the update from inverse simulators ($\Delta x_{\text{PG}}$)
+including the most higher-order terms.
+As such, it is interesting to consider as an "ideal" setting for improved (inverted) update steps. 
+
+In contrast to the second- and first-order approximations from Newton's method and IGs, it can potentially take highly nonlinear effects into account. This comes at the cost of requiring an expression and discretization for a local inverse solver, but the main goal of the following sections is to illustrate how much we can gain from including all the higher-order information. Note that all three methods successfully include a rescaling of the search direction via inversion, in contrast to the previously discussed GD training. All of these methods represent different forms of differentiable physics, though.
+
+Before moving on to including improved updates in NN training processes, we will discuss some additional theoretical aspects, 
+and then illustrate the differences between these approaches with a practical example.
+
+
+
+```{note} 
+The following sections will provide an in-depth look ("deep-dive"), into 
+optimizations with inverse solvers. If you're interested in practical examples
+and connections to NNs, feel free to skip ahead to {doc}`physgrad-code` or 
+{doc}`physgrad-nn`, respectively.
+```
+
+![Divider](resources/divider5.jpg)
+
+
+## Deep Dive into Inverse simulators
+
+We'll now derive and discuss the $\Delta x_{\text{PG}}$ update in more detail.
 Physical processes can be described as a trajectory in state space where each point represents one possible configuration of the system.
 A simulator typically takes one such state space vector and computes a new one at another time.
 The Jacobian of the simulator is, therefore, necessarily square.
-%
 As long as the physical process does _not destroy_ information, the Jacobian is non-singular.
 In fact, it is believed that information in our universe cannot be destroyed so any physical process could in theory be inverted as long as we have perfect knowledge of the state.
+Hence, it's not unreasonable to expect that $\mathcal P^{-1}$ can be formulated in many settings.
 
-XXX
-
-??? While evaluating the IGs directly can be done through matrix inversion or taking the derivative of an inverse simulator,  ???
-
-We now consider a somewhat theoretical construct: what can we do if we have access to an 
-
-XXX
-
-... what happens if we use the inverse simulator directly in backpropagation.
-Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ its inverse (we assume it exists for now, but below we'll relax that assumption). 
-Equipped with the inverse we now define an update that we'll call the **physical gradient** (PG) {cite}`holl2021pg` in the following as
-
-$$
-    \frac{\Delta x_{\text{PG}} }{\Delta y}   \equiv  \big( \mathcal P^{-1} (y_0 + \Delta y) - x_0  \big) 
-$$ (PG-def)
-
-
-% Original: \begin{equation} \label{eq:pg-def}  \frac{\Delta x}{\Delta z} \equiv \mathcal P_{(x_0,z_0)}^{-1} (z_0 + \Delta z) - x_0 = \frac{\partial x}{\partial z} + \mathcal O(\Delta z^2)
-
-% add ? $ / \Delta z $ on the right!? the above only gives $\Delta x$, see below
-
-Note that this PG is equal to the IG from the section above up to first order, but contains nonlinear terms, i.e.
+Note that equation {eq}`PG-def` is equal to the IG from the section above up to first order, but contains nonlinear terms, i.e.
 $ \Delta x_{\text{PG}} / \Delta y = \frac{\partial x}{\partial y} + \mathcal O(\Delta y^2) $.
-%
-The accuracy of the update also depends on the fidelity of the inverse function $\mathcal P^{-1}$.
+The accuracy of the update depends on the fidelity of the inverse function $\mathcal P^{-1}$.
 We can define an upper limit to the error of the local inverse using the local gradient $\frac{\partial x}{\partial y}$.
 In the worst case, we can therefore fall back to the regular gradient.
 
 % We now show that these terms can help produce more stable updates than the IG alone, provided that $\mathcal P_{(x_0,z_0)}^{-1}$ is a sufficiently good approximation of the true inverse.
 % Let $\mathcal P^{-1}(z)$ be the true inverse function to $\mathcal P(x)$, assuming that $\mathcal P$ is fully invertible.
-
-The intuition for why the PG update is a good one is that when
-applying the update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y_0 + \Delta y) - x_0$ it will produce $\mathcal P(x_0 + \Delta x) = y_0 + \Delta y$ exactly, despite $\mathcal P$ being a potentially highly nonlinear function.
-When rewriting this update in the typical gradient format, $\frac{\Delta x_{\text{PG}}}{\Delta y}$ replaces the gradient from the IG update above, and gives $\Delta x$.
-
 
 **Fundamental theorem of calculus**
 
@@ -352,45 +383,27 @@ This effectively amounts to _smoothing the objective landscape_ of an optimizati
 The equations naturally generalize to higher dimensions by replacing the integral with a path integral along any differentiable path connecting $x_0$ and $x_0 + \Delta x_{\text{PG}}$ and replacing the local gradient by the local gradient in the direction of the path.
 
 
-![Divider](resources/divider5.jpg)
-
-
-
-### Global and local inverse functions
+**Global and local inverse simulators**
 
 Let $\mathcal P$ be a function with a square Jacobian and $y = \mathcal P(x)$.
 A global inverse function $\mathcal P^{-1}$ is defined only for bijective $\mathcal P$. 
 If the inverse exists, it can find $x$ for any $y$ such that $y = \mathcal P(x)$.
 
 Instead of using this "perfect" inverse $\mathcal P^{-1}$ directly, we'll in practice often use a local inverse
-$\mathcal P_{(x_0,y_0)}^{-1}(y)$, defined at the point $(x_0, y_0)$. This local inverse can be 
-easier to obtain, as it only needs to exist near a given $y_0$, and not for all $y$. 
-For $\mathcal P^{-1}$ to exist $\mathcal P$ would need to be globally invertible.
+$\mathcal P_{(x_0,y_0)}^{-1}(y; x_0)$, which is conditioned for the point $x_0$, and correspondingly on 
+$y_0=\mathcal P(x_0)$. 
+This local inverse is easier to obtain, as it only needs to exist near a given $y_0$, and not for all $y$. 
+For the generic $\mathcal P^{-1}$ to exist $\mathcal P$ would need to be globally invertible.
 
-By contrast, a _local inverse_, defined at point $(x_0, y_0)$, only needs to be accurate in the vicinity of that point.
+By contrast, a _local inverse_ only needs to exist and be accurate in the vicinity of $(x_0, y_0)$.
 If a global inverse $\mathcal P^{-1}(y)$ exists, the local inverse approximates it and matches it exactly as $y \rightarrow y_0$.
 More formally, $\lim_{y \rightarrow y_0} \frac{\mathcal P^{-1}_{(x_0, y_0)}(y) - P^{-1}(y)}{|y - y_0|} = 0$.
 Local inverse functions can exist, even when a global inverse does not.
 Non-injective functions can be inverted, for example, by choosing the closest $x$ to $x_0$ such that $\mathcal P(x) = y$.
 
-With the local inverse, the PG is defined as 
-
-$$
-    \frac{\Delta x_{\text{PG}}}{\Delta y}   \equiv  \big( \mathcal P_{(x_0,y_0)}^{-1} (y_0 + \Delta y) - x_0  \big) / \Delta y
-$$ (local-PG-def)
-
 For differentiable functions, a local inverse is guaranteed to exist by the inverse function theorem as long as the Jacobian is non-singular.
-That is because the inverse Jacobian $\frac{\partial x}{\partial y}$ itself is a local inverse function, albeit not the most accurate one.
+That is because the inverse Jacobian $\frac{\partial x}{\partial y}$ itself is a local inverse function, albeit, with being first-order, not the most accurate one.
 Even when the Jacobian is singular (because the function is not injective, chaotic or noisy), we can usually find good local inverse functions.
 
 
----
-
-
-## Summary
-
-The update obtained with a regular gradient descent method has surprising shortcomings.
-The physical gradient instead allows us to more accurately backpropagate through nonlinear functions, provided that we have access to good inverse functions.
-
-Before moving on to including PGs in NN training processes, the next example will illustrate the differences between these approaches with a practical example.
 
