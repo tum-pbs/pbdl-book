@@ -1,10 +1,22 @@
-Physical Gradients and NNs
+Scale Invariant Physics Training
 =======================
 
-The discussion in the previous two sections already hints at physical gradients (PGs) being a powerful tool for optimization. However, we've actually cheated a bit in the previous code example {doc}`physgrad-comparison` and used PGs in a way that will be explained in more detail below. 
+The discussion in the previous two sections already hints at inversion of gradients being a important step for optimization and learning. 
+We will now integrate the update step $\Delta x_{\text{PG}}$ into NN training, and give details of the two way process of inverse simulator and Newton step for the loss that was already used in the previous code from {doc}`physgrad-comparison`. 
 
-By default, PGs would be restricted to functions with square Jacobians. Hence we wouldn't be able to directly use them in optimizations or learning problems, which typically have scalar objective functions.
-In this section, we will first show how PGs can be integrated into the optimization pipeline to optimize scalar objectives.
+As hinted at in the IG section of {doc}`physgrad`, we're focusing on NN solutions of _inverse problems_ below. That means we have $y = \mathcal P(x)$, and our goal is to train an NN representation $f$ such that $f(y;\theta)=x$. This is a slightly more constrained setting than what we've considered for the differentiable physics (DP) training. Also, as we're targeting optimization algorithms now, we won't explicitly denote DP approaches: all of the following variants involve physics simulators, and the gradient descent (GD) versions as well as its variants (such as Adam) use DP training.
+
+```{note}
+Important to keep in mind:
+In contrast to the previous sections and {doc}`overview-equations`, we are targeting inverse problems, and hence $y$ is the input to the network: $f(y;\theta)$. Correspondingly, it outputs $x$, and the ground truth solutions are denoted by $x^*$.
+```
+
+
+%By default, PGs would be restricted to functions with square Jacobians. Hence we wouldn't be able to directly use them in optimizations or learning problems, which typically have scalar objective functions.
+%xxx really? just in-out relationships? xxx
+
+
+<!-- In this section, we will first show how PGs can be integrated into the optimization pipeline to optimize scalar objectives.
 
 ## Physical Gradients and loss functions
 
@@ -28,58 +40,76 @@ $$
 
 This equation has turned the step w.r.t. $L$ into a step in $y$ space: $\Delta y$. 
 However, it does not prescribe a unique way to compute $\Delta y$ since the derivative $\frac{\partial y}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial y}$ puts almost no restrictions on $\Delta y$.
-Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps.
+Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. -->
 
-Here an obvious questions is: Doesn't this leave us with the disadvantage of having to compute the inverse Hessian, as discussed before?
-Luckily, unlike with regular Newton or quasi-Newton methods, where the Hessian of the full system is required, here, the Hessian is needed only for $L(y)$. Even better, for many typical $L$ its computation can be completely forgone.
 
-E.g., consider the case $L(y) = \frac 1 2 || y^\textrm{predicted} - y^\textrm{target}||_2^2$ which is the most common supervised objective function.
-Here $\frac{\partial L}{\partial y} = y^\textrm{predicted} - y^\textrm{target}$ and $\frac{\partial^2 L}{\partial y^2} = 1$.
-Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^\textrm{target} - y^\textrm{predicted})$ which can be computed without evaluating the Hessian.
 
-Once $\Delta y$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and PGs for the PDE in {doc}`physgrad-comparison`.
 
 
 ## NN training 
 
-The previous step gives us an update for the input of the discretized PDE $\mathcal P^{-1}(x)$, i.e. a $\Delta x$. If $x$ was an output of an NN, we can then use established DL algorithms to backpropagate the desired change to the weights of the network.
-We have a large collection of powerful methodologies for training neural networks at our disposal, 
-so it is crucial that we can continue using them for training the NN components.
-On the other hand, due to the problems of GD for physical simulations (as outlined in {doc}`physgrad`),  
-we aim for using PGs to accurately optimize through the simulation.
+To integrate the update step from equation {eq}`PG-def` into the training process for an NN, we consider three components: the NN itself, the physics simulator, and the loss function. 
+To join these three pieces together, we use the following algorithm. As introduced by Holl et al. {cite}`holl2021pg`, we'll denote this training process as _scale-invariant physics_ (SIP) training.
 
-Consider the following setup: 
-A neural network makes a prediction $x = \mathrm{NN}(a \,;\, \theta)$ about a physical state based on some input $a$ and the network weights $\theta$.
-The prediction is passed to a physics simulation that computes a later state $y = \mathcal P(x)$, and hence
-the objective $L(y)$ depends on the result of the simulation. 
+% gives us an update for the input of the discretized PDE $\mathcal P^{-1}(x)$, i.e. a $\Delta x$. If $x$ was an output of an NN, we can then use established DL algorithms to backpropagate the desired change to the weights of the network.
+
+% Consider the following setup:  A neural network $f()$ makes a prediction $x = f(a \,;\, \theta)$ about a physical state based on some input $a$ and the network weights $\theta$. The prediction is passed to a physics simulation that computes a later state $y = \mathcal P(x)$, and hence the objective $L(y)$ depends on the result of the simulation. 
 
 
-```{admonition} Combined training algorithm
+```{admonition} Scale-Invariant Physics (SIP) Training
 :class: tip
 
-To train the weights $\theta$ of the NN, we then perform the following updates:
+To update the weights $\theta$ of the NN $f$, we perform the following update step:
 
-* Evaluate $\Delta y$ via a Newton step as outlined above
-* Compute the PG $\Delta x = \mathcal P^{-1}_{(x, y)}(y + \Delta y) - x$ using an inverse simulator
-* Use GD or a GD-based optimizer to compute the updates to the network weights, $\Delta\theta = \eta_\textrm{NN} \cdot \frac{\partial y}{\partial\theta} \cdot \Delta y$
+* Given a set of inputs $y^*$, evaluate the forward pass to compute the NN prediction $x = f(y^*; \theta)$
+* Compute $y$ via a forward simulation ($y = \mathcal P(x)$) and invoke the (local) inverse simulator $P^{-1}(y; x)$ to obtain the step $\Delta x_{\text{PG}} = \mathcal P^{-1} (y + \eta \Delta y; x)$ with $\Delta y = y^* - y$
+* Evaluate the network loss, e.g., $L = \frac 1 2 || x - \tilde x ||_2^2$ with $\tilde x = x+\Delta x_{\text{PG}}$, and perform a Newton step treating $\tilde x$ as a constant 
+* Use GD (or a GD-based optimizer like Adam) to propagate the change in $x$ to the network weights $\theta$ with a learning rate $\eta_{\text{NN}}
+
 
 ```
 
-The combined optimization algorithm depends on both the **learning rate** $\eta_\textrm{NN}$ for the network as well as the step size $\eta$ from above, which factors into $\Delta y$.
+% xxx TODO, make clear, we're solving the inverse problem $f(y; \theta)=x$
+
+% * Compute the scale-invariant update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y + \Delta y; x_0) - x$ using an inverse simulator
+
+
+This combined optimization algorithm depends on both the learning rate $\eta_\textrm{NN}$ for the network as well as the step size $\eta$ from above, which factors into $\Delta y$.
 To first order, the effective learning rate of the network weights is $\eta_\textrm{eff} = \eta \cdot \eta_\textrm{NN}$.
-We recommend setting $\eta$ as large as the accuracy of the inverse simulator allows, before choosing $\eta_\textrm{NN} = \eta_\textrm{eff} / \eta$ to achieve the target network learning rate.
+We recommend setting $\eta$ as large as the accuracy of the inverse simulator allows. In many cases $\eta=1$ is possible, otherwise $\eta_\textrm{NN}$ should be adjusted accordingly.
 This allows for nonlinearities of the simulator to be maximally helpful in adjusting the optimization direction.
 
+This algorithm combines the inverse simulator to compute accurate, higher-order updates with traditional training schemes for NN representations. This is an attractive property, as we have a large collection of powerful methodologies for training NNs that stay relevant in this way. The treatment of the loss functions as "glue" between NN and physics component plays a central role here. 
 
-**Note:**
-For simple objectives like a loss of the form $L=|y - y^*|^2$, this procedure can be easily integrated into an  GD autodiff pipeline by replacing the gradient of the simulator only.
-This gives an effective objective function for the network
 
-$$
-L_\mathrm{NN} = \frac 1 2  | x - \mathcal P_{(x,y)}^{-1}(y + \Delta y) |^2
-$$
+## Loss functions
 
-where $\mathcal P_{(x,y)}^{-1}(y + \Delta y)$ is treated as a constant.
+In the above algorithm, we have assumed an $L^2$ loss, and without further explanation introduced a Newton step to propagate the inverse simulator step to the NN. Below, we explain and justify this treatment in more detail.
+
+%Here an obvious questions is: Doesn't this leave us with the disadvantage of having to compute the inverse Hessian, as discussed before?
+
+The central reason for introducing a Newton step is the improved accuracy for the loss derivative.
+Unlike with regular Newton or the quasi-Newton methods from equation {eq}`quasi-newton-update`, we do not need the Hessian of the full system. 
+Instead, the Hessian is only needed for $L(y)$. 
+This makes Newton's method attractive again.
+Even better, for many typical $L$ its computation can be completely forgone.
+
+E.g., consider the most common supervised objective function, $L(y) = \frac 1 2 | y - y^*|_2^2$ as already put to use above. $y$ denotes the predicted, and $y^*$ the target value.
+We then have $\frac{\partial L}{\partial y} = y - y^*$ and $\frac{\partial^2 L}{\partial y^2} = 1$.
+Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^* - y)$ which can be computed without evaluating the Hessian.
+
+Once $\Delta y$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and an inverse simulator for the PDE in {doc}`physgrad-comparison`.
+
+The loss here acts as a _proxy_ to embed the update from the inverse simulator into the network training pipeline. 
+It is not to be confused with a traditional supervised loss in $x$ space.
+Due to the dependency of $\mathcal P^{-1}$ on the prediction $y$, it does not average multiple modes of solutions in $x$.
+To demonstrate this, consider the case that GD is being used as solver for the inverse simulation.
+Then the total loss is purely defined in $y$ space, reducing to a regular first-order optimization. 
+Hence, the proxy loss function simply connects the computational graphs of inverse physics and NN for backpropagation.
+
+
+***xxx continue ***
+
 
 
 ## Iterations and time dependence
@@ -104,6 +134,8 @@ Unless the simulator destroys information in practice, e.g., due to accumulated 
 ---
 
 ## A learning toolbox
+
+***rather discuss similarities with supervised?***
 
 Taking a step back, what we have here is a flexible "toolbox" for propagating update steps
 through different parts of a system to be optimized. An important takeaway message is that
@@ -130,3 +162,11 @@ TODO, visual overview of toolbox  , combinations
 Details of PGs and additional examples can be found in the corresponding paper {cite}`holl2021pg`.
 In the next section's we'll show examples of training physics-based NNs 
 with invertible simulations. (These will follow soon, stay tuned.)
+
+
+---
+
+## Inverse simulator updates in action
+
+TODO example from SIP ICML paper?
+
