@@ -16,6 +16,7 @@ fileList = [
 	"diffphys-code-burgers.ipynb", "diffphys-code-ns.ipynb", "diffphys-code-sol.ipynb", "physicalloss-code.ipynb", # TF
 	"bayesian-code.ipynb", "supervised-airfoils.ipynb", # pytorch
 	"reinflearn-code.ipynb", # phiflow
+	"physgrad-comparison.ipynb", # jax
 	]
 
 #fileList = [ "diffphys-code-burgers.ipynb"] # debug, only 1 file
@@ -53,6 +54,7 @@ for fnOut in fileList:
 	res.append( re.compile(r"InsecureRequestWarning") ) # for https download
 	res.append( re.compile(r"Building wheel") ) # phiflow install, also gives weird unicode characters
 	res.append( re.compile(r"warnings.warn") )  # phiflow warnings
+	res.append( re.compile(r"WARNING:absl") )  # jax warnings
 	# remove all "warnings.warn" from phiflow?
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"
