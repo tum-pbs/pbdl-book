@@ -20,6 +20,29 @@ A good potential example are shape optimizations for the drag reduction of bodie
 
 
 
+
+
+## A learning toolbox
+
+***re-integrate?***
+
+Taking a step back, what we have here is a flexible "toolbox" for propagating update steps
+through different parts of a system to be optimized. An important takeaway message is that
+the regular gradients we are working with for training NNs are not the best choice when PDEs are 
+involved. In these situations we can get much better information about how to direct the
+optimization than the localized first-order information that regular gradients provide.
+
+Above we've motivated a combination of inverse simulations, Newton steps, and regular gradients.
+In general, it's a good idea to consider separately for each piece that makes up a learning
+task what information we can get out of it for training an NN. The approach explained so far
+gives us a _toolbox_ to concatenate update steps coming from the different sources, and due
+to the very active research in this area we'll surely discover new and improved ways to compute
+these updates.
+
+***re-integrate?***
+
+
+
 ![Divider](resources/divider1.jpg)
 
 

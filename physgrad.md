@@ -11,7 +11,7 @@ This is a natural choice from a deep learning perspective, but we haven't questi
 
 Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
 It turns out that both supervised and DP gradients have their pros and cons, and leave room for custom methods that are aware of the physics operators. 
-In particular, we'll show in the following how scaling problems of DP gradients affect NN training. 
+In particular, we'll show, based on the analysis from {cite}`holl2021pg`, how scaling problems of DP gradients affect NN training. 
 Then, we'll also illustrate how multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. 
 Finally, we'll explain several alternatives to prevent these problems. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
 
@@ -20,17 +20,19 @@ Finally, we'll explain several alternatives to prevent these problems. It turns 
 :class: tip
 
 Below, we'll proceed in the following steps:
-- Show how scaling issues and multi-modality can negatively affect NN training.
-- Spoiler: What was missing in our training runs with GD or Adam so far is a proper _inversion_ of the Jacobian matrix.
-- We'll explain two alternatives to prevent these problems: an analytical full-, and a numerical half-inversion.
+- Show how the properties of different optimizers and the associated scaling issues can negatively affect NN training.
+- Identify what is missing in our training runs with GD or Adam so far. Spoiler: it is a proper _inversion_ of the Jacobian matrix.
+- We'll explain two alternatives to prevent these problems: an analytical full-, and a numerical half-inversion scheme.
 
 ```
 
+% note, re-introduce multi-modality at some point...
+
 
 XXX  notes, open issues  XXX
--  GD - is "diff. phys." , rename? add supervised before?
 - comparison notebook: add legends to plot
 - double check func-comp w QNewton, "later" derivatives of backprop means what?
+- re-introduce multi-modality at some point...
 
 
 
@@ -206,7 +208,7 @@ are still a very active research topic, and hence many extensions have been prop
 ![Divider](resources/divider4.jpg)
 
 
-## Inverse Gradients
+## Inverse gradients
 
 As a first step towards fixing the aforementioned issues,
 we'll consider what we'll call _inverse_ gradients (IGs).
@@ -389,12 +391,20 @@ That is because the inverse Jacobian $\frac{\partial x}{\partial y}$ itself is a
 Even when the Jacobian is singular (because the function is not injective, chaotic or noisy), we can usually find good local inverse functions.
 
 
+### Time reversal
+
+The inverse function of a simulator is typically the time-reversed physical process.
+In some cases, inverting the time axis of the forward simulator, $t \rightarrow -t$, can yield an adequate global inverse simulator.
+Unless the simulator destroys information in practice, e.g., due to accumulated numerical errors or stiff linear systems, this  approach can be a starting point for an inverse simulation, or to formulate a _local_ inverse simulation.
+
+However, the simulator itself needs to be of sufficient accuracy to provide the correct estimate. For more complex settings, e.g., fluid simulations over the course of many time steps, the first- and second-order schemes as employed in {doc}`overview-ns-forw` would not be sufficient.
+
+
 ### Integrating a loss function
 
 Since introducing IGs, we've only considered a simulator with an output $y$. Now we can re-introduce the loss function $L$. 
 As before, we consider minimization problems with a scalar objective function $L(y)$ that depends on the result of an invertible simulator $y = \mathcal P(x)$. 
-%In {doc}`physgrad` 
-In {eq}`` we've introduced the inverse gradient (IG) update, which gives $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$ when the loss function is included.
+In equation {eq}`IG-def` we've introduced the inverse gradient (IG) update, which gives $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$ when the loss function is included.
 Here, $\Delta L$ denotes a step to take in terms of the loss. 
 
 By applying the chain rule and substituting the IG $\frac{\partial x}{\partial L}$ for the update from the inverse physics simulator from equation {eq}`PG-def`, we obtain, up to first order:
@@ -420,5 +430,5 @@ In the worst case, we can therefore fall back to the regular gradient.
 
 Also, we have turned the step w.r.t. $L$ into a step in $y$ space: $\Delta y$. 
 However, this does not prescribe a unique way to compute $\Delta y$ since the derivative $\frac{\partial y}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial y}$ puts almost no restrictions on $\Delta y$.
-Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. We will explain this in more detail in connection with the introduction of NNs in the next section.
+Instead, we use a Newton step from equation {eq}`quasi-newton-update` to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. We will explain this in more detail in connection with the introduction of NNs in the next section.
 

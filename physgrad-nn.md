@@ -8,8 +8,16 @@ As hinted at in the IG section of {doc}`physgrad`, we're focusing on NN solution
 
 ```{note}
 Important to keep in mind:
-In contrast to the previous sections and {doc}`overview-equations`, we are targeting inverse problems, and hence $y$ is the input to the network: $f(y;\theta)$. Correspondingly, it outputs $x$, and the ground truth solutions are denoted by $x^*$.
+In contrast to the previous sections and {doc}`overview-equations`, we are targeting inverse problems, and hence $y$ is the input to the network: $f(y;\theta)$. Correspondingly, it outputs $x$. 
 ```
+
+% and the ground truth solutions are denoted by $x^*$.
+
+This gives the following minimization problem with $i$ denoting the indices of a mini-batch:
+
+$$
+    \text{arg min}_\theta \sum_{i} \frac 1 2 \| \mathcal P\big(f(y^*_i ; \theta)\big) - y^*_i \|_2^2 
+$$ (eq:unsupervised-training)
 
 
 %By default, PGs would be restricted to functions with square Jacobians. Hence we wouldn't be able to directly use them in optimizations or learning problems, which typically have scalar objective functions.
@@ -50,6 +58,16 @@ Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine 
 
 To integrate the update step from equation {eq}`PG-def` into the training process for an NN, we consider three components: the NN itself, the physics simulator, and the loss function. 
 To join these three pieces together, we use the following algorithm. As introduced by Holl et al. {cite}`holl2021pg`, we'll denote this training process as _scale-invariant physics_ (SIP) training.
+
+
+```{figure} resources/placeholder.png
+---
+height: 220px
+name: pg-training
+---
+TODO, visual overview of SIP training
+```
+
 
 % gives us an update for the input of the discretized PDE $\mathcal P^{-1}(x)$, i.e. a $\Delta x$. If $x$ was an output of an NN, we can then use established DL algorithms to backpropagate the desired change to the weights of the network.
 
@@ -108,56 +126,90 @@ Then the total loss is purely defined in $y$ space, reducing to a regular first-
 Hence, the proxy loss function simply connects the computational graphs of inverse physics and NN for backpropagation.
 
 
-***xxx continue ***
-
-
-
 ## Iterations and time dependence
 
 The above procedure describes the optimization of neural networks that make a single prediction.
 This is suitable for scenarios to reconstruct the state of a system at $t_0$ given the state at a $t_e > t_0$ or to estimate an optimal initial state to match certain conditions at $t_e$.
 
-However, our method can also be applied to more complex setups involving multiple objectives at different times and multiple network interactions at different times. 
+However, the SIP method can also be applied to more complex setups involving multiple objectives and multiple network interactions at different times. 
 Such scenarios arise e.g. in control tasks, where a network induces small forces at every time step to reach a certain physical state at $t_e$. It also occurs in correction tasks where a network tries to improve the simulation quality by performing corrections at every time step.
 
-In these scenarios, the process above (Newton step for loss, PG step for physics, GD for the NN) is iteratively repeated, e.g., over the course of different time steps, leading to a series of additive terms in $L$.
-This typically makes the learning task more difficult, as we repeatedly backpropagate through the iterations of the physical solver and the NN, but the PG learning algorithm above extends to these case just like a regular GD training.
+In these scenarios, the process above (Newton step for loss, inverse simulator step for physics, GD for the NN) is iteratively repeated, e.g., over the course of different time steps, leading to a series of additive terms in $L$.
+This typically makes the learning task more difficult, as we repeatedly backpropagate through the iterations of the physical solver and the NN, but the SIP algorithm above extends to these case just like a regular GD training.
 
-## Time reversal
 
-The inverse function of a simulator is typically the time-reversed physical process.
-In some cases, simply inverting the time axis of the forward simulator, $t \rightarrow -t$, can yield an adequate global inverse simulator.
-%
-Unless the simulator destroys information in practice, e.g., due to accumulated numerical errors or stiff linear systems, this straightforward approach is often a good starting point for an inverse simulation, or to formulate a _local_ inverse simulation.
+***xxx continue ***
+
+
+## SIP training in an example
+
+
+Let's illustrate the convergence behavior of SIP training and how it depends on characteristics of $\mathcal P$ with an example {cite}`holl2021pg`.
+We consider the synthetic two-dimensional function 
+%$$\mathcal P(x) = \left(\frac{\sin(\hat x_1)}{\xi}, \xi \cdot \hat x_2 \right) \quad \text{with} \quad \hat x = R_\phi \cdot x$$
+$$\mathcal P(x) = \left(\sin(\hat x_1) / \xi, \  \hat x_2 \cdot \xi \right) \quad \text{with} \quad \hat x = \gamma \cdot R_\phi \cdot x , $$
+% 
+where $R_\phi \in \mathrm{SO}(2)$ denotes a rotation matrix and $\gamma > 0$.
+The parameters $\xi$ and $\phi$ allow us to continuously change the characteristics of the system.
+The value of $\xi$ determines the conditioning of $\mathcal P$ with large $\xi$ representing ill-conditioned problems while $\phi$ describes the coupling of $x_1$ and $x_2$. When $\phi=0$, the off-diagonal elements of the Hessian vanish and the problem factors into two independent problems.
+
+Here's an example of the resulting loss landscape for $y^*=(0.3, -0.5)$, $\xi=1$, $\phi=15^\circ$ that shows the entangling of the sine function for $x_1$ and linear change for $x_2$:
+
+```{figure} resources/physgrad-sin-loss.png
+---
+height: 200px
+name: physgrad-sin-loss
+---
+```
+
+Next we train a fully-connected neural network to invert this problem {eq}`eq:unsupervised-training`. We'll compare SIP training using a saddle-free Newton solver to various state-of-the-art network optimizers.
+For fairness, the best learning rate is selected independently for each optimizer.
+When choosing $\xi=0$ the problem is perfectly conditioned. In this case all network optimizers converge, with Adam having a slight advantage. This is shown in the left graph:
+```{figure} resources/physgrad-sin-time-graphs.png
+---
+height: 180px
+name: physgrad-sin-time-graphs
+---
+Loss over time in seconds for a well-conditioned (left), and ill-conditioned case (right).
+```
+
+At $\xi=32$, we have a fairly badly conditioned case, and only SIP and Adam succeed in optimizing the network to a significant degree, as shown on the right.
+
+Note that the two graphs above show convergence over time. The relatively slow convergence of SIP mostly stems from it taking significantly more time per iteration than the other methods, on average 3 times as long as Adam.
+While the evaluation of the Hessian inherently requires more computations, the per-iteration time of SIP could likely be significantly reduced by optimizing the computations.
+
+
+By increasing $\xi$ while keeping $\phi=0$ fixed we can show how the conditioning continually influences the different methods, 
+as shown on the left here:
+
+```{figure} resources/physgrad-sin-add-graphs.png
+---
+height: 180px
+name: physgrad-sin-add-graphs
+---
+TODO, graphs
+```
+
+The accuracy of all traditional network optimizers decreases because the gradients scale with $(1/\xi, \xi)$ in $x$, becoming longer in $x_2$, the direction that requires more precise values.
+SIP training avoids this using the Hessian, inverting the scaling behavior and producing updates that align with the flat direction in $x$.
+This allows SIP training to retain its relative accuracy over a wide range of $\xi$. Even for Adam, the accuracy becomes worse for larger $\xi$.
+
+By varying $\phi$ only we can demonstrate how the entangling of the different components influences the behavior of the optimizers.
+The right graph of {ref}`physgrad-sin-add-graphs` varies $\phi$ with $\xi=32$ fixed. 
+This sheds light into how Adam manages to learn in ill-conditioned settings.
+Its diagonal approximation of the Hessian reduces the scaling effect when $x_1$ and $x_2$ lie on different scales, but when the parameters are coupled, the lack of off-diagonal terms prevents this.
+SIP training has no problem with coupled parameters since its updates are based on the full-rank Hessian $\frac{\partial^2 L}{\partial x}$.
 
 
 ---
 
-## A learning toolbox
+## Discussion of SIP Training
+
+vs supervised
 
 ***rather discuss similarities with supervised?***
 
-Taking a step back, what we have here is a flexible "toolbox" for propagating update steps
-through different parts of a system to be optimized. An important takeaway message is that
-the regular gradients we are working with for training NNs are not the best choice when PDEs are 
-involved. In these situations we can get much better information about how to direct the
-optimization than the localized first-order information that regular gradients provide.
 
-Above we've motivated a combination of inverse simulations, Newton steps, and regular gradients.
-In general, it's a good idea to consider separately for each piece that makes up a learning
-task what information we can get out of it for training an NN. The approach explained so far
-gives us a _toolbox_ to concatenate update steps coming from the different sources, and due
-to the very active research in this area we'll surely discover new and improved ways to compute
-these updates.
-
-
-```{figure} resources/placeholder.png
----
-height: 220px
-name: pg-toolbox
----
-TODO, visual overview of toolbox  , combinations 
-```
 
 Details of PGs and additional examples can be found in the corresponding paper {cite}`holl2021pg`.
 In the next section's we'll show examples of training physics-based NNs 
