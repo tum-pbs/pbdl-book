@@ -1,8 +1,6 @@
 Towards Gradient Inversion
 =======================
 
-**Note, this chapter is very preliminary - to be finalized**
-
 In the following we will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
 To re-cap, the approaches explained in the previous chapters either dealt with purely _supervised_ training, integrated the physical model as a _physical loss term_ or included it via _differentiable physics_ (DP) operators embedded into the training graph. 
 For supervised training with data from physical simulations standard procedure apply.
@@ -338,6 +336,8 @@ The Jacobian of the simulator is, therefore, necessarily square.
 As long as the physical process does _not destroy_ information, the Jacobian is non-singular.
 In fact, it is believed that information in our universe cannot be destroyed so any physical process could in theory be inverted as long as we have perfect knowledge of the state.
 Hence, it's not unreasonable to expect that $\mathcal P^{-1}$ can be formulated in many settings.
+
+Update steps computed as described above also have some nice theoretical properties, e.g., that the optimization converges given that $\mathcal P^{-1} consistently a fixed target $x^*$. Details of the corresponding proofs can be found in {cite}`holl2021pg`.
 
 % We now show that these terms can help produce more stable updates than the IG alone, provided that $\mathcal P_{(x_0,z_0)}^{-1}$ is a sufficiently good approximation of the true inverse.
 % Let $\mathcal P^{-1}(z)$ be the true inverse function to $\mathcal P(x)$, assuming that $\mathcal P$ is fully invertible.

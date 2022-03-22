@@ -2,9 +2,9 @@ Scale Invariant Physics Training
 =======================
 
 The discussion in the previous two sections already hints at inversion of gradients being a important step for optimization and learning. 
-We will now integrate the update step $\Delta x_{\text{PG}}$ into NN training, and give details of the two way process of inverse simulator and Newton step for the loss that was already used in the previous code from {doc}`physgrad-comparison`. 
+We will now integrate the update step $\Delta x_{\text{PG}}$ into NN training, and give details of the two way process of inverse simulator and Newton step for the loss that was already used in the previous code from the {doc}`Simple Example <physgrad-comparison>`. 
 
-As hinted at in the IG section of {doc}`physgrad`, we're focusing on NN solutions of _inverse problems_ below. That means we have $y = \mathcal P(x)$, and our goal is to train an NN representation $f$ such that $f(y;\theta)=x$. This is a slightly more constrained setting than what we've considered for the differentiable physics (DP) training. Also, as we're targeting optimization algorithms now, we won't explicitly denote DP approaches: all of the following variants involve physics simulators, and the gradient descent (GD) versions as well as its variants (such as Adam) use DP training.
+As outlined in the IG section of {doc}`physgrad`, we're focusing on NN solutions of _inverse problems_ below. That means we have $y = \mathcal P(x)$, and our goal is to train an NN representation $f$ such that $f(y;\theta)=x$. This is a slightly more constrained setting than what we've considered for the differentiable physics (DP) training. Also, as we're targeting optimization algorithms now, we won't explicitly denote DP approaches: all of the following variants involve physics simulators, and the gradient descent (GD) versions as well as its variants (such as Adam) use DP training.
 
 ```{note}
 Important to keep in mind:
@@ -138,7 +138,6 @@ In these scenarios, the process above (Newton step for loss, inverse simulator s
 This typically makes the learning task more difficult, as we repeatedly backpropagate through the iterations of the physical solver and the NN, but the SIP algorithm above extends to these case just like a regular GD training.
 
 
-***xxx continue ***
 
 
 ## SIP training in an example
@@ -162,7 +161,8 @@ name: physgrad-sin-loss
 ---
 ```
 
-Next we train a fully-connected neural network to invert this problem {eq}`eq:unsupervised-training`. We'll compare SIP training using a saddle-free Newton solver to various state-of-the-art network optimizers.
+Next we train a fully-connected neural network to invert this problem via equation {eq}`eq:unsupervised-training`. 
+We'll compare SIP training using a saddle-free Newton solver to various state-of-the-art network optimizers.
 For fairness, the best learning rate is selected independently for each optimizer.
 When choosing $\xi=0$ the problem is perfectly conditioned. In this case all network optimizers converge, with Adam having a slight advantage. This is shown in the left graph:
 ```{figure} resources/physgrad-sin-time-graphs.png
@@ -187,38 +187,68 @@ as shown on the left here:
 height: 180px
 name: physgrad-sin-add-graphs
 ---
-TODO, graphs
+Performance when varying the conditiong (left) and the entangling of dimensions via the rotation (right).
 ```
 
 The accuracy of all traditional network optimizers decreases because the gradients scale with $(1/\xi, \xi)$ in $x$, becoming longer in $x_2$, the direction that requires more precise values.
 SIP training avoids this using the Hessian, inverting the scaling behavior and producing updates that align with the flat direction in $x$.
 This allows SIP training to retain its relative accuracy over a wide range of $\xi$. Even for Adam, the accuracy becomes worse for larger $\xi$.
 
-By varying $\phi$ only we can demonstrate how the entangling of the different components influences the behavior of the optimizers.
-The right graph of {ref}`physgrad-sin-add-graphs` varies $\phi$ with $\xi=32$ fixed. 
-This sheds light into how Adam manages to learn in ill-conditioned settings.
-Its diagonal approximation of the Hessian reduces the scaling effect when $x_1$ and $x_2$ lie on different scales, but when the parameters are coupled, the lack of off-diagonal terms prevents this.
-SIP training has no problem with coupled parameters since its updates are based on the full-rank Hessian $\frac{\partial^2 L}{\partial x}$.
+By varying only $\phi$ we can demonstrate how the entangling of the different components influences the behavior of the optimizers.
+The right graph of {numref}`physgrad-sin-add-graphs` varies $\phi$ with $\xi=32$ fixed. 
+This sheds light on how Adam manages to learn in ill-conditioned settings.
+Its diagonal approximation of the Hessian reduces the scaling effect when $x_1$ and $x_2$ lie on different scales, but when the parameters are coupled, the lack of off-diagonal terms prevents this. It's performance deteriorates by more than an order of magnitude in this case.
+SIP training has no problem with coupled parameters since its update steps for the optimization are using the full-rank Hessian $\frac{\partial^2 L}{\partial x}$. Thus, the SIP training yields the best results across the varying optimization problems posed by this example setup.
 
 
 ---
+
+
+
 
 ## Discussion of SIP Training
 
-vs supervised
+Although we've only looked at smaller toy problems so far, we'll pull the discussion of SIP training forward. The next chapter will illustrate this with a more complex example, but as we'll directly switch to a new algorithm afterwards, below is a better place for a discussion of the properties of SIP.
 
-***rather discuss similarities with supervised?***
+Overall,
+the scale-invariance of SIP training allows it to find solutions exponentially faster than other learning methods for many physics problems, while keeping the computational cost relatively low.
+It provably converges when enough network updates $\Delta\theta$ are performed per solver evaluation and it can be shown that it converges with a single $\Delta\theta$ update for a wide range of physics experiments.
 
+### Limitations
 
+While SIP training can find vastly more accurate solutions, there are some caveats to consider.
+%
+First, an approximately scale-invariant physics solver is required. While in low-dimensional $x$ spaces, Newton's method is a good candidate, high-dimensional spaces require some other form of inversion.
+Some equations can locally be inverted analytically but for complex problems, domain-specific knowledge may be required.
 
-Details of PGs and additional examples can be found in the corresponding paper {cite}`holl2021pg`.
-In the next section's we'll show examples of training physics-based NNs 
-with invertible simulations. (These will follow soon, stay tuned.)
+Second, SIP uses traditional first-order optimizers to determine $\Delta\theta$.
+As discussed, these solvers behave poorly in ill-conditioned settings which can also affect SIP performance when the network outputs lie on different scales.
+Some recent works address this issue and have proposed network optimization based on inversion~\citep{kFAC, elias2020hessian}.
 
+Third, while SIP training generally leads to more accurate solutions, measured in $x$ space, the same is not always true for the loss $L = \sum_i L_i$. SIP training weighs all examples equally, independent of their loss values. 
+This can be useful, but it can cause problems in examples where regions with overly small or large curvatures $|\frac{\partial^2L}{\partial x^2}|$ distort the importance of samples.
+**update from email , weighted by curvature?**
+In these cases, or when the accuracy in $x$ space is not important, like in control tasks, traditional training methods may perform better than SIP training.
+
+% , independent of their weight in $L$.
+
+### Similarities to supervised training
+
+Interestingly, the SIP training resembles the supervised approaches from {doc}`supervised`.
+It effectively yields a method that provides reliable updates which are computed on-the-fly, at training time.
+The inverse simulator provides the desired inversion, possibly with a high-order method, and 
+avoids the averaging of multi modal solutions. 
+
+The latter is one of the main advantages of this setup:
+a pre-computed data set can not take multi-modality into account, and hence inevitably leads to
+suboptimal solutions being learned once the mapping from input to reference solutions is not unique.
+
+At the same time this illustrates a difficulty of the DP training from {doc}`diffphys`: the gradients it yields
+are not properly inverted, and are difficult to reliably normalize via pre-processing. Hence they can
+lead to the scaling problems discussing in {doc}`physgrad`, and correspondingly give vanishing and exploding gradients
+at training time. 
 
 ---
 
-## Inverse simulator updates in action
-
-TODO example from SIP ICML paper?
-
+In the next section we'll show a more complex example of training physics-based NNs 
+with SIP updates from inverse simulators, before explaining a second alternative for tackling the scaling problems.
