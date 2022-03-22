@@ -7,11 +7,11 @@ For supervised training with data from physical simulations standard procedure a
 The latter two methods are more relevant in the context of this book. They share similarities, but in the loss term case, the physics evaluations are only required at training time. For DP approaches, the solver itself is usually also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, and the latter two also using them for the physics terms.
 This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually the best choice.
 
-Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients are often a _sub-optimal choice_ for learning problems involving physical quantities.
+Not too surprising after this introduction: A central insight of the following chapter will be that regular gradients can be a _sub-optimal choice_ for learning problems involving physical quantities.
 It turns out that both supervised and DP gradients have their pros and cons, and leave room for custom methods that are aware of the physics operators. 
-In particular, we'll show, based on the analysis from {cite}`holl2021pg`, how scaling problems of DP gradients affect NN training. 
-Then, we'll also illustrate how multi-modal problems (as hinted at in {doc}`intro-teaser`) negatively influence NNs. 
-Finally, we'll explain several alternatives to prevent these problems. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
+In particular, we'll show how scaling problems of DP gradients affect NN training (as outlined in {cite}`holl2021pg`),
+and revisit the problems of multi-modal solutions.
+Finally, we'll explain several alternatives to prevent these issues. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
 
 
 ```{admonition} A preview of this chapter
@@ -27,12 +27,6 @@ Below, we'll proceed in the following steps:
 % note, re-introduce multi-modality at some point...
 
 
-XXX  notes, open issues  XXX
-- comparison notebook: add legends to plot
-- double check func-comp w QNewton, "later" derivatives of backprop means what?
-- re-introduce multi-modality at some point...
-
-
 
 ![Divider](resources/divider3.jpg)
 
@@ -41,8 +35,7 @@ XXX  notes, open issues  XXX
 
 As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. The different versions of $\Delta x$ will be denoted by a subscript.
 
-All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$. 
-% , with an evaluation chain $L(\mathcal P(x))$. 
+All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$, resulting in the DP training approach.
 When we simplify the setting, and leave out the NN for a moment, this gives the minimization problem
 $\text{arg min}_{x} L(x)$ with $L(x) = \frac 1 2 \| \mathcal P(x) - y^* \|_2^2$.
 As a central quantity, we have the composite gradient 
@@ -169,9 +162,9 @@ However, similar to GD, the update of an intermediate space still depends on all
 This behavior stems from the fact that the Hessian of a composite function carries non-linear terms of the gradient.
 
 Consider a function composition $L(y(x))$, with $L$ as above, and an additional function $y(x)$.
-Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial y^2} \left( \frac{\partial y}{\partial x} \right)^2 + \frac{\partial L}{\partial y} \cdot \frac{\partial^2 y}{\partial x^2}$ depends on the square of the inner gradient $\frac{\partial y}{\partial x}$. 
-This means that the Hessian is influenced by the _later_ derivatives of a backprop pass, 
-and as a consequence, the update of any latent space is unknown during the computation of the gradients.
+Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial y^2} \left( \frac{\partial y}{\partial x} \right)^2 + \frac{\partial L}{\partial y} \cdot \frac{\partial^2 y}{\partial x^2}$ depends on the square of the inner Jacobian $\frac{\partial y}{\partial x}$. 
+This means that the Hessian is influenced by the _later_ functions of an evaluation chain, 
+and as a consequence, the update of any intermediate latent space is unknown during the computation of the gradients.
 
 % chain of function evaluations: Hessian of an outer function is influenced by inner ones; inversion corrects and yields quantity similar to IG, but nonetheless influenced by "later" derivatives
 
@@ -222,7 +215,6 @@ $$ (IG-def)
 
 to be the IG update.
 Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inverse of the GD update above, encodes how the inputs must change in order to obtain a small change $\Delta y$ in the output.
-%
 The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible. This is a problem somewhat similar to the inversion of the Hessian, and we'll revisit this issue below. However, if we can invert the Jacobian, this has some very nice properties.
 
 Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$. This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. Effectively, $\Delta y$ plays the same role as the learning rate, i.e., it controls the step size of the optimization.
@@ -241,19 +233,18 @@ Sensitive functions thus receive small updates while insensitive functions get l
 
 **Convergence near optimum and function compositions** 💎
 
-IGs show the opposite behavior of GD close to an optimum: they produce updates that still progress the optimization. This leads to fast convergence, as we will demonstrate in more detail below.
-
-% **Consistency in function compositions**
+Like Newton's method, IGs show the opposite behavior of GD close to an optimum: they produce updates that still progress the optimization, which usually improves  convergence.
 
 Additionally, IGs are consistent in function composition.
 The change in $x$ is $\Delta x_{\text{IG}} = \Delta L \cdot \frac{\partial x}{\partial y} \frac{\partial y}{\partial L}$ and the approximate change in $y$ is $\Delta y = \Delta L  \cdot \frac{\partial y}{\partial x} \frac{\partial x}{\partial y} \frac{\partial y}{\partial L} = \Delta L \frac{\partial y}{\partial L}$.
-% In the example in table~\ref{tab:function-composition-example}, the change $\Delta y$ is the same no matter what space is used as optimization target.
 The change in intermediate spaces is independent of their respective dependencies, at least up to first order.
 Consequently, the change to these spaces can be estimated during backprop, before all gradients have been computed.
 
 Note that even Newton's method with its inverse Hessian didn't fully get this right. The key here is that if the Jacobian is invertible, we'll directly get the correctly scaled direction at a given layer, without helper quantities such as the inverse Hessian.
 
-% **Limitations**
+% **Consistency in function compositions**
+% In the example in table~\ref{tab:function-composition-example}, the change $\Delta y$ is the same no matter what space is used as optimization target.
+
 **Dependence on the inverse Jacobian** 🎩
 
 So far so good. The above properties are clearly advantageous, but unfortunately IGs
@@ -293,10 +284,9 @@ $$
     \frac{\Delta x_{\text{PG}} }{\Delta y}   \equiv  \big( \mathcal P^{-1} (y_0 + \Delta y; x_0) - x_0  \big)  . 
 $$ (PG-def)
 
-Here the step in $y$-space, $\Delta y$, is either the full distance $y^*-y_0$ or a part of it, in line with the learning rate from above, the the $y$-step used for IGs. 
+Here the step in $y$-space, $\Delta y$, is either the full distance $y^*-y_0$ or a part of it, in line with the $y$-step used for IGs. 
 When applying the update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y_0 + \Delta y; x_0) - x_0$ it will produce $\mathcal P(x_0 + \Delta x) = y_0 + \Delta y$ exactly, despite $\mathcal P$ being a potentially highly nonlinear function.
 When rewriting this update in the typical gradient format, $\frac{\Delta x_{\text{PG}}}{\Delta y}$ replaces the gradient from the IG update above {eq}`IG-def`, and gives $\Delta x$.
-
 This expression yields a first iterative method that makes use of $\mathcal P^{-1}$, and as such leverages all its information, such as higher-order terms. 
 
 ## Summary
@@ -305,9 +295,9 @@ The update obtained with a regular gradient descent method has surprising shortc
 Classical, inversion-based methods like IGs and Newton's method remove some of these shortcomings,
 with the somewhat theoretical construct of the update from inverse simulators ($\Delta x_{\text{PG}}$)
 including the most higher-order terms.
-As such, it is interesting to consider as an "ideal" setting for improved (inverted) update steps. 
-It get's all of the aspect above right: units 📏, function sensitivity 🔍, compositions, and convergence near optima 💎.
-It provides a _scale-invariant_ update.
+$\Delta x_{\text{PG}}$ can be seen as an "ideal" setting for improved (inverted) update steps. 
+It get's all of the aspect above right: units 📏, function sensitivity 🔍, compositions, and convergence near optima 💎,
+and it provides a _scale-invariant_ update.
 This comes at the cost of requiring an expression and discretization for a local inverse solver 🎩.
 
 In contrast to the second- and first-order approximations from Newton's method and IGs, it can potentially take highly nonlinear effects into account. Due to the potentially difficult construct of the inverse simulator, the main goal of the following sections is to illustrate how much we can gain from including all the higher-order information. Note that all three methods successfully include a rescaling of the search direction via inversion, in contrast to the previously discussed GD training. All of these methods represent different forms of differentiable physics, though.
@@ -337,7 +327,7 @@ As long as the physical process does _not destroy_ information, the Jacobian is 
 In fact, it is believed that information in our universe cannot be destroyed so any physical process could in theory be inverted as long as we have perfect knowledge of the state.
 Hence, it's not unreasonable to expect that $\mathcal P^{-1}$ can be formulated in many settings.
 
-Update steps computed as described above also have some nice theoretical properties, e.g., that the optimization converges given that $\mathcal P^{-1} consistently a fixed target $x^*$. Details of the corresponding proofs can be found in {cite}`holl2021pg`.
+Update steps computed as described above also have some nice theoretical properties, e.g., that the optimization converges given that $\mathcal P^{-1}$ consistently a fixed target $x^*$. Details of the corresponding proofs can be found in {cite}`holl2021pg`.
 
 % We now show that these terms can help produce more stable updates than the IG alone, provided that $\mathcal P_{(x_0,z_0)}^{-1}$ is a sufficiently good approximation of the true inverse.
 % Let $\mathcal P^{-1}(z)$ be the true inverse function to $\mathcal P(x)$, assuming that $\mathcal P$ is fully invertible.

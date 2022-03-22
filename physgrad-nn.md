@@ -11,45 +11,11 @@ Important to keep in mind:
 In contrast to the previous sections and {doc}`overview-equations`, we are targeting inverse problems, and hence $y$ is the input to the network: $f(y;\theta)$. Correspondingly, it outputs $x$. 
 ```
 
-% and the ground truth solutions are denoted by $x^*$.
-
 This gives the following minimization problem with $i$ denoting the indices of a mini-batch:
 
 $$
     \text{arg min}_\theta \sum_{i} \frac 1 2 \| \mathcal P\big(f(y^*_i ; \theta)\big) - y^*_i \|_2^2 
 $$ (eq:unsupervised-training)
-
-
-%By default, PGs would be restricted to functions with square Jacobians. Hence we wouldn't be able to directly use them in optimizations or learning problems, which typically have scalar objective functions.
-%xxx really? just in-out relationships? xxx
-
-
-<!-- In this section, we will first show how PGs can be integrated into the optimization pipeline to optimize scalar objectives.
-
-## Physical Gradients and loss functions
-
-As before, we consider a scalar objective function $L(y)$ that depends on the result of an invertible simulator $y = \mathcal P(x)$. In {doc}`physgrad` we've outlined the inverse gradient (IG) update $\Delta x = \frac{\partial x}{\partial L} \cdot \Delta L$, where $\Delta L$ denotes a step to take in terms of the loss. 
-
-By applying the chain rule and substituting the IG $\frac{\partial x}{\partial L}$ for the PG, we obtain 
-
-$$
-\begin{aligned}
-    \Delta x
-    &= \frac{\partial x}{\partial L} \cdot \Delta L
-    \\
-    &= \frac{\partial x}{\partial y} \left( \frac{\partial y}{\partial L} \cdot \Delta L \right)
-    \\
-    &= \frac{\partial x}{\partial y} \cdot \Delta y
-    \\
-    &= \mathcal P^{-1}_{(x_0,y_0)}(y_0 + \Delta y) - x_0 + \mathcal O(\Delta y^2)
-    .
-\end{aligned}
-$$
-
-This equation has turned the step w.r.t. $L$ into a step in $y$ space: $\Delta y$. 
-However, it does not prescribe a unique way to compute $\Delta y$ since the derivative $\frac{\partial y}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial y}$ puts almost no restrictions on $\Delta y$.
-Instead, we use a Newton step (equation {eq}`quasi-newton-update`) to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. -->
-
 
 
 
@@ -68,10 +34,6 @@ name: pg-training
 TODO, visual overview of SIP training
 ```
 
-
-% gives us an update for the input of the discretized PDE $\mathcal P^{-1}(x)$, i.e. a $\Delta x$. If $x$ was an output of an NN, we can then use established DL algorithms to backpropagate the desired change to the weights of the network.
-
-% Consider the following setup:  A neural network $f()$ makes a prediction $x = f(a \,;\, \theta)$ about a physical state based on some input $a$ and the network weights $\theta$. The prediction is passed to a physics simulation that computes a later state $y = \mathcal P(x)$, and hence the objective $L(y)$ depends on the result of the simulation. 
 
 
 ```{admonition} Scale-Invariant Physics (SIP) Training
@@ -98,6 +60,8 @@ We recommend setting $\eta$ as large as the accuracy of the inverse simulator al
 This allows for nonlinearities of the simulator to be maximally helpful in adjusting the optimization direction.
 
 This algorithm combines the inverse simulator to compute accurate, higher-order updates with traditional training schemes for NN representations. This is an attractive property, as we have a large collection of powerful methodologies for training NNs that stay relevant in this way. The treatment of the loss functions as "glue" between NN and physics component plays a central role here. 
+
+![Divider](resources/divider6.jpg)
 
 
 ## Loss functions
@@ -140,8 +104,7 @@ This typically makes the learning task more difficult, as we repeatedly backprop
 
 
 
-## SIP training in an example
-
+## SIP training in action
 
 Let's illustrate the convergence behavior of SIP training and how it depends on characteristics of $\mathcal P$ with an example {cite}`holl2021pg`.
 We consider the synthetic two-dimensional function 
@@ -201,8 +164,8 @@ Its diagonal approximation of the Hessian reduces the scaling effect when $x_1$ 
 SIP training has no problem with coupled parameters since its update steps for the optimization are using the full-rank Hessian $\frac{\partial^2 L}{\partial x}$. Thus, the SIP training yields the best results across the varying optimization problems posed by this example setup.
 
 
----
 
+![Divider](resources/divider7.jpg)
 
 
 
@@ -223,21 +186,19 @@ Some equations can locally be inverted analytically but for complex problems, do
 
 Second, SIP uses traditional first-order optimizers to determine $\Delta\theta$.
 As discussed, these solvers behave poorly in ill-conditioned settings which can also affect SIP performance when the network outputs lie on different scales.
-Some recent works address this issue and have proposed network optimization based on inversion~\citep{kFAC, elias2020hessian}.
+Some recent works address this issue and have proposed network optimization based on inversion.
 
 Third, while SIP training generally leads to more accurate solutions, measured in $x$ space, the same is not always true for the loss $L = \sum_i L_i$. SIP training weighs all examples equally, independent of their loss values. 
 This can be useful, but it can cause problems in examples where regions with overly small or large curvatures $|\frac{\partial^2L}{\partial x^2}|$ distort the importance of samples.
-**update from email , weighted by curvature?**
 In these cases, or when the accuracy in $x$ space is not important, like in control tasks, traditional training methods may perform better than SIP training.
 
-% , independent of their weight in $L$.
 
 ### Similarities to supervised training
 
 Interestingly, the SIP training resembles the supervised approaches from {doc}`supervised`.
 It effectively yields a method that provides reliable updates which are computed on-the-fly, at training time.
 The inverse simulator provides the desired inversion, possibly with a high-order method, and 
-avoids the averaging of multi modal solutions. 
+avoids the averaging of multi modal solutions (cf. {doc}`intro-teaser`). 
 
 The latter is one of the main advantages of this setup:
 a pre-computed data set can not take multi-modality into account, and hence inevitably leads to
@@ -246,7 +207,7 @@ suboptimal solutions being learned once the mapping from input to reference solu
 At the same time this illustrates a difficulty of the DP training from {doc}`diffphys`: the gradients it yields
 are not properly inverted, and are difficult to reliably normalize via pre-processing. Hence they can
 lead to the scaling problems discussing in {doc}`physgrad`, and correspondingly give vanishing and exploding gradients
-at training time. 
+at training time. These problems are what we're targeting in this chapter.
 
 ---
 
