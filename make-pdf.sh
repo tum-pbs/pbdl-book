@@ -20,9 +20,11 @@ python3.7 json-cleanup-for-pdf.py
 /Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
 
 cd _build/latex
-#mv book.pdf book-xetex.pdf # failed anyway
+#mv book.pdf book-xetex.pdf # not necessary, failed anyway
+# this generates book.tex
 
 rm -f book-in.tex sphinxmessages-in.sty book-in.aux book-in.toc
+# rename book.tex -> book-in.tex  (this is the original output!)
 mv book.tex book-in.tex
 mv sphinxmessages.sty sphinxmessages-in.sty
 mv book.aux book-in.aux
@@ -30,9 +32,10 @@ mv book.toc book-in.toc
 #mv sphinxmanual.cls sphinxmanual-in.cls
 
 python3.7 ../../fixup-latex.py
-# generates book-in2.tex
+# reads book-in.tex -> writes book-in2.tex
 
 # remove unicode chars via unix iconv
+# reads book-in2.tex -> writes book.tex
 iconv -c -f utf-8 -t ascii book-in2.tex > book.tex
 
 # finally run pdflatex, now it should work:

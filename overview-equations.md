@@ -28,7 +28,7 @@ $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
 with a stochastic gradient descent (SGD) optimizer of choice, e.g. Adam {cite}`kingma2014adam`.
-We'll rely on auto-diff to compute the gradient w.r.t. weights, $\partial f / \partial \theta$,
+We'll rely on auto-diff to compute the gradient of a scalar loss $L$ w.r.t. the weights, $\partial L / \partial \theta$,
 We will also assume that $e$ denotes a _scalar_ error function (also
 called cost, or objective function).
 It is crucial for the efficient calculation of gradients that this function is scalar.
