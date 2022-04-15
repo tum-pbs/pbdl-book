@@ -39,14 +39,15 @@ reSkip.append( re.compile(r"detokenize.references.references" ) ); reSCnt.append
 # need manual IDs!
 recs = []; rect = []
 # ID4 CTS
-recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id4}{CTS.21}{\]}" ) )
-rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id4}{CTS+21}{]}" )
+#recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id4}{CTS.21}{\]}" ) )
+recs.append( re.compile(r"parametrized GAN {\[}.hyperlink{cite.references:id5}{CTS.21}{\]}" ) )
+rect.append( "parametrized GAN {[}\\\\protect\\\\hyperlink{cite.references:id5}{CTS+21}{]}" )
 # ID8 WKA
-recs.append( re.compile(r"example prediction from ....hyperlink.cite.references:id8..WKA.20...." ) )
-rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id8}{WKA+20}{]}' ) # note, quad \ needed!
+recs.append( re.compile(r"example prediction from ....hyperlink.cite.references:id9..WKA.20...." ) )
+rect.append( 'example prediction from {[}\\\\protect\\\\hyperlink{cite.references:id9}{WKA+20}{]}' ) # note, quad \ needed!
 # ID14 UPTK
-recs.append( re.compile(r"approach using continuous convolutions {.}.hyperlink{cite.references:id14}{UPTK19}{.}" ) )
-rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id14}{UPTK19}{]}" )
+recs.append( re.compile(r"approach using continuous convolutions {.}.hyperlink{cite.references:id15}{UPTK19}{.}" ) )
+rect.append( "approach using continuous convolutions {[}\\\\protect\\\\hyperlink{cite.references:id15}{UPTK19}{]}" )
 
 # fixup unicode symbols 
 # compare book-in2.tex -> book.tex after iconv 
@@ -122,6 +123,13 @@ rect.append( r'date{\\centering{\1}}' )
 #print(len(recs))
 #exit(1)
 
+# sanity check
+if len(rect) != len(recs):
+	print("Error rect and recs len have to match!"); exit(1)
+
+recsCnt = []
+for n in range(len(recs)):
+    recsCnt.append(0)
 
 # ---
 
@@ -160,6 +168,9 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 						# fix captions and apply other latex replacements
 						#print(len(rect)); print(len(recs))
 						for i in range(len(recs)):
+							ric = len( recs[i].findall( line ) )
+							#if ric>0: print(ric)
+							recsCnt[i] += ric  # count, for sanity check
 							line = recs[i].sub( rect[i], line )  # replace all
 
 					fout.write(line)
@@ -180,6 +191,19 @@ def parseF(inf,outf,reSkip,reSCnt,applyRecs=False):
 	print("Fixup -> "+outf+" done, skips: "+format(skipTot)  +" \n")
 
 parseF(inf,outf,reSkip,reSCnt,applyRecs=True)
+
+haveError = False; recsCntT = 0
+for i in range(len(recs)):
+	recsCntT += recsCnt[i]
+	if(recsCnt[i]==0):
+		print("Error, re %d , '%s' not found!" % (i,recs[i]))
+		haveError = True
+
+if haveError: 
+	print("Some REs were not found, maybe cite.references:idX is wrong! Those have to be manually checked")
+	exit(1)
+else:
+	print("book-in2: %d re replacements\n" % (recsCntT) )
 
 # print("debug exit!"); exit(1)
 
