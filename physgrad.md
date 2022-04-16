@@ -3,7 +3,6 @@ Towards Gradient Inversion
 
 In the following we will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
 To re-cap, the approaches explained in the previous chapters either dealt with purely _supervised_ training, integrated the physical model as a _physical loss term_ or included it via _differentiable physics_ (DP) operators embedded into the training graph. 
-For supervised training with data from physical simulations standard procedure apply.
 The latter two methods are more relevant in the context of this book. They share similarities, but in the loss term case, the physics evaluations are only required at training time. For DP approaches, the solver itself is usually also employed at inference time, which enables an end-to-end training of NNs and numerical solvers. All three approaches employ _first-order_ derivatives to drive optimizations and learning processes, and the latter two also using them for the physics terms.
 This is a natural choice from a deep learning perspective, but we haven't questioned at all whether this is actually the best choice.
 
@@ -33,11 +32,11 @@ Below, we'll proceed in the following steps:
 
 ## Traditional optimization methods
 
-As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. The different versions of $\Delta x$ will be denoted by a subscript.
+As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. Below, we'll compute different versions of $\Delta x$ that will be distuingished by a subscript.
 
 All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$, resulting in the DP training approach.
 When we simplify the setting, and leave out the NN for a moment, this gives the minimization problem
-$\text{arg min}_{x} L(x)$ with $L(x) = \frac 1 2 \| \mathcal P(x) - y^* \|_2^2$.
+$\text{arg min}_{x} ~ L(x)$ with $L(x) = 1/2 ~ \| \mathcal P(x) - y^* \|_2^2$.
 As a central quantity, we have the composite gradient 
 $(\partial L / \partial x)^T$ of the loss function $L$:
 
@@ -47,7 +46,9 @@ $$
     \Big( \frac{\partial L}{\partial \mathcal P} \Big)^T
 $$ (loss-deriv)
 
-We've shown that using $\partial L/\partial x$ works, but
+As the $(\cdots)^T$ notation makes things difficult to read, and we're effectively only dealing with transposed Jacobians, we'll omit the $^T$ in the following.
+
+We've shown in previous chapters that using $\partial L/\partial x$ works, but
 in the field of classical optimization, other algorithms are more widely used than GD: popular are so-called Quasi-Newton methods, which use fundamentally different updates.
 Hence, in the following we'll revisit GD along with Quasi-Newton methods and Inverse Jacobians as a third alternative. We'll focus on the pros and cons of the different methods on a theoretical level. Among others, it's interesting to discuss why classical optimization algorithms aren't widely used for NN training despite having some obvious advantages.
 
@@ -76,7 +77,7 @@ $$ (GD-update)
 
 where $\eta$ is the scalar learning rate.
 The Jacobian $\frac{\partial L}{\partial x}$ describes how the loss reacts to small changes of the input.
-Surprisingly, this very widely used update has a number of undesirable properties that we'll highlight in the following. Note that we've naturally applied this update in supervised settings such as {doc}`supervised-airfoils`, but we've also used it in the differentiable physics approaches. E.g., in {doc}`diffphys-code-sol` we've computed the derivative of the fluid solver. In the latter case, we've still only updated the NN parameters, but the fluid solver Jacobian was part of {eq}`GD-update`, as shown in {eq}`loss-deriv`.
+Surprisingly, this very widely used update has a number of undesirable properties that we'll highlight in the following. Note that we've naturally applied this update in supervised settings such as {doc}`supervised-airfoils`, but we've also used it in the differentiable physics approaches. E.g., in {doc}`diffphys-code-sol` we've computed the derivative of the fluid solver. In the latter case, we've still only updated the NN parameters, but the fluid solver Jacobian was part of equation {eq}`GD-update`, as shown in {eq}`loss-deriv`.
 
 
 
@@ -94,7 +95,7 @@ One could argue that units aren't very important for the parameters of NNs, but 
 GD has also inherent problems when functions are not _normalized_.
 This can be illustrated with a very simple example:
 consider the function $L(x) = c \cdot x$.
-Then the parameter updates of GD scale with $c$, i.e. $\Delta x_{\text{GD}} = \eta \cdot c$, and 
+Then the parameter updates of GD scale with $c$, i.e. $\Delta x_{\text{GD}} = -\eta \cdot c$, and 
 $L(x+\Delta x_{\text{GD}})$ will even have terms on the order of $c^2$.
 If $L$ is normalized via $c=1$, everything's fine. But in practice, we'll often
 have $c \ll 1$, or even worse $c \gg 1$, and then our optimization will be in trouble.
@@ -129,13 +130,15 @@ stabilize the training. On the other hand, it makes the learning process difficu
 
 ## Quasi-Newton methods
 
-Quasi-Newton methods, such as BFGS and its variants, employ the gradient $\frac{\partial L}{\partial x}$ and the inverse of the Hessian $\frac{\partial^2 L}{\partial x^2}$ for the update 
+Newton's method employs the gradient $\frac{\partial L}{\partial x}$ and the inverse of the Hessian $\frac{\partial^2 L}{\partial x^2}$ for the update 
 
 $$
-\Delta x_{\text{QN}} = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} , 
+\Delta x_{\text{QN}} = -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} .
 $$ (quasi-newton-update)
 
-where $\eta$, the scalar step size, takes the place of GD's learning rate. As a further improvement, it is typically determined via a line search in many Quasi-Newton methods (we'll leave out this step for now).
+More widely used in practice are Quasi-Newton methods, such as BFGS and its variants, which approximate the Hessian matrix.
+However, the resulting update $\Delta x_{\text{QN}}$ stays the same.
+As a further improvement, the step size $\eta$ is often determined via a line search (we'll leave out this step for now).
 This construction solves some of the problems of gradient descent from above, but has other drawbacks.
 
 **Units and Sensitivity** 📏
@@ -146,7 +149,7 @@ produces the correct units for all parameters to be optimized.
 As a consequence, $\eta$ can stay dimensionless.
 
 If we now consider how the loss changes via
-$L(x+\Delta x_{\text{QN}}) = L(x) + -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} \frac{\partial L}{\partial x}  + \cdots $ , the second term correctly cancels out the $x$ quantities, and leaves us with a scalar update in terms of $L$. Thinking back to the example with a scaling factor $c$ from the GD section, the inverse Hessian in Newton's methods successfully gives us a factor of $1/c^2$ to couteract the undesirable scaling of our updates.
+$L(x+\Delta x_{\text{QN}}) = L(x) + -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} \frac{\partial L}{\partial x}  + \cdots $ , the second term correctly cancels out the $x$ quantities, and leaves us with a scalar update in terms of $L$. Thinking back to the example with a scaling factor $c$ from the GD section, the inverse Hessian in Newton's methods successfully gives us a factor of $1/c^2$ to counteract the undesirable scaling of our updates.
 
 **Convergence near optimum** 💎
 
@@ -163,8 +166,8 @@ This behavior stems from the fact that the Hessian of a composite function carri
 
 Consider a function composition $L(y(x))$, with $L$ as above, and an additional function $y(x)$.
 Then the Hessian $\frac{d^2L}{dx^2} = \frac{\partial^2L}{\partial y^2} \left( \frac{\partial y}{\partial x} \right)^2 + \frac{\partial L}{\partial y} \cdot \frac{\partial^2 y}{\partial x^2}$ depends on the square of the inner Jacobian $\frac{\partial y}{\partial x}$. 
-This means that the Hessian is influenced by the _later_ functions of an evaluation chain, 
-and as a consequence, the update of any intermediate latent space is unknown during the computation of the gradients.
+This means that if we'd use this update in a backpropagation step, the Hessian is influenced by the _later_ functions of the backprop chain.
+As a consequence, the update of any intermediate latent space is unknown during the computation of the gradients.
 
 % chain of function evaluations: Hessian of an outer function is influenced by inner ones; inversion corrects and yields quantity similar to IG, but nonetheless influenced by "later" derivatives
 
@@ -175,9 +178,9 @@ In addition, a fundamental disadvantage of quasi-Newton methods that becomes app
 
 The first obvious drawback is the _computational cost_.
 While evaluating the exact Hessian only adds one extra pass to every optimization step, this pass involves higher-dimensional tensors than the computation of the gradient.
-As $\frac{\partial^2 L}{\partial x^2}$ grows with the square of the parameter count, both its evaluation and its inversion become very expensive for large systems.
-Many algorithms therefore avoid computing the exact Hessian and instead approximate it by accumulating the gradient over multiple update steps.
-The memory requirements also grow quadratically.
+As $\frac{\partial^2 L}{\partial x^2}$ grows with the square of the parameter count, both its evaluation and its inversion become very expensive for large systems. This is where Quasi-Newton methods spend significant efforts to compute approximations with a reasonable amount of resources, but it's nonetheless a central problem.
+
+% Many algorithms therefore avoid computing the exact Hessian and instead approximate it by accumulating the gradient over multiple update steps. The memory requirements also grow quadratically.
 
 The quasi-Newton update above additionally requires the _inverse_ Hessian matrix. Thus, a Hessian that is close to being non-invertible typically causes numerical stability problems, while inherently non-invertible Hessians require a fallback to a first order GD update.
 
@@ -214,10 +217,12 @@ $$
 $$ (IG-def)
 
 to be the IG update.
-Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inverse of the GD update above, encodes how the inputs must change in order to obtain a small change $\Delta y$ in the output.
+Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inverse of the GD update above, encodes with first-order accuracy how the inputs must change in order to obtain a small change $\Delta y$ in the output.
 The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible. This is a problem somewhat similar to the inversion of the Hessian, and we'll revisit this issue below. However, if we can invert the Jacobian, this has some very nice properties.
 
-Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$. This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. Effectively, $\Delta y$ plays the same role as the learning rate, i.e., it controls the step size of the optimization.
+Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$, but effectively has the same role: it controls the step size of the optimization.
+It the simplest case, we can compute it as a step towards the ground truth via $\Delta y = \eta (y^* - y)$.
+This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. 
 
 
 
@@ -229,7 +234,7 @@ IGs scale with the inverse derivative. Hence the updates are automatically of th
 **Function sensitivity** 🔍
 
 They also don't have problems with normalization as the parameter updates from the example $L(x) = c \cdot x$ above now scale with $c^{-1}$.
-Sensitive functions thus receive small updates while insensitive functions get large updates.
+Sensitive functions thus receive small updates while insensitive functions get large (or exploding) updates.
 
 **Convergence near optimum and function compositions** 💎
 
@@ -265,14 +270,9 @@ Thus, we now consider the fact that inverse gradients are linearizations of inve
 So far we've discussed the problems of existing methods, and a common theme among the methods that do better, Newton and IGs, is that the regular gradient is not sufficient. We somehow need to address it's problems with some form of _inversion_. Before going into details of NN training and numerical methods to perform this inversion, we will consider one additional "special" case that will further illustrate the need for inversion: if we can make use of an _inverse simulator_, this likewise addresses many of the inherent issues of GD. It actually represents the ideal setting for computing update steps for the physics simulation part.
 
 Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ denote its inverse. 
-In contrast to the inversion of Jacobian or Hessian matrices from before, $\mathcal P(^{-1}$ denotes a full inverse of all functions of $\mathcal P$. 
-Employing the inverse solver in the minimization problem above yields
+In contrast to the inversion of Jacobian or Hessian matrices from before, $\mathcal P^{-1}$ denotes a full inverse of all functions of $\mathcal P$. 
 
-$$ 
-    \text{arg min}_{x} \frac 1 2 \| \mathcal P^{-1}(y^*) \|_2^2 , 
-$$ (pg-inverse-problem)
-
-which, somewhat surprisingly, is not a minimization problem anymore if we consider single cases with one $x,y^*$ pair. We basically just need to solve the inverse problem by evaluating $\mathcal P^{-1}(y^*)$ to obtain $x$. As we plan to bring back NNs and more complex scenarios soon, let's assume that we are still dealing with a collection of $y^*$ targets, and non-obvious solutions $x$. One example could be that we're looking for an $x$ that yields multiple $y^*$ targets with minimal distortions in terms of $L^2$.
+Trying to this employ inverse solver in the minimization problem from the top, somewhat surprisingly, makes the whole minimization obsolete (at least if we consider single cases with one $x,y^*$ pair). We just need to evaluate $\mathcal P^{-1}(y^*)$ to solve the inverse problem and obtain $x$. As we plan to bring back NNs and more complex scenarios soon, let's assume that we are still dealing with a collection of $y^*$ targets, and non-obvious solutions $x$. One example could be that we're looking for an $x$ that yields multiple $y^*$ targets with minimal distortions in terms of $L^2$.
 
 Now, instead of evaluating $\mathcal P^{-1}$ once to obtain the solution, we can iteratively update a current approximation of the solution $x_0$ with an update that we'll call $\Delta x_{\text{PG}}$ when employing the inverse physical simulator.
 
@@ -281,13 +281,14 @@ It also turns out to be a good idea to employ a _local_ inverse that is conditio
 Equipped with these changes, we can formulate an optimization problem where a current state of the optimization $x_0$, with $y_0 = \mathcal P(x_0)$, is updated with 
 
 $$
-    \frac{\Delta x_{\text{PG}} }{\Delta y}   \equiv  \big( \mathcal P^{-1} (y_0 + \Delta y; x_0) - x_0  \big)  . 
+    \Delta x_{\text{PG}}  =  \frac{ \big( \mathcal P^{-1} (y_0 + \Delta y; x_0) - x_0  \big) }{\Delta y} \cdot \Delta y . 
 $$ (PG-def)
 
+
 Here the step in $y$-space, $\Delta y$, is either the full distance $y^*-y_0$ or a part of it, in line with the $y$-step used for IGs. 
-When applying the update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y_0 + \Delta y; x_0) - x_0$ it will produce $\mathcal P(x_0 + \Delta x) = y_0 + \Delta y$ exactly, despite $\mathcal P$ being a potentially highly nonlinear function.
-When rewriting this update in the typical gradient format, $\frac{\Delta x_{\text{PG}}}{\Delta y}$ replaces the gradient from the IG update above {eq}`IG-def`, and gives $\Delta x$.
-This expression yields a first iterative method that makes use of $\mathcal P^{-1}$, and as such leverages all its information, such as higher-order terms. 
+When applying the update $ \mathcal P^{-1}(y_0 + \Delta y; x_0) - x_0$ it will produce $\mathcal P(x_0 + \Delta x) = y_0 + \Delta y$ exactly, despite $\mathcal P$ being a potentially highly nonlinear function.
+Note that the $\Delta y$ in equation {eq}`PG-def` effectively cancels out to give a step in terms of $x$. However, this notation serves to show the similarities with the IG step from equation {eq}`IG-def`.
+The update $\Delta x_{\text{PG}}$ gives us a first iterative method that makes use of $\mathcal P^{-1}$, and as such leverages all its information, such as higher-order terms. 
 
 ## Summary
 
@@ -296,9 +297,9 @@ Classical, inversion-based methods like IGs and Newton's method remove some of t
 with the somewhat theoretical construct of the update from inverse simulators ($\Delta x_{\text{PG}}$)
 including the most higher-order terms.
 $\Delta x_{\text{PG}}$ can be seen as an "ideal" setting for improved (inverted) update steps. 
-It get's all of the aspect above right: units 📏, function sensitivity 🔍, compositions, and convergence near optima 💎,
+It gets all of the aspect above right: units 📏, function sensitivity 🔍, compositions, and convergence near optima 💎,
 and it provides a _scale-invariant_ update.
-This comes at the cost of requiring an expression and discretization for a local inverse solver 🎩.
+This comes at the cost of requiring an expression and discretization for a local inverse solver. 🎩
 
 In contrast to the second- and first-order approximations from Newton's method and IGs, it can potentially take highly nonlinear effects into account. Due to the potentially difficult construct of the inverse simulator, the main goal of the following sections is to illustrate how much we can gain from including all the higher-order information. Note that all three methods successfully include a rescaling of the search direction via inversion, in contrast to the previously discussed GD training. All of these methods represent different forms of differentiable physics, though.
 
@@ -365,7 +366,7 @@ A global inverse function $\mathcal P^{-1}$ is defined only for bijective $\math
 If the inverse exists, it can find $x$ for any $y$ such that $y = \mathcal P(x)$.
 
 Instead of using this "perfect" inverse $\mathcal P^{-1}$ directly, we'll in practice often use a local inverse
-$\mathcal P_{(x_0,y_0)}^{-1}(y; x_0)$, which is conditioned for the point $x_0$, and correspondingly on 
+$\mathcal P^{-1}(y; x_0)$, which is conditioned for the point $x_0$, and correspondingly on 
 $y_0=\mathcal P(x_0)$. 
 This local inverse is easier to obtain, as it only needs to exist near a given $y_0$, and not for all $y$. 
 For the generic $\mathcal P^{-1}$ to exist $\mathcal P$ would need to be globally invertible.
@@ -374,7 +375,9 @@ By contrast, a _local inverse_ only needs to exist and be accurate in the vicini
 If a global inverse $\mathcal P^{-1}(y)$ exists, the local inverse approximates it and matches it exactly as $y \rightarrow y_0$.
 More formally, $\lim_{y \rightarrow y_0} \frac{\mathcal P^{-1}(y; x_0) - P^{-1}(y)}{|y - y_0|} = 0$.
 Local inverse functions can exist, even when a global inverse does not.
+
 Non-injective functions can be inverted, for example, by choosing the closest $x$ to $x_0$ such that $\mathcal P(x) = y$.
+As an example, consider $\mathcal P(x) = x^2$. It doesn't have a global inverse as two solutions ($\pm$) exist for each $y$. However, we can easily construct a local inverse by choosing the closer one of the two solutions, the positive $x$ in this example. 
 
 For differentiable functions, a local inverse is guaranteed to exist by the inverse function theorem as long as the Jacobian is non-singular.
 That is because the inverse Jacobian $\frac{\partial x}{\partial y}$ itself is a local inverse function, albeit, with being first-order, not the most accurate one.
