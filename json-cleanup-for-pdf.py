@@ -17,10 +17,10 @@ fileList = [
 	"bayesian-code.ipynb", "supervised-airfoils.ipynb", # pytorch
 	"reinflearn-code.ipynb", # phiflow
 	"physgrad-comparison.ipynb", # jax
+	"physgrad-code.ipynb", # pip
 	]
 
-#fileList = [ "diffphys-code-burgers.ipynb"] # debug, only 1 file
-#fileList = [ "diffphys-code-ns.ipynb"] # debug, only 1 file
+#fileList = [ "physgrad-code.ipynb"] # debug, only 1 file
 
 
 # main
@@ -55,6 +55,10 @@ for fnOut in fileList:
 	res.append( re.compile(r"Building wheel") ) # phiflow install, also gives weird unicode characters
 	res.append( re.compile(r"warnings.warn") )  # phiflow warnings
 	res.append( re.compile(r"WARNING:absl") )  # jax warnings
+
+	res.append( re.compile(r"ERROR: pip") )  # pip dependencies
+	res.append( re.compile(r"requires imgaug") )  # pip dependencies
+
 	# remove all "warnings.warn" from phiflow?
 
 	# shorten data line: "0.008612174447657694, 0.02584669669548606, 0.043136357266407785"

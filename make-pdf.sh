@@ -1,15 +1,13 @@
 # source this file with "." in a shell
 
-# note this script assumes the following paths/versions
-# python3.7
-# /Users/thuerey/Library/Python/3.7/bin/jupyter-book
+# note this script assumes the following paths/versions: python3.7 , /Users/thuerey/Library/Python/3.7/bin/jupyter-book
+
+# do clean git checkout for changes from json-cleanup-for-pdf.py via:
+# git checkout diffphys-code-burgers.ipynb diffphys-code-ns.ipynb diffphys-code-sol.ipynb physicalloss-code.ipynb bayesian-code.ipynb supervised-airfoils.ipynb reinflearn-code.ipynb
 
 echo
 echo WARNING - still requires one manual quit of first pdf/latex pass, use shift-x to quit
 echo
-
-# do clean git checkout for changes from json-cleanup-for-pdf.py?
-# git checkout diffphys-code-burgers.ipynb diffphys-code-ns.ipynb diffphys-code-sol.ipynb physicalloss-code.ipynb bayesian-code.ipynb supervised-airfoils.ipynb reinflearn-code.ipynb
 
 # warning - modifies notebooks!
 python3.7 json-cleanup-for-pdf.py

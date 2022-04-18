@@ -44,7 +44,7 @@ To update the weights $\theta$ of the NN $f$, we perform the following update st
 * Given a set of inputs $y^*$, evaluate the forward pass to compute the NN prediction $x = f(y^*; \theta)$
 * Compute $y$ via a forward simulation ($y = \mathcal P(x)$) and invoke the (local) inverse simulator $P^{-1}(y; x)$ to obtain the step $\Delta x_{\text{PG}} = \mathcal P^{-1} (y + \eta \Delta y; x)$ with $\Delta y = y^* - y$
 * Evaluate the network loss, e.g., $L = \frac 1 2 || x - \tilde x ||_2^2$ with $\tilde x = x+\Delta x_{\text{PG}}$, and perform a Newton step treating $\tilde x$ as a constant 
-* Use GD (or a GD-based optimizer like Adam) to propagate the change in $x$ to the network weights $\theta$ with a learning rate $\eta_{\text{NN}}
+* Use GD (or a GD-based optimizer like Adam) to propagate the change in $x$ to the network weights $\theta$ with a learning rate $\eta_{\text{NN}}$
 
 
 ```
@@ -74,11 +74,11 @@ The central reason for introducing a Newton step is the improved accuracy for th
 Unlike with regular Newton or the quasi-Newton methods from equation {eq}`quasi-newton-update`, we do not need the Hessian of the full system. 
 Instead, the Hessian is only needed for $L(y)$. 
 This makes Newton's method attractive again.
-Even better, for many typical $L$ its computation can be completely forgone.
+Even better, for many typical $L$ the analytical form of the Newton updates is known.
 
 E.g., consider the most common supervised objective function, $L(y) = \frac 1 2 | y - y^*|_2^2$ as already put to use above. $y$ denotes the predicted, and $y^*$ the target value.
 We then have $\frac{\partial L}{\partial y} = y - y^*$ and $\frac{\partial^2 L}{\partial y^2} = 1$.
-Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^* - y)$ which can be computed without evaluating the Hessian.
+Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^* - y)$ which can be computed right away, without evaluating any additional Hessian matrices.
 
 Once $\Delta y$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and an inverse simulator for the PDE in {doc}`physgrad-comparison`.
 
@@ -87,8 +87,8 @@ It is not to be confused with a traditional supervised loss in $x$ space.
 Due to the dependency of $\mathcal P^{-1}$ on the prediction $y$, it does not average multiple modes of solutions in $x$.
 To demonstrate this, consider the case that GD is being used as solver for the inverse simulation.
 Then the total loss is purely defined in $y$ space, reducing to a regular first-order optimization. 
-Hence, the proxy loss function simply connects the computational graphs of inverse physics and NN for backpropagation.
 
+Hence, the proxy loss function simply connects the computational graphs of inverse physics and NN for backpropagation.
 
 ## Iterations and time dependence
 
@@ -182,11 +182,12 @@ It provably converges when enough network updates $\Delta\theta$ are performed p
 While SIP training can find vastly more accurate solutions, there are some caveats to consider.
 %
 First, an approximately scale-invariant physics solver is required. While in low-dimensional $x$ spaces, Newton's method is a good candidate, high-dimensional spaces require some other form of inversion.
-Some equations can locally be inverted analytically but for complex problems, domain-specific knowledge may be required.
+Some equations can locally be inverted analytically but for complex problems, domain-specific knowledge may be required,
+or we can employ to numerical methods (coming up).
 
-Second, SIP uses traditional first-order optimizers to determine $\Delta\theta$.
-As discussed, these solvers behave poorly in ill-conditioned settings which can also affect SIP performance when the network outputs lie on different scales.
-Some recent works address this issue and have proposed network optimization based on inversion.
+Second, SIP focuses on an accurate inversion of the physics part, but uses traditional first-order optimizers to determine $\Delta\theta$.
+As discussed, these solvers behave poorly in ill-conditioned settings which can also affect SIP performance when the network outputs lie on very different scales.
+Thus, we should keep inversion for the NN in mind as a goal.
 
 Third, while SIP training generally leads to more accurate solutions, measured in $x$ space, the same is not always true for the loss $L = \sum_i L_i$. SIP training weighs all examples equally, independent of their loss values. 
 This can be useful, but it can cause problems in examples where regions with overly small or large curvatures $|\frac{\partial^2L}{\partial x^2}|$ distort the importance of samples.
