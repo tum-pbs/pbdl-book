@@ -3,7 +3,7 @@ Discussion of Supervised Approaches
 
 The previous example illustrates that we can quite easily use 
 supervised training to solve complex tasks. The main workload is
-collecting a large enough dataset of examples. Once that exists, we can
+collecting a large enough data set of examples. Once that exists, we can
 train a network to approximate the solution manifold sampled
 by these solutions, and the trained network can give us predictions
 very quickly. There are a few important points to keep in mind when 
@@ -58,7 +58,7 @@ approach for how to best achieve this, we can strongly recommend to track
 a broad range of statistics of your data set. A good starting point are
 per quantity mean, standard deviation, min and max values. 
 If some of these contain unusual values, this is a first indicator of bad 
-samples in the dataset.
+samples in the data set.
 
 These values can 
 also be easily visualized in terms of histograms, to track down
