@@ -2,17 +2,17 @@
 Half-Inverse Gradients
 =======================
 
-The physical gradients (PGs) of the previous chapters illustrated the importance of _inverting_ the direction of the update step (in addition to making use of higher order terms). We'll now turn to an alternative for achieving the inversion, the so-called _Half-Inverse Gradients_ (HIGs) {cite}`schnell2022hig`. They come with their own set of pros and cons, and thus provide an interesting alternative for computing improved update steps for physics-based deep learning tasks.
+The scale-invariant physics updates (SIPs) of the previous chapters illustrated the importance of _inverting_ the direction of the update step (in addition to making use of higher order terms). We'll now turn to an alternative for achieving the inversion, the so-called _Half-Inverse Gradients_ (HIGs) {cite}`schnell2022hig`. They come with their own set of pros and cons, and thus provide an interesting alternative for computing improved update steps for physics-based deep learning tasks.
 
-Unlike the PGs, they do not require an analytical inverse solver. The HIGs jointly invert the neural network part as well as the physical model. As a drawback, they require an SVD for a large Jacobian matrix. 
+Unlike the SIPs, they do not require an analytical inverse solver. The HIGs jointly invert the neural network part as well as the physical model. As a drawback, they require an SVD for a large Jacobian matrix. 
 
 
-```{admonition} Preview: HIGs versus PGs (and versus Adam)
+```{admonition} Preview: HIGs versus SIPs (and versus Adam)
 :class: tip
 
-More specifically, in contrast to PGs the HIGs:
-- do not require an analytical inverse solver,
-- and jointly invert the neural network part as well as the physical model. 
+More specifically the HIGs:
+- do not require an analytical inverse solver (in contrast to SIPs),
+- and they jointly invert the neural network part as well as the physical model. 
 
 As a drawback, HIGs:
 - require an SVD for a large Jacobian matrix,
@@ -24,8 +24,7 @@ Howver, in contrast to regular gradients, they use the full Jacobian matrix. So 
 
 ## Derivation
 
-As mentioned during the derivation of PGs in {eq}`quasi-newton-update`, the update for regular Newton steps 
-uses the inverse Hessian matrix. If we rewrite its update for the case of an $L^2$ loss, we arrive at the _Gauss-Newton_ (GN) method:
+As mentioned during the derivation of inverse simulator updates in {eq}`quasi-newton-update`, the update for regular Newton steps uses the inverse Hessian matrix. If we rewrite its update for the case of an $L^2$ loss, we arrive at the _Gauss-Newton_ (GN) method:
 
 $$
      \Delta \theta_{\mathrm{GN}}
@@ -41,9 +40,9 @@ $$
         \bigg(\frac{\partial L}{\partial z}\bigg)^{\top} .
 $$ (gauss-newton-update)
 
-This looks much simpler, but still leaves us with a Jacobian matrix to invert. This Jacobian is typically non-square, and has small eigenvalues, which is why even we could make use of a pseudo-inverse, Gauss-Newton methods are not used for practical deep learning problems. 
+This looks much simpler, but still leaves us with a Jacobian matrix to invert. This Jacobian is typically non-square, and has small singular values which cause problems during inversion. Naively applying methods like Gauss-Newton can quickly explode. However, as we're dealing with cases where we have a physics solver in the training loop, the small singular values are often relevant for the physics. Hence, we don't want to just discard these parts of the learning signal, but rather preserve as many of them as possible.
 
-HIGs alleviate these difficulties by employing a truncated, partial inversion of the form
+This motivates the HIG update, which employs a partial and truncated inversion of the form
 
 $$
     \Delta \theta_{\mathrm{HIG}} = - \eta \cdot  \bigg(\frac{\partial y}{\partial \theta}\bigg)^{-1/2} \cdot \bigg(\frac{\partial L}{\partial y}\bigg)^{\top} , 
@@ -126,7 +125,7 @@ In addition, the neuron activations, which are shown in terms of mean and standa
  
 Finally, the third graph on the right shows the evolution in terms of a single input-output pair. The starting point from the initial network state is shown in light gray, while the ground truth target $\hat{y}$ is shown as a black dot. Most importantly, all three methods reach the black dot in the end. For this simple example, it's not overly impressive to see this. However, it's still interesting that both GN and HIG exhibit large jumps in the initial stages of the learning process (the first few segments leaving the gray dot). This is caused by the fairly bad initial state, and the inversion, which leads to significant changes of the NN state and its outputs. In contrast, the momentum terms of Adam reduce this jumpiness: the initial jumps in the light blue line are smaller than those of the other two.
 
-Overall, the behavior of all three methods is largely in line with what we'd expect: while the loss surely could go down more, and some of the steps in $y$ seem to momentarily do in the wrong direction, all three methods cope quite well with this case. Not surprisingly, this picture will change when making things harder with a more ill-conditioned Jacobian resulting from a small $\lambda$
+Overall, the behavior of all three methods is largely in line with what we'd expect: while the loss surely could go down more, and some of the steps in $y$ seem to momentarily do in the wrong direction, all three methods cope quite well with this case. Not surprisingly, this picture will change when making things harder with a more ill-conditioned Jacobian resulting from a small $\lambda$.
 
 ## Ill-conditioned
 
@@ -154,22 +153,6 @@ The third graph on the right side of figure {numref}`hig-toy-example-bad` shows 
 
 Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. 
 
-In contrast, for training with physical gradients (from {doc}`physgrad`), we even needed to provide a full inverse solver. As shown there, this has advantages, but differentiates PGs from DP and HIGs. Thus, the HIGs share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-code-control`, than with the example {doc}`physgrad-code`.
+In contrast, for training with SIPs (from {doc}`physgrad-nn`), we even needed to provide a full inverse solver. As shown there, this has advantages, but differentiates SIPs from DP and HIGs. Thus, the HIGs share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-code-control`, than with the example {doc}`physgrad-code`.
 
 This is a good time to give a specific code example of how to train physical NNs with HIGs: we'll look at a classic case, a system of coupled oscillators.
-
-
-## xxx TODO , merge into HIG example code later on xxx
-
-As example problem for the Half-Inverse Gradients (HIGs) we'll consider controlling a system of coupled oscillators. This is a classical problem in physics, and a good case to evaluate the HIGs due to it's smaller size. We're using two mass points, and thus we'll only have four degrees of freedom for position and velocity of both points (compared to, e.g., the $32\times32\times2$ unknowns we'd get even for "only" a small fluid simulation with 32 cells along x and y). Nonetheless, the oscillators are a highly-non trivial case: we aim for applying a control such that the initial state is reached again after a chosen time interval. Here we'll 96 steps of a fourth-order Runge-Kutta scheme, and hence the NN has to learn how to best "nudge" the two mass points over the course of all time steps, so that they end up at the desired position with the right velocity at the right time.
-
-A system of $N$ coupled oscillators is described by ...hamiltonian, TODO, replace by PDE ...
-
-$$
-  \mathcal{H}(x_i,p_i,t)=\sum_i \bigg( \frac{x_i^2}{2}+ \frac{p_i^2}{2} +  \alpha \cdot (x_i-x_{i+1})^4+u(t) \cdot x_i \cdot c_i\bigg),
-$$
-
-... which provides the basis for the RK4 time integration.
-
-xxx
-
