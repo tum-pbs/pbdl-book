@@ -51,8 +51,6 @@ To update the weights $\theta$ of the NN $f$, we perform the following update st
 
 % xxx TODO, make clear, we're solving the inverse problem $f(y; \theta)=x$
 
-% * Compute the scale-invariant update $\Delta x_{\text{PG}} = \mathcal P^{-1}(y + \Delta y; x_0) - x$ using an inverse simulator
-
 
 This combined optimization algorithm depends on both the learning rate $\eta_\textrm{NN}$ for the network as well as the step size $\eta$ from above, which factors into $\Delta y$.
 To first order, the effective learning rate of the network weights is $\eta_\textrm{eff} = \eta \cdot \eta_\textrm{NN}$.
@@ -68,8 +66,6 @@ This algorithm combines the inverse simulator to compute accurate, higher-order 
 
 In the above algorithm, we have assumed an $L^2$ loss, and without further explanation introduced a Newton step to propagate the inverse simulator step to the NN. Below, we explain and justify this treatment in more detail.
 
-%Here an obvious questions is: Doesn't this leave us with the disadvantage of having to compute the inverse Hessian, as discussed before?
-
 The central reason for introducing a Newton step is the improved accuracy for the loss derivative.
 Unlike with regular Newton or the quasi-Newton methods from equation {eq}`quasi-newton-update`, we do not need the Hessian of the full system. 
 Instead, the Hessian is only needed for $L(y)$. 
@@ -80,15 +76,15 @@ E.g., consider the most common supervised objective function, $L(y) = \frac 1 2 
 We then have $\frac{\partial L}{\partial y} = y - y^*$ and $\frac{\partial^2 L}{\partial y^2} = 1$.
 Using equation {eq}`quasi-newton-update`, we get $\Delta y = \eta \cdot (y^* - y)$ which can be computed right away, without evaluating any additional Hessian matrices.
 
-Once $\Delta y$ is determined, the gradient can be backpropagated to earlier time steps using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and an inverse simulator for the PDE in {doc}`physgrad-comparison`.
+Once $\Delta y$ is determined, the gradient can be backpropagated to $x$, e.g. an earlier time, using the inverse simulator $\mathcal P^{-1}$. We've already used this combination of a Newton step for the loss and an inverse simulator for the PDE in {doc}`physgrad-comparison`.
 
-The loss here acts as a _proxy_ to embed the update from the inverse simulator into the network training pipeline. 
+The loss in $x$ here acts as a _proxy_ to embed the update from the inverse simulator into the network training pipeline. 
 It is not to be confused with a traditional supervised loss in $x$ space.
 Due to the dependency of $\mathcal P^{-1}$ on the prediction $y$, it does not average multiple modes of solutions in $x$.
 To demonstrate this, consider the case that GD is being used as solver for the inverse simulation.
 Then the total loss is purely defined in $y$ space, reducing to a regular first-order optimization. 
 
-Hence, the proxy loss function simply connects the computational graphs of inverse physics and NN for backpropagation.
+Hence, to summarize with SIPs we employ a trivial Newton step for the loss in $y$, and a proxy $L^2$ loss in $x$ that connects the computational graphs of inverse physics and NN for backpropagation.
 
 ## Iterations and time dependence
 
@@ -127,7 +123,7 @@ name: physgrad-sin-loss
 Next we train a fully-connected neural network to invert this problem via equation {eq}`eq:unsupervised-training`. 
 We'll compare SIP training using a saddle-free Newton solver to various state-of-the-art network optimizers.
 For fairness, the best learning rate is selected independently for each optimizer.
-When choosing $\xi=0$ the problem is perfectly conditioned. In this case all network optimizers converge, with Adam having a slight advantage. This is shown in the left graph:
+When choosing $\xi=1$ the problem is perfectly conditioned. In this case all network optimizers converge, with Adam having a slight advantage. This is shown in the left graph:
 ```{figure} resources/physgrad-sin-time-graphs.png
 ---
 height: 180px

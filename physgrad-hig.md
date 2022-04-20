@@ -28,16 +28,16 @@ As mentioned during the derivation of inverse simulator updates in {eq}`quasi-ne
 
 $$
      \Delta \theta_{\mathrm{GN}}
-    = - \eta \Bigg( \bigg(\frac{\partial z}{\partial \theta}\bigg)^{T} \cdot \bigg(\frac{\partial z}{\partial \theta}\bigg) \Bigg)^{-1} \cdot
-    \bigg(\frac{\partial z}{\partial \theta}\bigg)^{T} \cdot \bigg(\frac{\partial L}{\partial z}\bigg)^{\top} .
+    = - \eta \Bigg( \bigg(\frac{\partial y}{\partial \theta}\bigg)^{T} \cdot \bigg(\frac{\partial y}{\partial \theta}\bigg) \Bigg)^{-1} \cdot
+    \bigg(\frac{\partial y}{\partial \theta}\bigg)^{T} \cdot \bigg(\frac{\partial L}{\partial y}\bigg)^{T} .
 $$ (gauss-newton-update-full)
 
-For a full-rank Jacobian $\partial z / \partial \theta$, the transposed Jacobian cancels out, and the equation simplifies to
+For a full-rank Jacobian $\partial y / \partial \theta$, the transposed Jacobian cancels out, and the equation simplifies to
 
 $$
      \Delta \theta_{\mathrm{GN}}
-    = - \eta \bigg(\frac{\partial z}{\partial \theta}\bigg)  ^{-1} \cdot
-        \bigg(\frac{\partial L}{\partial z}\bigg)^{\top} .
+    = - \eta \bigg(\frac{\partial y}{\partial \theta}\bigg)  ^{-1} \cdot
+        \bigg(\frac{\partial L}{\partial y}\bigg)^{T} .
 $$ (gauss-newton-update)
 
 This looks much simpler, but still leaves us with a Jacobian matrix to invert. This Jacobian is typically non-square, and has small singular values which cause problems during inversion. Naively applying methods like Gauss-Newton can quickly explode. However, as we're dealing with cases where we have a physics solver in the training loop, the small singular values are often relevant for the physics. Hence, we don't want to just discard these parts of the learning signal, but rather preserve as many of them as possible.
@@ -45,11 +45,11 @@ This looks much simpler, but still leaves us with a Jacobian matrix to invert. T
 This motivates the HIG update, which employs a partial and truncated inversion of the form
 
 $$
-    \Delta \theta_{\mathrm{HIG}} = - \eta \cdot  \bigg(\frac{\partial y}{\partial \theta}\bigg)^{-1/2} \cdot \bigg(\frac{\partial L}{\partial y}\bigg)^{\top} , 
+    \Delta \theta_{\mathrm{HIG}} = - \eta \cdot  \bigg(\frac{\partial y}{\partial \theta}\bigg)^{-1/2} \cdot \bigg(\frac{\partial L}{\partial y}\bigg)^{T} , 
 $$ (hig-update)
 
 where the square-root for $^{-1/2}$ is computed via an SVD, and denotes the half-inverse. I.e., for a matrix $A$, 
-we compute its half-inverse via a singular value decomposition as $A^{-1/2} = V \Lambda^{-1/2} U^\top$, where $\Lambda$ contains the singular values.
+we compute its half-inverse via a singular value decomposition as $A^{-1/2} = V \Lambda^{-1/2} U^T$, where $\Lambda$ contains the singular values.
 During this step we can also take care of numerical noise in the form of small singular values. All entries
 of $\Lambda$ smaller than a threshold $\tau$ are set to zero.
 
@@ -59,7 +59,7 @@ It might seem attractive at first to clamp singular values to a small value $\ta
 
 ```
 
-The use of a partial inversion via $^{-1/2}$ instead of a full inversion with $^{-1}$ helps preventing that small eigenvalues lead to overly large contributions in the update step. This is inspired by Adam, which  normalizes the search direction via $J/(\sqrt(diag(J^{\top}J)))$ instead of inverting it via $J/(J^{\top}J)$, with $J$ being the diagonal of the Jacobian matrix. For Adam, this compromise is necessary due to the rough approximation via the diagonal. For HIGs, we use the full Jacobian, and hence can do a proper inversion. Nonetheless, as outlined in the original paper {cite}`schnell2022hig`, the half-inversion regularizes the inverse and provides substantial improvements for the learning, while reducing the chance of gradient explosions.
+The use of a partial inversion via $^{-1/2}$ instead of a full inversion with $^{-1}$ helps preventing that small eigenvalues lead to overly large contributions in the update step. This is inspired by Adam, which  normalizes the search direction via $J/(\sqrt(diag(J^{R}J)))$ instead of inverting it via $J/(J^{T}J)$, with $J$ being the diagonal of the Jacobian matrix. For Adam, this compromise is necessary due to the rough approximation via the diagonal. For HIGs, we use the full Jacobian, and hence can do a proper inversion. Nonetheless, as outlined in the original paper {cite}`schnell2022hig`, the half-inversion regularizes the inverse and provides substantial improvements for the learning, while reducing the chance of gradient explosions.
 
 ## Constructing the Jacobian
 

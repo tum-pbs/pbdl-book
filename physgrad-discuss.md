@@ -1,4 +1,4 @@
-Discussion
+Discussion of Improved Gradients
 =======================
 
 At this point it's a good time to take another step back, and assess the different methods of the previous chapters. For deep learning applications, we can broadly distinguish three approaches: the _regular_ differentiable physics (DP) training, the training with half-inverse gradients (HIGs), and using the scale-invariant physics updates (SIPs). Unfortunately, we can't simply discard two of them, and focus on a single approach for all future endeavours. However, discussing the pros and cons sheds light on some fundamental aspects of physics-based deep learning.
