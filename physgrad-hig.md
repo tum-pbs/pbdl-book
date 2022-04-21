@@ -61,6 +61,16 @@ It might seem attractive at first to clamp singular values to a small value $\ta
 
 The use of a partial inversion via $^{-1/2}$ instead of a full inversion with $^{-1}$ helps preventing that small eigenvalues lead to overly large contributions in the update step. This is inspired by Adam, which  normalizes the search direction via $J/(\sqrt(diag(J^{T}J)))$ instead of inverting it via $J/(J^{T}J)$, with $J$ being the diagonal of the Jacobian matrix. For Adam, this compromise is necessary due to the rough approximation via the diagonal. For HIGs, we use the full Jacobian, and hence can do a proper inversion. Nonetheless, as outlined in the original paper {cite}`schnell2022hig`, the half-inversion regularizes the inverse and provides substantial improvements for the learning, while reducing the chance of gradient explosions.
 
+```{figure} resources/physgrad-hig-spaces.jpg
+---
+height: 160px
+name: hig-spaces
+---
+A visual overview of the different spaces involved in HIG training. Most importantly, it makes use of the joint, inverse Jacobian for neural network and physics.
+```
+
+
+
 ## Constructing the Jacobian
 
 The formulation above hides one important aspect of HIGs: the search direction we compute not only jointly takes into account the scaling of neural network and physics, but can also incorporate information from all the samples in a mini-batch. This has the advantage of finding the optimal direction (in an $L^2$ sense) to minimize the loss, instead of averaging directions as done with SGD or Adam.
@@ -79,7 +89,7 @@ $$
     \right) \ .
 $$
 
-The notation with $\big\vert_{x_i}$$ also makes clear that all parts of the Jacobian are evaluated with the corresponding input states. In contrast to regular optimizations, where larger batches typically don't pay off too much due to the averaging effect, the HIGs have a stronger dependence on the batch size. They often profit from larger mini-batch sizes.
+The notation with $\big\vert_{x_i}$ also makes clear that all parts of the Jacobian are evaluated with the corresponding input states. In contrast to regular optimizations, where larger batches typically don't pay off too much due to the averaging effect, the HIGs have a stronger dependence on the batch size. They often profit from larger mini-batch sizes.
 
 To summarize, compute the HIG update requires evaluating the individual Jacobians of a batch, doing an SVD of the combined Jacobian, truncating and half-inverting the singular values, and computing the update direction by re-assembling the half-inverted Jacobian matrix.
 

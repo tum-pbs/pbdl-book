@@ -20,20 +20,22 @@ $$ (eq:unsupervised-training)
 
 
 
+
 ## NN training 
 
-To integrate the update step from equation {eq}`PG-def` into the training process for an NN, we consider three components: the NN itself, the physics simulator, and the loss function. 
-To join these three pieces together, we use the following algorithm. As introduced by Holl et al. {cite}`holl2021pg`, we'll denote this training process as _scale-invariant physics_ (SIP) training.
+To integrate the update step from equation {eq}`PG-def` into the training process for an NN, we consider three components: the NN itself, the physics simulator, and the loss function: 
 
 
-```{figure} resources/physgrad-sip.jpg
+```{figure} resources/physgrad-sip-spaces.jpg
 ---
-height: 220px
-name: sip-training
+height: 160px
+name: sip-spaces
 ---
-A visual overview of SIP training for an entry $i$ of a mini-batch, including the two loss computations in $y$ and in $x$ space (for the proxy loss).
+A visual overview of the different spaces involved in SIP training.
 ```
 
+
+To join these three pieces together, we use the following algorithm. As introduced by Holl et al. {cite}`holl2021pg`, we'll denote this training process as _scale-invariant physics_ (SIP) training.
 
 
 ```{admonition} Scale-Invariant Physics (SIP) Training
@@ -84,7 +86,18 @@ Due to the dependency of $\mathcal P^{-1}$ on the prediction $y$, it does not av
 To demonstrate this, consider the case that GD is being used as solver for the inverse simulation.
 Then the total loss is purely defined in $y$ space, reducing to a regular first-order optimization. 
 
-Hence, to summarize with SIPs we employ a trivial Newton step for the loss in $y$, and a proxy $L^2$ loss in $x$ that connects the computational graphs of inverse physics and NN for backpropagation.
+Hence, to summarize with SIPs we employ a trivial Newton step for the loss in $y$, and a proxy $L^2$ loss in $x$ that connects the computational graphs of inverse physics and NN for backpropagation. The following figure visualizes the different steps.
+
+
+```{figure} resources/physgrad-sip.jpg
+---
+height: 220px
+name: sip-training
+---
+A visual overview of SIP training for an entry $i$ of a mini-batch, including the two loss computations in $y$ and in $x$ space (for the proxy loss).
+```
+
+
 
 ## Iterations and time dependence
 
