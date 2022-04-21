@@ -26,12 +26,12 @@ To integrate the update step from equation {eq}`PG-def` into the training proces
 To join these three pieces together, we use the following algorithm. As introduced by Holl et al. {cite}`holl2021pg`, we'll denote this training process as _scale-invariant physics_ (SIP) training.
 
 
-```{figure} resources/placeholder.png
+```{figure} resources/physgrad-sip.jpg
 ---
 height: 220px
-name: pg-training
+name: sip-training
 ---
-TODO, visual overview of SIP training
+A visual overview of SIP training for an entry $i$ of a mini-batch, including the two loss computations in $y$ and in $x$ space (for the proxy loss).
 ```
 
 

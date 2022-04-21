@@ -1,7 +1,7 @@
 format: jb-book
 root: intro.md
 parts:
-- caption: Introduction bla
+- caption: Introduction
   chapters:
   - file: intro-teaser.ipynb
   - file: overview.md

@@ -58,5 +58,8 @@ The HIGs on the other hand, go back to first order information in the form of Ja
 
 However, in both cases, the resulting models can give a performance that we simply can't obtain by, e.g., training longer with a simpler DP or supervised approach. So, if we plan to evaluate these models often, e.g., shipping them in an application, this increased one-time cost can pay off in the long run.
 
-
-
+This concludes the chapter on improved learning methods for physics-based NNs. 
+It's clearly an active topic of research, with plenty of room for new methods, but the algorithms here already
+indicate the potential of tailored learning algorithms for physical problems. 
+This also concludes the focus on numerical simulations as DL components. In the next chapter, we'll instead
+focus on a different statistical viewpoint, the inclusion of uncertainty.

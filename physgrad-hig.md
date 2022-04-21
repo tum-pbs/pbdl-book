@@ -59,7 +59,7 @@ It might seem attractive at first to clamp singular values to a small value $\ta
 
 ```
 
-The use of a partial inversion via $^{-1/2}$ instead of a full inversion with $^{-1}$ helps preventing that small eigenvalues lead to overly large contributions in the update step. This is inspired by Adam, which  normalizes the search direction via $J/(\sqrt(diag(J^{R}J)))$ instead of inverting it via $J/(J^{T}J)$, with $J$ being the diagonal of the Jacobian matrix. For Adam, this compromise is necessary due to the rough approximation via the diagonal. For HIGs, we use the full Jacobian, and hence can do a proper inversion. Nonetheless, as outlined in the original paper {cite}`schnell2022hig`, the half-inversion regularizes the inverse and provides substantial improvements for the learning, while reducing the chance of gradient explosions.
+The use of a partial inversion via $^{-1/2}$ instead of a full inversion with $^{-1}$ helps preventing that small eigenvalues lead to overly large contributions in the update step. This is inspired by Adam, which  normalizes the search direction via $J/(\sqrt(diag(J^{T}J)))$ instead of inverting it via $J/(J^{T}J)$, with $J$ being the diagonal of the Jacobian matrix. For Adam, this compromise is necessary due to the rough approximation via the diagonal. For HIGs, we use the full Jacobian, and hence can do a proper inversion. Nonetheless, as outlined in the original paper {cite}`schnell2022hig`, the half-inversion regularizes the inverse and provides substantial improvements for the learning, while reducing the chance of gradient explosions.
 
 ## Constructing the Jacobian
 
@@ -100,10 +100,10 @@ $$
 and a scaled loss function 
 
 $$ 
-    L(y,\hat{y};\lambda)= \frac{1}{2} \big(y^1-\hat{y}^1\big)^2+ \frac{1}{2} \big(\lambda \cdot y^2-\hat{y}^2\big)^2 \ . 
+    L(y,\hat{y};\lambda)= \frac{1}{2} \big(y_1-\hat{y}_1\big)^2+ \frac{1}{2} \big(\lambda \cdot y_2-\hat{y}_2 \big)^2 \ . 
 $$
 
-Here $y^1$ and $y^2$ denote the first, and second component of $y$ (in contrast to the subscript used for the entries of a mini-batch above). Note that the scaling via $\lambda$ is intentionally only applied to the second component in the loss. This mimics an uneven scaling of the two components as commonly encountered in physical simulation settings, the amount of which can be chosen via $\lambda$.
+Here $y_1$ and $y_2$ denote the first, and second component of $y$ (in contrast to the subscript $i$ used for the entries of a mini-batch above). Note that the scaling via $\lambda$ is intentionally only applied to the second component in the loss. This mimics an uneven scaling of the two components as commonly encountered in physical simulation settings, the amount of which can be chosen via $\lambda$.
 
 We'll use a small neural network with a single hidden layer consisting of 7 neurons with _tanh()_ activations and the objective to learn $\hat{y}$. 
 

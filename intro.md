@@ -32,6 +32,8 @@ As a _sneak preview_, the next chapters will show:
 
 - How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
 
+- We'll also discuss the importance of _inversion_ for the update steps, and how higher-order information can be used to speed up convergence, and obtain more accurate neural networks.
+
 Throughout this text,
 we will introduce different approaches for introducing physical models
 into deep learning, i.e., _physics-based deep learning_ (PBDL) approaches.
@@ -45,8 +47,9 @@ different techniques is particularly useful.
 :class: tip
 We focus on Jupyter notebooks, a key advantage of which is that all code examples
 can be executed _on the spot_, from your browser. You can modify things and 
-immediately see what happens -- give it a try...
-<br><br>
+immediately see what happens -- give it a try by 
+[[running this teaser example in your browser]](https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/intro-teaser.ipynb).
+
 Plus, Jupyter notebooks are great because they're a form of [literate programming](https://en.wikipedia.org/wiki/Literate_programming).
 ```
 
