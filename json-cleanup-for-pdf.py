@@ -58,6 +58,7 @@ for fnOut in fileList:
 
 	res.append( re.compile(r"ERROR: pip") )  # pip dependencies
 	res.append( re.compile(r"requires imgaug") )  # pip dependencies
+	res.append( re.compile(r"See the documentation of nn.Upsample") )  # pip dependencies
 
 	# remove all "warnings.warn" from phiflow?
 
