@@ -107,6 +107,10 @@ The key aspects that we will address in the following are:
 - explain how to use deep learning techniques to solve PDE problems,
 - how to combine them with **existing knowledge** of physics,
 - without **discarding** our knowledge about numerical methods.
+
+At the same time, it's worth noting what we won't be covering:
+- introductions to deep learning and numerical simulations,
+- we're neither aiming for a broad survey of research articles in this area.
 ```
 
 The resulting methods have a huge potential to improve

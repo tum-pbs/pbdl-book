@@ -14,7 +14,7 @@ In contrast to the previous sections and {doc}`overview-equations`, we are targe
 This gives the following minimization problem with $i$ denoting the indices of a mini-batch:
 
 $$
-    \text{arg min}_\theta \sum_{i} \frac 1 2 \| \mathcal P\big(f(y^*_i ; \theta)\big) - y^*_i \|_2^2 
+    \text{arg min}_\theta \sum_{i} \frac 1 2 | \mathcal P\big(f(y^*_i ; \theta)\big) - y^*_i |_2^2 
 $$ (eq:unsupervised-training)
 
 
@@ -45,7 +45,7 @@ To update the weights $\theta$ of the NN $f$, we perform the following update st
 
 * Given a set of inputs $y^*$, evaluate the forward pass to compute the NN prediction $x = f(y^*; \theta)$
 * Compute $y$ via a forward simulation ($y = \mathcal P(x)$) and invoke the (local) inverse simulator $P^{-1}(y; x)$ to obtain the step $\Delta x_{\text{PG}} = \mathcal P^{-1} (y + \eta \Delta y; x)$ with $\Delta y = y^* - y$
-* Evaluate the network loss, e.g., $L = \frac 1 2 || x - \tilde x ||_2^2$ with $\tilde x = x+\Delta x_{\text{PG}}$, and perform a Newton step treating $\tilde x$ as a constant 
+* Evaluate the network loss, e.g., $L = \frac 1 2 | x - \tilde x |_2^2$ with $\tilde x = x+\Delta x_{\text{PG}}$, and perform a Newton step treating $\tilde x$ as a constant 
 * Use GD (or a GD-based optimizer like Adam) to propagate the change in $x$ to the network weights $\theta$ with a learning rate $\eta_{\text{NN}}$
 
 
@@ -118,9 +118,9 @@ This typically makes the learning task more difficult, as we repeatedly backprop
 Let's illustrate the convergence behavior of SIP training and how it depends on characteristics of $\mathcal P$ with an example {cite}`holl2021pg`.
 We consider the synthetic two-dimensional function 
 %$$\mathcal P(x) = \left(\frac{\sin(\hat x_1)}{\xi}, \xi \cdot \hat x_2 \right) \quad \text{with} \quad \hat x = R_\phi \cdot x$$
-$$\mathcal P(x) = \left(\sin(\hat x_1) / \xi, \  \hat x_2 \cdot \xi \right) \quad \text{with} \quad \hat x = \gamma \cdot R_\phi \cdot x , $$
+$$\mathcal P(x) = \left(\sin(\hat x_1) / \xi, \  \hat x_2 \cdot \xi \right) \quad \text{with} \quad \hat x = R_\phi \cdot x , $$
 % 
-where $R_\phi \in \mathrm{SO}(2)$ denotes a rotation matrix and $\gamma > 0$.
+where $R_\phi \in \mathrm{SO}(2)$ denotes a rotation matrix.
 The parameters $\xi$ and $\phi$ allow us to continuously change the characteristics of the system.
 The value of $\xi$ determines the conditioning of $\mathcal P$ with large $\xi$ representing ill-conditioned problems while $\phi$ describes the coupling of $x_1$ and $x_2$. When $\phi=0$, the off-diagonal elements of the Hessian vanish and the problem factors into two independent problems.
 

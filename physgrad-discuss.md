@@ -1,7 +1,7 @@
 Discussion of Improved Gradients
 =======================
 
-At this point it's a good time to take another step back, and assess the different methods of the previous chapters. For deep learning applications, we can broadly distinguish three approaches: the _regular_ differentiable physics (DP) training, the training with half-inverse gradients (HIGs), and using the scale-invariant physics updates (SIPs). Unfortunately, we can't simply discard two of them, and focus on a single approach for all future endeavours. However, discussing the pros and cons sheds light on some fundamental aspects of physics-based deep learning.
+At this point it's a good time to take another step back, and assess the different methods introduced so far. For deep learning applications, we can broadly distinguish three approaches: the _regular_ differentiable physics (DP) training, the training with half-inverse gradients (HIGs), and using the scale-invariant physics updates (SIPs). Unfortunately, we can't simply discard two of them, and focus on a single approach for all future endeavours. However, discussing the pros and cons sheds light on some fundamental aspects of physics-based deep learning.
 
 ![Divider](resources/divider7.jpg)
 
@@ -9,7 +9,7 @@ At this point it's a good time to take another step back, and assess the differe
 
 First and foremost, a central motivation for improved updates is the need to address the scaling issues of the learning problems. This is not a completely new problem: numerous deep learning algorithms were proposed to address these for training NNs. However, the combination of NNs with physical simulations brings new challenges that at the same time provide new angles to tackle this problem. On the negative side, we have additional, highly non-linear operators from the PDE models. On the positive side, these operators typically do not have free parameters during learning, and thus can be treated with different, tailored methods.
 
-This is exactly where HIGs and SIPs come in: instead of treating the physical simulation like the rest of the NNs (this is the DP approach), they show how much can be achieved with custom inverse solvers (SIPs) or a custom numerical inversion (HIGs).
+This is exactly where HIGs and SIPs come in: instead of treating the physical simulation like the rest of the NNs (this is the DP approach), they show how much can be achieved with custom inverse solvers (SIPs) or a custom numerical inversion (HIGs). Both methods make important steps towards _scale-invariant_ training.
 
 ## Computational Resources
 
@@ -40,7 +40,7 @@ Even when the inversion is only done for the physics simulation component (as wi
 
 ❌ Con SIP: 
 - Require inverse simulators (at least local ones).
-- Less wide-spread availability than, e.g., differentiable physics simulators.
+- Only makes the physics component scale-invariant.
 
 ---
 
@@ -56,10 +56,10 @@ The HIGs on the other hand, go back to first order information in the form of Ja
 
 ---
 
-However, in both cases, the resulting models can give a performance that we simply can't obtain by, e.g., training longer with a simpler DP or supervised approach. So, if we plan to evaluate these models often, e.g., shipping them in an application, this increased one-time cost can pay off in the long run.
+In both cases, the resulting neural networks can yield a performance that we simply can't obtain by, e.g., training longer with a simpler DP or supervised approach. So, if we plan to evaluate these models often, e.g., shipping them in an application, this increased one-time cost will pay off in the long run.
 
 This concludes the chapter on improved learning methods for physics-based NNs. 
 It's clearly an active topic of research, with plenty of room for new methods, but the algorithms here already
 indicate the potential of tailored learning algorithms for physical problems. 
 This also concludes the focus on numerical simulations as DL components. In the next chapter, we'll instead
-focus on a different statistical viewpoint, the inclusion of uncertainty.
+focus on a different statistical viewpoint, namely the inclusion of uncertainty.

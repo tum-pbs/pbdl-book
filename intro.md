@@ -7,7 +7,7 @@ name: pbdl-logo-large
 ---
 ```
 
-Welcome to the _Physics-based Deep Learning Book_ (v0.1) 👋
+Welcome to the _Physics-based Deep Learning Book_ (v0.2) 👋
 
 **TL;DR**: 
 This document contains a practical and comprehensive introduction of everything
@@ -15,10 +15,17 @@ related to deep learning in the context of physical simulations.
 As much as possible, all topics come with hands-on code examples in the 
 form of Jupyter notebooks to quickly get started.
 Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
-more tightly coupled learning algorithms with _differentiable simulations_, as well as 
+more tightly coupled learning algorithms with _differentiable simulations_, 
+training algorithms tailored to physics problems,
+as well as 
 reinforcement learning and uncertainty modeling.
 We live in exciting times: these methods have a huge potential to fundamentally 
 change what computer simulations can achieve.
+
+```{note} 
+_What's new in v0.2?_
+For readers familiar with v0.1 of this text, the brand new chapter on improved learning methods for physics problems is highly recommended: starting with {doc}`physgrad`.
+```
 
 ---
 

@@ -18,7 +18,7 @@ As a drawback, HIGs:
 - require an SVD for a large Jacobian matrix,
 - and are based on first-order information (similar to regular gradients). 
 
-Howver, in contrast to regular gradients, they use the full Jacobian matrix. So as we'll see below, they typically outperform regular SGD and Adam significantly.
+Howver, in contrast to regular gradients, they use the full Jacobian matrix. So as we'll see below, they typically outperform regular GD and Adam significantly.
 
 ```
 
@@ -73,7 +73,7 @@ A visual overview of the different spaces involved in HIG training. Most importa
 
 ## Constructing the Jacobian
 
-The formulation above hides one important aspect of HIGs: the search direction we compute not only jointly takes into account the scaling of neural network and physics, but can also incorporate information from all the samples in a mini-batch. This has the advantage of finding the optimal direction (in an $L^2$ sense) to minimize the loss, instead of averaging directions as done with SGD or Adam.
+The formulation above hides one important aspect of HIGs: the search direction we compute not only jointly takes into account the scaling of neural network and physics, but can also incorporate information from all the samples in a mini-batch. This has the advantage of finding the optimal direction (in an $L^2$ sense) to minimize the loss, instead of averaging directions as done with GD or Adam.
 
 To achieve, this, the Jacobian matrix for $\partial y / \partial \theta$ is concatenated from the individual Jacobians of each sample in a mini-batch. Let $x_i,y_i$ denote input and output of sample $i$ in a mini-batch, respectively, then the final Jacobian is constructed via all the 
 $\frac{\partial y_i}{\partial \theta}\big\vert_{x_i}$ as
@@ -119,7 +119,7 @@ We'll use a small neural network with a single hidden layer consisting of 7 neur
 
 ## Well-conditioned
 
-Let's first look at the well-conditioned case with $\lambda=1$. In the following image, we'll compare Adam as the most popular SGD-representative, Gauss-Newton (GN) as "classical" method, and the HIGs. These methods are evaluated w.r.t. three aspects: naturally, it's interesting to see how the loss evolves. In addition, we'll consider the distribution of neuron activations from the resulting neural network states (more on that below). Finally, it's also interesting to observe how the optimization influences the resulting target states (in $y$ space) produced by the neural network. Note that the $y$-space graph below shows only a single, but fairly representative, $x,y$ pair. The other two show quantities from a larger set of validation inputs.
+Let's first look at the well-conditioned case with $\lambda=1$. In the following image, we'll compare Adam as the most popular GD-representative, Gauss-Newton (GN) as "classical" method, and the HIGs. These methods are evaluated w.r.t. three aspects: naturally, it's interesting to see how the loss evolves. In addition, we'll consider the distribution of neuron activations from the resulting neural network states (more on that below). Finally, it's also interesting to observe how the optimization influences the resulting target states (in $y$ space) produced by the neural network. Note that the $y$-space graph below shows only a single, but fairly representative, $x,y$ pair. The other two show quantities from a larger set of validation inputs.
 
 ```{figure} resources/physgrad-hig-toy-example-good.jpg
 ---
@@ -161,7 +161,7 @@ The third graph on the right side of figure {numref}`hig-toy-example-bad` shows 
 
 ## Summary of Half-Inverse Gradients
 
-Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular SGD, as well as for HIG-based training. 
+Note that for all examples so far, we've improved upon the _differentiable physics_ (DP) training from the previous chapters. I.e., we've focused on combinations of neural networks and PDE solving operators. The latter need to be differentiable for training with regular GD, as well as for HIG-based training. 
 
 In contrast, for training with SIPs (from {doc}`physgrad-nn`), we even needed to provide a full inverse solver. As shown there, this has advantages, but differentiates SIPs from DP and HIGs. Thus, the HIGs share more similarities with, e.g., {doc}`diffphys-code-sol` and  {doc}`diffphys-code-control`, than with the example {doc}`physgrad-code`.
 

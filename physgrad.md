@@ -1,4 +1,4 @@
-Towards Gradient Inversion
+Scale-Invariance and Inversion
 =======================
 
 In the following we will question some fundamental aspects of the formulations so far, namely the update step computed via gradients.
@@ -10,7 +10,9 @@ Not too surprising after this introduction: A central insight of the following c
 It turns out that both supervised and DP gradients have their pros and cons, and leave room for custom methods that are aware of the physics operators. 
 In particular, we'll show how scaling problems of DP gradients affect NN training (as outlined in {cite}`holl2021pg`),
 and revisit the problems of multi-modal solutions.
-Finally, we'll explain several alternatives to prevent these issues. It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
+Finally, we'll explain several alternatives to prevent these issues. 
+
+% It turns out that a key property that is missing in regular gradients is a proper _inversion_ of the Jacobian matrix.
 
 
 ```{admonition} A preview of this chapter
@@ -18,13 +20,46 @@ Finally, we'll explain several alternatives to prevent these issues. It turns ou
 
 Below, we'll proceed in the following steps:
 - Show how the properties of different optimizers and the associated scaling issues can negatively affect NN training.
-- Identify what is missing in our training runs with GD or Adam so far. Spoiler: it is a proper _inversion_ of the Jacobian matrix.
-- We'll explain two alternatives to prevent these problems: an analytical full-, and a numerical half-inversion scheme.
+- Identify the problem with our GD or Adam training runs so far. Spoiler: they're missing an _inversion_ process to make the training scale-invariant.
+- We'll then explain two alternatives to alleviate these problems: an analytical full-, and a numerical half-inversion scheme.
 
 ```
 
 % note, re-introduce multi-modality at some point...
 
+## The crux of the matter
+
+Before diving into the details of different optimizers, the following paragraphs should provide some intuition for why this is important. As mentioned above, all methods discussed so far have used gradients, and the main reason for moving towards different updates is that they have some fundamental scaling issues in multi-dimensional settings.
+
+For 1D problems, this can easily be "fixed" by choosing a good learning rate, but interestingly, as soon
+as we go to 2D, things become more tricky. Let's consider a very simple toy "physics" function in two dimensions, which simply applies an exponent $\alpha$ to the second component. Afterwards we're computing an $L^2$ "loss" of the result:
+
+$$ \mathcal P(x_1,x_2) = 
+\begin{bmatrix} 
+  x_1 \\
+  x_2^{~\alpha}
+\end{bmatrix}  \text{ with }  L(\mathcal P) = |\mathcal P|^2 
+$$
+
+For $\alpha=1$ everything is very simple: we're faced with a radial symmetric loss landscape, and $x_1$ and $x_2$ behave in the same way. The gradient $\nabla_x = (\partial L / \partial x)^T$ is perpendicular to the isolevels of the loss landscape, and hence an update with $-\eta \nabla_x$ points directly to the minimum at 0. This is a setting we're dealing with for classical deep learning scenarios, like most supervised learning cases or classification problems. This example is visualized on the left of the following figure.
+
+```{figure} resources/physgrad-scaling.jpg
+---
+height: 200px
+name: physgrad-scaling
+---
+Loss landscapes in $x$ for different $\alpha$ of the 2D example problem, with an example update step $- \nabla_x$ shown in green for each case.
+```
+
+However, within this book we're targeting _physical_ learning problems, and hence we have physical functions integrated into the learning process, as discussed at length for differentiable physics approaches. This is fundamentally different! The physics functions pretty much always will introduce a scaling of the different components. In our toy problem we can mimic this by choosing different values for $\alpha$, as shown in the middle and right graphs of the figure above.
+
+For larger $\alpha$, the loss landscape away from the minimum steepens along $x_2$. As a consequence, the gradients grow along this direction. If we don't want our optimization to blow up, we'll need to choose a smaller learning rate $\eta$, reducing progress along $x_1$. The gradient of course stays perpendicular to the loss. In this example we'll move quickly along $x_2$ until we're close to the x axis, and then only very slowly creep left towards the minimum. Even worse, as we'll show below, regular updates actually apply the square of the scaling! 
+And in settings with many dimensions, it will be extremely difficult to find a good learning rate.
+Thus, to make proper progress, we somehow need to account for the different scaling of the components of multi-dimensional functions. This requires some form of _inversion_, as we'll outline in detail below. 
+
+Note that inversion, naturally, does not mean negation ($g^{-1} \ne -g$ 🙄). A negated gradient would definitely move in the wrong direction. We need an update that still points towards a decreasing loss, but accounts for differently scaled dimensions. Hence, a central aim in the following will be _scale-invariance_.
+
+Definition of *scale-invariance*: a scale-invariant optimization for a given function yields the same result for different parametrizations (i.e. scalings) of the function.
 
 
 ![Divider](resources/divider3.jpg)
@@ -32,7 +67,7 @@ Below, we'll proceed in the following steps:
 
 ## Traditional optimization methods
 
-As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. Below, we'll compute different versions of $\Delta x$ that will be distuingished by a subscript.
+We'll now evaluate and discuss how different optimizers perform in comparison. As before, let $L(x)$ be a scalar loss function, subject to minimization. The goal is to compute a step in terms of the input parameters $x$ , denoted by $\Delta x$. Below, we'll compute different versions of $\Delta x$ that will be distinguished by a subscript.
 
 All NNs of the previous chapters were trained with gradient descent (GD) via backpropagation. GD with backprop was also employed for the PDE solver (_simulator_) $\mathcal P$, resulting in the DP training approach.
 When we simplify the setting, and leave out the NN for a moment, this gives the minimization problem
@@ -79,6 +114,7 @@ where $\eta$ is the scalar learning rate.
 The Jacobian $\frac{\partial L}{\partial x}$ describes how the loss reacts to small changes of the input.
 Surprisingly, this very widely used update has a number of undesirable properties that we'll highlight in the following. Note that we've naturally applied this update in supervised settings such as {doc}`supervised-airfoils`, but we've also used it in the differentiable physics approaches. E.g., in {doc}`diffphys-code-sol` we've computed the derivative of the fluid solver. In the latter case, we've still only updated the NN parameters, but the fluid solver Jacobian was part of equation {eq}`GD-update`, as shown in {eq}`loss-deriv`.
 
+We'll jointly evaluate GD and several other methods with respect to a range of categories: their handling of units, function sensitivity, and behavior near optima. While these topics are related, they illustrate differences and similarities of the approaches.
 
 
 **Units** 📏
@@ -92,9 +128,8 @@ One could argue that units aren't very important for the parameters of NNs, but 
 
 **Function sensitivity** 🔍
 
-GD has also inherent problems when functions are not _normalized_.
-This can be illustrated with a very simple example:
-consider the function $L(x) = c \cdot x$.
+As illustrated above, GD has also inherent problems when functions are not _normalized_.
+Consider the function $L(x) = c \cdot x$.
 Then the parameter updates of GD scale with $c$, i.e. $\Delta x_{\text{GD}} = -\eta \cdot c$, and 
 $L(x+\Delta x_{\text{GD}})$ will even have terms on the order of $c^2$.
 If $L$ is normalized via $c=1$, everything's fine. But in practice, we'll often
@@ -113,7 +148,7 @@ For insensitive functions where _large changes_ in the input don't change the ou
 Such sensitivity problems can occur easily in complex functions such as deep neural networks where the layers are typically not fully normalized.
 Normalization in combination with correct setting of the learning rate $\eta$ can be used to counteract this behavior in NNs to some extent, but these tools are not available when optimizing physics simulations.
 Applying normalization to a simulation anywhere but after the last solver step would destroy the state of the simulation.
-Adjusting the learning rate is also difficult in practice, e.g. when simulation parameters at different time steps are optimized simultaneously or when the magnitude of the simulation output varies w.r.t. the initial state.
+Adjusting the learning rate is also difficult in practice, e.g., when simulation parameters at different time steps are optimized simultaneously or when the magnitude of the simulation output varies w.r.t. the initial state.
 
 
 **Convergence near optimum** 💎
@@ -205,7 +240,7 @@ are still a very active research topic, and hence many extensions have been prop
 ## Inverse gradients
 
 As a first step towards fixing the aforementioned issues,
-we'll consider what we'll call _inverse_ gradients (IGs).
+we'll consider what we'll call _inverse_ gradients (IGs). These methods actually use an inverse of the Jacobian, but as we always have a scalar loss at the end of the computational chain, this results in a gradient vector.
 Unfortunately, they come with their own set of problems, which is why they only represent an intermediate step (we'll revisit them in a more practical form later on).
 
 Instead of $L$ (which is scalar), let's consider optimization problems for a generic, potentially non-scalar function $y(x)$. 
@@ -221,7 +256,7 @@ Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inve
 The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible. This is a problem somewhat similar to the inversion of the Hessian, and we'll revisit this issue below. However, if we can invert the Jacobian, this has some very nice properties.
 
 Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$, but effectively has the same role: it controls the step size of the optimization.
-It the simplest case, we can compute it as a step towards the ground truth via $\Delta y = \eta (y^* - y)$.
+It the simplest case, we can compute it as a step towards the ground truth via $\Delta y = \eta ~ (y^* - y)$.
 This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. 
 
 
@@ -267,7 +302,7 @@ Thus, we now consider the fact that inverse gradients are linearizations of inve
 
 ## Inverse simulators
 
-So far we've discussed the problems of existing methods, and a common theme among the methods that do better, Newton and IGs, is that the regular gradient is not sufficient. We somehow need to address it's problems with some form of _inversion_. Before going into details of NN training and numerical methods to perform this inversion, we will consider one additional "special" case that will further illustrate the need for inversion: if we can make use of an _inverse simulator_, this likewise addresses many of the inherent issues of GD. It actually represents the ideal setting for computing update steps for the physics simulation part.
+So far we've discussed the problems of existing methods, and a common theme among the methods that do better, Newton and IGs, is that the regular gradient is not sufficient. We somehow need to address it's problems with some form of _inversion_ to arrive at scale invariance. Before going into details of NN training and numerical methods to perform this inversion, we will consider one additional "special" case that will further illustrate the need for inversion: if we can make use of an _inverse simulator_, this likewise addresses many of the inherent issues of GD. It actually represents the ideal setting for computing update steps for the physics simulation part.
 
 Let $y = \mathcal P(x)$ be a forward simulation, and $\mathcal P(y)^{-1}=x$ denote its inverse. 
 In contrast to the inversion of Jacobian or Hessian matrices from before, $\mathcal P^{-1}$ denotes a full inverse of all functions of $\mathcal P$. 
@@ -347,9 +382,9 @@ apply the fundamental theorem of calculus to rewrite the ratio $\Delta x_{\text{
 % where we've integrated over a trajectory in $x$, and 
 % focused on 1D for simplicity. Likewise, by integrating over $z$ we can obtain:
 
-$\begin{aligned}
+$$\begin{aligned}
     \frac{\Delta x_{\text{PG}}}{\Delta y} = \frac{\int_{y_0}^{y_0+\Delta y} \frac{\partial x}{\partial y} \, dy}{\Delta y}
-\end{aligned}$
+\end{aligned}$$
 
 Here the expressions inside the integral is the local gradient, and we assume it exists at all points between $y_0$ and $y_0+\Delta y_0$.
 The local gradients are averaged along the path connecting the state before the update with the state after the update.
@@ -377,7 +412,7 @@ More formally, $\lim_{y \rightarrow y_0} \frac{\mathcal P^{-1}(y; x_0) - P^{-1}(
 Local inverse functions can exist, even when a global inverse does not.
 
 Non-injective functions can be inverted, for example, by choosing the closest $x$ to $x_0$ such that $\mathcal P(x) = y$.
-As an example, consider $\mathcal P(x) = x^2$. It doesn't have a global inverse as two solutions ($\pm$) exist for each $y$. However, we can easily construct a local inverse by choosing the closer one of the two solutions, the positive $x$ in this example. 
+As an example, consider $\mathcal P(x) = x^2$. It doesn't have a global inverse as two solutions ($\pm$) exist for each $y$. However, we can easily construct a local inverse by choosing the closest solution taking from an initial guess.
 
 For differentiable functions, a local inverse is guaranteed to exist by the inverse function theorem as long as the Jacobian is non-singular.
 That is because the inverse Jacobian $\frac{\partial x}{\partial y}$ itself is a local inverse function, albeit, with being first-order, not the most accurate one.
@@ -423,5 +458,5 @@ In the worst case, we can therefore fall back to the regular gradient.
 
 Also, we have turned the step w.r.t. $L$ into a step in $y$ space: $\Delta y$. 
 However, this does not prescribe a unique way to compute $\Delta y$ since the derivative $\frac{\partial y}{\partial L}$ as the right-inverse of the row-vector $\frac{\partial L}{\partial y}$ puts almost no restrictions on $\Delta y$.
-Instead, we use a Newton step from equation {eq}`quasi-newton-update` to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. We will explain this in more detail in connection with the introduction of NNs in the next section.
+Instead, we use a Newton step from equation {eq}`quasi-newton-update` to determine $\Delta y$ where $\eta$ controls the step size of the optimization steps. We will explain this in more detail in connection with the introduction of NNs after the following code example.
 
