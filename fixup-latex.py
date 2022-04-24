@@ -96,6 +96,7 @@ tt =( 'hrule\n' +
 	'\\sphinxstylestrong{\\LARGE \\textsf{\\url{http://physicsbaseddeeplearning.org}}} \\\\ \\vspace{2cm} \n' + 
 	'\\noindent\\sphinxincludegraphics[height=420\\sphinxpxdimen]{{logo-xl}.jpg} \\\\ \\vspace{1cm} \n' + 
 	'\\textsf{\\large N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um} \n' + 
+	'\\\\ \\ \\\\ {\\Large(v0.2)} \n' +   # manually update version!
 	'\\end{center}\n' )
 
 #print(tt);

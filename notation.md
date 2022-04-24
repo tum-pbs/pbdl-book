@@ -18,6 +18,7 @@
 | $\mathbf{u}$ | vector-valued velocity |
 | $x$ | neural network input or spatial coordinate |
 | $y$ | neural network output |
+| $y^*$ | learning targets: ground truth, reference or observation data |
 
 ## Summary of the most important abbreviations:
 
@@ -33,12 +34,5 @@
 | PBDL | Physics-Based Deep Learning |
 | SGD  | Stochastic Gradient Descent|
 
-
-
-% test table formatting in markdown
-% |    | Sentence #  | Word    | POS   | Tag   |
-% |---:|:-------------|:-----------|:------|:------|
-% | 1 | Sentence: 1  | They       | PRP   | O     |
-% | 2 | Sentence: 1  | marched    | VBD   | O     |
 
 
