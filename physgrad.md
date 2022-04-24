@@ -32,12 +32,12 @@ Below, we'll proceed in the following steps:
 Before diving into the details of different optimizers, the following paragraphs should provide some intuition for why this is important. As mentioned above, all methods discussed so far have used gradients, and the main reason for moving towards different updates is that they have some fundamental scaling issues in multi-dimensional settings.
 
 For 1D problems, this can easily be "fixed" by choosing a good learning rate, but interestingly, as soon
-as we go to 2D, things become more tricky. Let's consider a very simple toy "physics" function in two dimensions, which simply applies an exponent $\alpha$ to the second component. Afterwards we're computing an $L^2$ "loss" of the result:
+as we go to 2D, things become more tricky. Let's consider a very simple toy "physics" function in two dimensions, which simply applies a factor $\alpha$ to the second component. Afterwards we're computing an $L^2$ "loss" of the result:
 
 $$ \mathcal P(x_1,x_2) = 
 \begin{bmatrix} 
   x_1 \\
-  x_2^{~\alpha}
+  \alpha ~ x_2
 \end{bmatrix}  \text{ with }  L(\mathcal P) = |\mathcal P|^2 
 $$
 
@@ -48,7 +48,7 @@ For $\alpha=1$ everything is very simple: we're faced with a radial symmetric lo
 height: 200px
 name: physgrad-scaling
 ---
-Loss landscapes in $x$ for different $\alpha$ of the 2D example problem, with an example update step $- \nabla_x$ shown in green for each case.
+Loss landscapes in $x$ for different $\alpha$ of the 2D example problem. The green arrows visualize an example update step $- \nabla_x$ (not exactly to scale) for each case.
 ```
 
 However, within this book we're targeting _physical_ learning problems, and hence we have physical functions integrated into the learning process, as discussed at length for differentiable physics approaches. This is fundamentally different! The physics functions pretty much always will introduce a scaling of the different components. In our toy problem we can mimic this by choosing different values for $\alpha$, as shown in the middle and right graphs of the figure above.
