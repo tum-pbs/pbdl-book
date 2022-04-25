@@ -29,10 +29,9 @@ Below, we'll proceed in the following steps:
 
 ## The crux of the matter
 
-Before diving into the details of different optimizers, the following paragraphs should provide some intuition for why this is important. As mentioned above, all methods discussed so far have used gradients, and the main reason for moving towards different updates is that they have some fundamental scaling issues in multi-dimensional settings.
+Before diving into the details of different optimizers, the following paragraphs should provide some intuition for why this inversion is important. As mentioned above, all methods discussed so far use gradients, which come with fundamental scaling issues: even for relatively simple linear cases, the direction of the gradient can be negatively distorted, thus preventing effective progress towards the minimum. (In non-linear settings, the length of the gradient anticorrelates with the distance from the minimum point, making it even more difficult to converge.)
 
-For 1D problems, this can easily be "fixed" by choosing a good learning rate, but interestingly, as soon
-as we go to 2D, things become more tricky. Let's consider a very simple toy "physics" function in two dimensions, which simply applies a factor $\alpha$ to the second component. Afterwards we're computing an $L^2$ "loss" of the result:
+In 1D, this problem can alleviated by tweaking the learning rate, but it becomes very clear in higher dimensions. Let's consider a very simple toy "physics" function in two dimensions that simply applies a factor $\alpha$ to the second component, followed by an $L^2$ loss:
 
 $$ \mathcal P(x_1,x_2) = 
 \begin{bmatrix} 
@@ -41,7 +40,7 @@ $$ \mathcal P(x_1,x_2) =
 \end{bmatrix}  \text{ with }  L(\mathcal P) = |\mathcal P|^2 
 $$
 
-For $\alpha=1$ everything is very simple: we're faced with a radial symmetric loss landscape, and $x_1$ and $x_2$ behave in the same way. The gradient $\nabla_x = (\partial L / \partial x)^T$ is perpendicular to the isolevels of the loss landscape, and hence an update with $-\eta \nabla_x$ points directly to the minimum at 0. This is a setting we're dealing with for classical deep learning scenarios, like most supervised learning cases or classification problems. This example is visualized on the left of the following figure.
+For $\alpha=1$ everything is very simple: we're faced with a radially symmetric loss landscape, and $x_1$ and $x_2$ behave in the same way. The gradient $\nabla_x = (\partial L / \partial x)^T$ is perpendicular to the isolines of the loss landscape, and hence an update with $-\eta \nabla_x$ points directly to the minimum at 0. This is a setting we're dealing with for classical deep learning scenarios, like most supervised learning cases or classification problems. This example is visualized on the left of the following figure.
 
 ```{figure} resources/physgrad-scaling.jpg
 ---
@@ -51,15 +50,20 @@ name: physgrad-scaling
 Loss landscapes in $x$ for different $\alpha$ of the 2D example problem. The green arrows visualize an example update step $- \nabla_x$ (not exactly to scale) for each case.
 ```
 
-However, within this book we're targeting _physical_ learning problems, and hence we have physical functions integrated into the learning process, as discussed at length for differentiable physics approaches. This is fundamentally different! The physics functions pretty much always will introduce a scaling of the different components. In our toy problem we can mimic this by choosing different values for $\alpha$, as shown in the middle and right graphs of the figure above.
+However, within this book we're targeting _physical_ learning problems, and hence we have physical functions integrated into the learning process, as discussed at length for differentiable physics approaches. This is fundamentally different! Physical processes pretty much always introduce different scaling behavor for different components: some changes in the physical state are sensitive and produce massive responses, others have barely any effect. In our toy problem we can mimic this by choosing different values for $\alpha$, as shown in the middle and right graphs of the figure above.
 
-For larger $\alpha$, the loss landscape away from the minimum steepens along $x_2$. As a consequence, the gradients grow along this direction. If we don't want our optimization to blow up, we'll need to choose a smaller learning rate $\eta$, reducing progress along $x_1$. The gradient of course stays perpendicular to the loss. In this example we'll move quickly along $x_2$ until we're close to the x axis, and then only very slowly creep left towards the minimum. Even worse, as we'll show below, regular updates actually apply the square of the scaling! 
+For larger $\alpha$, the loss landscape away from the minimum steepens along $x_2$. $x_1$ will have an increasingly different scale than $x_2$. As a consequence, the gradients grow along this $x_2$. If we don't want our optimization to blow up, we'll need to choose a smaller learning rate $\eta$, reducing progress along $x_1$. The gradient of course stays perpendicular to the loss. In this example we'll move quickly along $x_2$ until we're close to the x axis, and then only very slowly creep left towards the minimum. Even worse, as we'll show below, regular updates actually apply the square of the scaling! 
 And in settings with many dimensions, it will be extremely difficult to find a good learning rate.
 Thus, to make proper progress, we somehow need to account for the different scaling of the components of multi-dimensional functions. This requires some form of _inversion_, as we'll outline in detail below. 
 
 Note that inversion, naturally, does not mean negation ($g^{-1} \ne -g$ 🙄). A negated gradient would definitely move in the wrong direction. We need an update that still points towards a decreasing loss, but accounts for differently scaled dimensions. Hence, a central aim in the following will be _scale-invariance_.
 
-Definition of *scale-invariance*: a scale-invariant optimization for a given function yields the same result for different parametrizations (i.e. scalings) of the function.
+```{admonition} Definition of *scale-invariance*
+:class: tip
+A scale-invariant optimization for a given function yields the same result for different parametrizations (i.e. scalings) of the function. 
+```
+
+E.g., for our toy problem above this means that optimization trajectories are identical no matter what value we choose for $\alpha$.
 
 
 ![Divider](resources/divider3.jpg)
@@ -129,17 +133,17 @@ One could argue that units aren't very important for the parameters of NNs, but 
 **Function sensitivity** 🔍
 
 As illustrated above, GD has also inherent problems when functions are not _normalized_.
-Consider the function $L(x) = c \cdot x$.
-Then the parameter updates of GD scale with $c$, i.e. $\Delta x_{\text{GD}} = -\eta \cdot c$, and 
-$L(x+\Delta x_{\text{GD}})$ will even have terms on the order of $c^2$.
-If $L$ is normalized via $c=1$, everything's fine. But in practice, we'll often
-have $c \ll 1$, or even worse $c \gg 1$, and then our optimization will be in trouble.
+Consider a simplified version of the toy example above, consisting only of the function $L(x) = \alpha \cdot x$.
+Then the parameter updates of GD scale with $\alpha$, i.e. $\Delta x_{\text{GD}} = -\eta \cdot \alpha$, and 
+$L(x+\Delta x_{\text{GD}})$ will even have terms on the order of $\alpha^2$.
+If $L$ is normalized via $\alpha=1$, everything's fine. But in practice, we'll often
+have $\alpha \ll 1$, or even worse $\alpha \gg 1$, and then our optimization will be in trouble.
 
 More specifically, if we look at how the loss changes, the expansion around $x$ for
 the update step of GD gives:
 $L(x+\Delta x_{\text{GD}}) = L(x)  + \Delta x_{\text{GD}} \frac{\partial L}{\partial x}  + \cdots $.
 This first-order step causes a change in the loss of
-$\big( L(x) - L(x+\Delta x_{\text{GD}}) \big) = -\eta \cdot (\frac{\partial L}{\partial x})^2 + \mathcal O(\Delta x^2)$. Hence the loss changes by the squared derivative, which leads to the $c^2$ factor mentioned above. Even worse, in practice we'd like to have a normalized quantity here. For a scaling of the gradients by $c$, we'd like our optimizer to compute a quantity like $1/c^2$, in order to get a reliable update from the gradient. 
+$\big( L(x) - L(x+\Delta x_{\text{GD}}) \big) = -\eta \cdot (\frac{\partial L}{\partial x})^2 + \mathcal O(\Delta x^2)$. Hence the loss changes by the squared derivative, which leads to the $\alpha^2$ factor mentioned above. Even worse, in practice we'd like to have a normalized quantity here. For a scaling of the gradients by $\alpha$, we'd like our optimizer to compute a quantity like $1/\alpha^2$, in order to get a reliable update from the gradient. 
 
 This demonstrates that
 for sensitive functions, i.e. functions where _small changes_ in $x$ cause _large_ changes in $L$, GD counter-intuitively produces large $\Delta x_{\text{GD}}$. This causes even larger steps in $L$, and leads to exploding gradients.
@@ -184,7 +188,7 @@ produces the correct units for all parameters to be optimized.
 As a consequence, $\eta$ can stay dimensionless.
 
 If we now consider how the loss changes via
-$L(x+\Delta x_{\text{QN}}) = L(x) + -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} \frac{\partial L}{\partial x}  + \cdots $ , the second term correctly cancels out the $x$ quantities, and leaves us with a scalar update in terms of $L$. Thinking back to the example with a scaling factor $c$ from the GD section, the inverse Hessian in Newton's methods successfully gives us a factor of $1/c^2$ to counteract the undesirable scaling of our updates.
+$L(x+\Delta x_{\text{QN}}) = L(x) + -\eta \cdot \left( \frac{\partial^2 L}{\partial x^2} \right)^{-1} \frac{\partial L}{\partial x} \frac{\partial L}{\partial x}  + \cdots $ , the second term correctly cancels out the $x$ quantities, and leaves us with a scalar update in terms of $L$. Thinking back to the example with a scaling factor $\alpha$ from the GD section, the inverse Hessian in Newton's methods successfully gives us a factor of $1/\alpha^2$ to counteract the undesirable scaling of our updates.
 
 **Convergence near optimum** 💎
 
@@ -268,7 +272,7 @@ IGs scale with the inverse derivative. Hence the updates are automatically of th
 
 **Function sensitivity** 🔍
 
-They also don't have problems with normalization as the parameter updates from the example $L(x) = c \cdot x$ above now scale with $c^{-1}$.
+They also don't have problems with normalization as the parameter updates from the example $L(x) = \alpha \cdot x$ above now scale with $\alpha^{-1}$.
 Sensitive functions thus receive small updates while insensitive functions get large (or exploding) updates.
 
 **Convergence near optimum and function compositions** 💎
