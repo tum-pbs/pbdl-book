@@ -9,6 +9,7 @@ parts:
     - file: overview-equations.md
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
+    - file: overview-optconv.md
   - file: supervised.md
     sections:
     - file: supervised-airfoils.ipynb
