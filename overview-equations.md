@@ -187,19 +187,15 @@ In 2D, the Navier-Stokes equations without any external forces can be written as
 
 $$\begin{aligned}
     \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &=
-    - \frac{\Delta t}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
+    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_x  
     \\
     \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &=
-    - \frac{\Delta t}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
+    - \frac{1}{\rho}\nabla{p} + \nu \nabla\cdot \nabla u_y  
     \\
     \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0
 \end{aligned}$$ (model-ns2d)
 
 where, like before, $\nu$ denotes a diffusion constant for viscosity.
-In practice, the $\Delta t$ factor for the pressure term can be often simplified to
-$1/\rho$ as it simply yields a scaling of the pressure gradient used to make
-the velocity divergence free. We'll typically use this simplification later on 
-in implementations, effectively computing an instantaneous pressure.
 
 An interesting variant is obtained by including the 
 [Boussinesq approximation](https://en.wikipedia.org/wiki/Boussinesq_approximation_(buoyancy))
@@ -208,9 +204,9 @@ With a marker field $v$ that indicates regions of high temperature,
 it yields the following set of equations:
 
 $$\begin{aligned}
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{\Delta t}{\rho} \nabla p 
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{\Delta t}{\rho} \nabla p + \xi v
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \xi v
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0,
   \\
@@ -223,11 +219,11 @@ And finally, the Navier-Stokes model in 3D give the following set of equations:
 
 $$
 \begin{aligned}
-  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
+  \frac{\partial u_x}{\partial{t}} + \mathbf{u} \cdot \nabla u_x &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_x 
   \\
-  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
+  \frac{\partial u_y}{\partial{t}} + \mathbf{u} \cdot \nabla u_y &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_y 
   \\
-  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z &= - \frac{\Delta t}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
+  \frac{\partial u_z}{\partial{t}} + \mathbf{u} \cdot \nabla u_z &= - \frac{1}{\rho} \nabla p + \nu \nabla\cdot \nabla u_z 
   \\
   \text{subject to} \quad \nabla \cdot \mathbf{u} &= 0.
 \end{aligned}
