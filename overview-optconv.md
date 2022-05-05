@@ -1,14 +1,14 @@
 Optimization and Convergence
 ============================
 
-This chapter will give an overview of the derivations of different classic algorithms from optimization.
-In contrast to other works, we'll start with _the_ classic optimization algorithm, Newton's method,
+This chapter will give an overview of the derivations for different optimization algorithms.
+In contrast to other texts, we'll start with _the_ classic optimization algorithm, Newton's method,
 derive several widely used variants from it, before coming back full circle to deep learning (DL) optimizers.
-The main goal is the put DL into the context of these classical methods, which we'll revisit
-for improved learning algorithms later on in this book. Physics simulations exaggerate the difficulties caused by neural networks, which is why the topics below have a particular relevance for physics-based learning tasks.
+The main goal is the put DL into the context of these classical methods. While we'll focus on DL, we will also revisit
+the classical algorithms for improved learning algorithms later on in this book. Physics simulations exaggerate the difficulties caused by neural networks, which is why the topics below have a particular relevance for physics-based learning tasks.
 
 ```{note} 
-*Deep-dive Chapter*: This chapter is a deep dive for those interested in the theory of different optimizers. It will skip evaluations as well as source code, and instead focus on derivations. The chapter is highly recommend as a basis for the chapters of {doc}`physgrad`. However, it is not "mandatory" for getting started with topics like training via _differentiable physics_. If you'd rather quickly get started with practical aspects, feel free to skip ahead to {doc}`supervised`.
+*Deep-dive Chapter*: This chapter is a deep dive for those interested in the theory of different optimizers. It will skip evaluations as well as source code, and instead focus on theory. The chapter is highly recommend as a basis for the chapters of {doc}`physgrad`. However, it is not "mandatory" for getting started with topics like training via _differentiable physics_. If you'd rather quickly get started with practical aspects, feel free to skip ahead to {doc}`supervised`.
 
 ```
 
@@ -16,13 +16,13 @@ for improved learning algorithms later on in this book. Physics simulations exag
 
 This chapter uses a custom notation that was carefully chosen to give a clear and 
 brief representation of all methods under consideration.
-We have a scalar loss function
-$L(x): \mathbb R^n \rightarrow \mathbb R^1$, the optimum (the minimum of $L$) is at location $x^*$,
+We have a scalar loss function $L(x): \mathbb R^N \rightarrow \mathbb R$, the optimum (the minimum of $L$) is at location $x^*$,
 and $\Delta$ denotes a step in $x$. Different intermediate update steps in $x$ are denoted by a subscript,
 e.g., as $x_n$ or $x_k$.
 
 In the  following, we often need inversions, i.e. a division by a certain quantity. For vectors $a$ and $b$,
-we define this as $\frac{a}{b} \equiv b^{-1}a$. With $a$ and $b$ being vectors, the result naturally is a matrix:
+We define $\frac{a}{b} \equiv b^{-1}a$. 
+When $a$ and $b$ are vectors, the result is a matrix obtained with one of the two equivalent formulations below:
 
 $$
 \frac{a}{b} \equiv \frac{a a^T}{a^T b } \equiv \frac{a b^T }{b^T b} 
@@ -33,10 +33,10 @@ $$ (vector-division)
 
 Applying $\partial / \partial x$ once to $L$ yields the Jacobian $J(x)$. As $L$ is scalar, $J$ is a row vector, and the gradient (column vector) $\nabla L$ is given by $J^T$.
 Applying $\partial / \partial x$ again gives the Hessian matrix $H(x)$,
-and the third $\partial / \partial x$ gives the third derivative tensor denoted by $K(x)$. We luckily never need to compute $K$ as a full tensor, but it is needed for some of the derivations below. To shorten the notation below,
+and another application of $\partial / \partial x$ gives the third derivative tensor denoted by $K(x)$. We luckily never need to compute $K$ as a full tensor, but it is needed for some of the derivations below. To shorten the notation below,
 we'll typically drop the $(x)$ when a function or derivative is evaluated at location $x$, e.g., $J$ will denote $J(x)$.
 
-The following image gives an overview of the resulting matrix shapes for some of the commonly used quantities below.
+The following image gives an overview of the resulting matrix shapes for some of the commonly used quantities.
 We don't really need it afterwards, but for this figure $N$ denotes the dimension of $x$, i.e. $x \in \mathbb R^N$. 
 
 ![opt conv shapes pic](resources/overview-optconv-shapes.png)
@@ -46,7 +46,7 @@ We don't really need it afterwards, but for this figure $N$ denotes the dimensio
 
 We'll need a few tools for the derivations below, which are summarized here for reference.
 
-Not surprisingly, we'll need some Taylor-series expansions, which, using the notation above can be written as: 
+Not surprisingly, we'll need some Taylor-series expansions. With the notation above it reads: 
 
 $$L(x+\Delta) = L + J \Delta + \frac{1}{2} H \Delta^2 + \cdots$$
 
@@ -64,30 +64,29 @@ $ u^T v < |u| \cdot |v| $.
 
 ## Newton's method
 
-Now we can get started with arguably one of the most classic algorithms: Newton's method. It is derived
-by approximating the function we're interested in as a parabola. This can be motivated by the fact that pretty much every minimum looks like a parabola if we're close enough.
+Now we can start with arguably the most classic algorithm for optimization: _Newton's method_. It is derived
+by approximating the function we're interested in as a parabola. This can be motivated by the fact that pretty much every minimum looks like a parabola close up.
 
 ![parabola linear](resources/overview-optconv-parab.png)
 
-So we can represent $L$ around an optimum $x^*$ by parabola of the form $L(x) = \frac{1}{2} H(x-x^*)^2 + c$, 
+So we can represent $L$ near an optimum $x^*$ by a parabola of the form $L(x) = \frac{1}{2} H(x-x^*)^2 + c$, 
 where $c$ denotes a constant offset. At location $x$ we observe $H$ and  
-$J^T=H \cdot (x_k-x^*)$. Re-arranging this yields $x^* = x_k - \frac{J^T}{H}$. 
-Newton's method by default computes $x^*$ in a single step. 
-Thus, the update in $x$ of Newton's method is given by:
+$J^T=H \cdot (x_k-x^*)$. Re-arranging this directly yields an equation to compute the minimum: $x^* = x_k - \frac{J^T}{H}$. 
+Newton's method by default computes $x^*$ in a single step, and
+hence the update in $x$ of Newton's method is given by:
 
 $$
 \Delta = - \frac{J^T}{H}
 $$ (opt-newton)
 
 Let's look at the order of convergence of Newton's method.
-Let $x^*$ be an optimum of $L$, with
-$\Delta_n^* = x^* - x_n$, as illustrated below.
+For an optimum $x^*$ of $L$, let
+$\Delta_n^* = x^* - x_n$ denote the step from a current $x_n$ to the optimum, as illustrated below.
 
 ![newton x-* pic](resources/overview-optconv-minimum.png)
 
 Assuming differentiability of $J$, 
-we can perform the Lagrange expansion of $J$ in around $x^*$.
-Here $\Delta^*_n = x^* - x_{n+1}$ denotes the a step from the current $x$ to the optimum:
+we can perform the Lagrange expansion of $J$ at $x^*$:
 
 $$\begin{aligned}
     0 = J(x^*)     &= J(x_n) + H(x_n) \Delta^*_n + \frac{1}{2} K (\xi_n ){\Delta^*_n}^2
@@ -109,7 +108,7 @@ $$\begin{aligned}
 
 Thus, the distance to the optimum changes by ${\Delta^*_n}^2$, which means once we're close enough 
 we have quadratic convergence. This is great, of course, 
-but it still depends on the prefactor $\frac{K}{2H}$, and will diverge if its $>1$, 
+but it still depends on the pre-factor $\frac{K}{2H}$, and will diverge if its $>1$. 
 Note that this is an exact expression, there's no truncation thanks to the Lagrange expansion.
 And so far we have quadratic convergence, but the convergence to the optimum is not guaranteed.
 For this we have to allow for a variable step size.
@@ -119,27 +118,29 @@ For this we have to allow for a variable step size.
 Thus, as a next step for Newton's method we
 introduce a variable step size $\lambda$ which gives the iteration 
 $x_{n+1} = x_n + \lambda \Delta = x_n - \lambda \frac{J^T}{H}$.
+As illustrated in the picture below, this is especially helpful is $L$ is not exactly
+a parabola, and a small $H$ might overshoot in undesirable ways. The the far left in this example:
 
 ![newton lambda step pic](resources/overview-optconv-adap.png)
 
 To make statements about convergence, we need some fundamental assumptions: convexity and smoothness
 of our loss function. Then we'll focus on showing that the loss decreases, and 
-we moving along a sequence of smaller sets ￼$\forall x ~ L(x)<L(x_n)$
+that we move along a sequence of smaller sets ￼$\forall x ~ L(x)<L(x_n)$
 with lower loss values.
 
-First, we can apply the fundamental theorem to L
+First, we apply the fundamental theorem to L
 
 $$
     L(x + \lambda \Delta) = L + \int_0^1 \text{ds}~ J(x + s \lambda \Delta) \lambda \Delta \ ,
 $$
 
-and likewise express $J$ around this location with the fundamental theorem:
+and likewise express $J$ around this location with it:
 
 $$\begin{aligned}
     J(x + s \lambda \Delta) &= J + \int_0^1 \text{dt}~ H(x + s t \lambda \Delta) s \lambda \Delta
 \end{aligned}$$
 
-Inserting J into L yields:
+Inserting this $J$ into $L$ yields:
 
 $$\begin{aligned}
     L(x + \lambda \Delta) - L(x) 
@@ -157,7 +158,7 @@ $ -H \Delta (1+\lambda s)$ in the last line of equation {eq}`newton-step-size-co
 %         &=  -(H\Delta)^T \big( \lambda +\frac{\lambda^2}{2} \big)  + \lambda^2  \int_0^1 \text{d}s  \int_0^1 \text{d}t \big[ [ H(x + s t \lambda \Delta) - H ] ~ \Delta  \big]^T   \Delta    \\
 
 
-Below, we will first employ $(H\Delta)^T \Delta = \|H^{\frac{1}{2}}\Delta\|^2$. This term will be shortened to $\epsilon \equiv \| H^{\frac{1}{2}} \Delta \|^2$ in the second line. Due to the properties of $H$, this $\epsilon$ "just" represents a small positive factor that will stick around till the end. 
+In the next sequence of steps, we will first employ $(H\Delta)^T \Delta = \|H^{\frac{1}{2}}\Delta\|^2$. This term will be shortened to $\epsilon \equiv \| H^{\frac{1}{2}} \Delta \|^2$ in the second line below. Due to the properties of $H$, this $\epsilon$ "just" represents a small positive factor that will stick around till the end. 
 Afterwards, in line 3 and 4 below, we can start finding an upper bound
 for the change of the loss. We'll first use a Cauchy-Schwartz inequality, and then
 make use of a special Lipschitz condition for affine conjugate matrices. For $H$, it takes the form $\| H(x)^{-\frac{1}{2}}\big( H(y)-H(x) \big) \| \le \mathcal L \| H(x)^{\frac{1}{2}} (y-x) \|^2$. This requires $H$ to by symmetric, positive-definite, which isn't too unreasonable in practice.
@@ -175,7 +176,7 @@ $$\begin{aligned}
 \end{aligned}$$ (newton-step-size-conv)
 
 Due to $H^T = H$, we've moved $H^{-\frac{1}{2}}$ inside the integral in line 2. 
-In line 4, we've pulled $s,t$ and $\lambda$ out of the integrals as much as possible, in addition to applying the special Lipschitz condition. The last three lines just simplify the terms, express the occurences of $H$ in terms of $\epsilon$, and evaluate the integrals. This leaves us with a cubic form in terms of $\lambda$, the step size. Most importantly, the first, linear term is negative, and hence will dominate for small $\lambda$. With this we've shown that the step will be negative for sufficiently small $\lambda$:
+In line 4, we've pulled $s,t$ and $\lambda$ out of the integrals as much as possible, in addition to applying the special Lipschitz condition. The last three lines just simplify the terms, express the occurrences of $H$ in terms of $\epsilon$, and evaluate the integrals. This leaves us with a cubic form in terms of $\lambda$, the step size. Most importantly, the first, linear term is negative, and hence will dominate for small $\lambda$. With this we've shown that the step will be negative for sufficiently small $\lambda$:
 
 $$L(x + \lambda \Delta) = L(x) -  \lambda \epsilon +\frac{\lambda^2 \epsilon}{2} + \frac{ \lambda^3 \mathcal L ~ \epsilon^{\frac{3}{2}} }{6}$$ (newton-ss-final)
 
@@ -183,7 +184,7 @@ However, this inherently requires us to freely choose $\lambda$, hence this proo
 is not applicable for the fixed step size above. A nice property of it is that 
 we've "only" required Lipschitz continuity for $H$, not for $J$ or even $L$.
 
-To conclude, we've shown that Newton's method with an adaptive step size provably converges, which is great. However, it requires the Hessian $H$ as a central ingredient. Unfortunately, $H$ very difficult to obtain in practice. This motivates the following methods, which keep the basic step of Newton's method, but approximate $H$.
+To conclude, we've shown that Newton's method with an adaptive step size provably converges, which is great. However, it requires the Hessian $H$ as a central ingredient. Unfortunately, $H$ very difficult to obtain in practice. This is a real show stopper, and motivates the following methods. They keep the basic step of Newton's method, but approximate $H$.
 
 ## Approximating the Hessian
 
@@ -204,8 +205,8 @@ $$
 $$
 
 As before, we use a step of $\Delta = -\frac{J^T}{H}$ for $x$, and the denominator comes from the finite difference
-$\frac{ J(x_{n+1})^T - J(x_{n}) }{\Delta}$ with the assumption of the current Jacobian being zero.
-Keep in mind, that $\Delta$ is a vector here (see the vector division above), which gives marix of size $N \times N$ that can be added to $H_n$.
+$\frac{ J(x_{n+1})^T - J(x_{n}) }{\Delta}$ with the assumption that the current Jacobian is zero.
+Keep in mind, that $\Delta$ is a vector here (see the vector division above), so the finite difference gives a matrix of size $N \times N$ that can be added to $H_n$.
 
 Broyden's method has the advantage that we never have to compute a full Hessian, 
 and the update of $H$ can be evaluated efficiently.
@@ -220,10 +221,10 @@ some important improvements:
 it does not assume $J$ to be zero immediately, and compensates for redundant parts of the updates.
 This is necessary, as the finite difference $(J(x_{n+1}) - J(x_{n}) ) / \Delta_n$
 gives a full approximation of $H$. We could try to perform some kind of averaging procedure, but
-this would strongly deteriorate the existing content in $H_{n}$. Hence, we substract
-only the existing entries in $H_{n}$ along the curent step $\Delta$. 
+this would strongly deteriorate the existing content in $H_{n}$. Hence, we subtract
+only the existing entries in $H_{n}$ along the current step $\Delta$. 
 This makes sense, as the finite difference approximation yields exactly the estimate along
-$\Delta$. In combination, this gives an update step for $H$ of:
+$\Delta$. In combination, these changes give an update step for $H$ of:
 
 $$
   H_{n+1} = H_{n} + \frac{  J(x_{n+1}) - J(x_{n}) }{\Delta_n} - \frac{H_n \Delta_n}{\Delta_n}
@@ -242,14 +243,14 @@ for solving classical non-linear optimization problems.
 Another attractive variant of Newton's method can be derived by
 restricting $L$ to be a classical $L^2$ loss. This gives the _Gauss-Newton_ (GN) algorithm.
 Thus, we still use $\Delta = - \frac{J^T}{H}$ , but 
-rely on a squared loss of the form $L=|f|^2$￼ with an arbitrary $f(x)$.
+rely on a squared loss of the form $L=|f|^2$￼ for an arbitrary $f(x)$.
 The derivatives of $f$ are denoted by $J_f, H_f$, in contrast to the
-generic $J,H$ are for $L$, as before.
+generic $J,H$ for $L$, as before.
 Due to the chain rule, we have $J=2~f^T J_f$. 
 % J chain rule; J_f matrix has f==m rows, right x==N columns; we need update in x
 
-The second derivative yields the following expression, which we, for GN, simplify by
-omitting second-order terms in the second line below: 
+The second derivative yields the following expression. For GN, we simplify it by
+omitting the second-order terms in the second line below: 
 
 $$\begin{aligned}
     H &= 2 J_f^T J_f + 2 f^T H_f \\
@@ -259,13 +260,12 @@ $$\begin{aligned}
 \end{aligned}$$ (gauss-newton-approx)
 
 Here the remaining $J_f^T J_f$ term of the first order approximation can be simplified thanks
-to our focus on an $L^2$ loss: $|f|^2 = L$.
+to our focus on an $L^2$ loss: $J_f= J / (2 f^T) $ and $|f|^2 = L$.
 
-The last line basically means we approximate the Hessian with $J$ squared. This is reasonable in many cases
-thus, and inserting it into our update step above gives the
+The last line of equation {eq}`gauss-newton-approx` means we are basically approximating the Hessian with $J$ squared. This is reasonable in many scenarios, and inserting it into our update step above gives the
 Gauss-Newton update $\Delta_{\text{GN}} \approx -\frac{J}{J^T J}$.
 
-Looking at this update, it basically means we employ 
+Looking at this update, it essentially employs a step of the form  
 $\Delta_{\text{GN}} \approx -\frac{1}{J}$, i.e., 
 the update is based on an approximate inverse of the Jacobian of $L$.
 This inverse gives an approximately equal step size in all parameters, and
@@ -290,23 +290,23 @@ $$
     H \approx \sqrt{\text{diag}(J^TJ)}
 $$ (h-approx-adam)
 
-This is a very rough approximation of the true Hessian. We're simply using the squared first-derivatives here, and in general, of course, ￼$\Big( \frac{\partial f}{\partial x} \Big)^2 \ne \frac{\partial^2 f}{\partial x^2}$.
+This is a very rough approximation of the true Hessian. We're simply using the squared, first derivatives here, and in general, of course, ￼$\Big( \frac{\partial f}{\partial x} \Big)^2 \ne \frac{\partial^2 f}{\partial x^2}$.
 This only holds for the first-order approximation from Gauss-Newton, i.e., the first term of￼equation {eq}`gauss-newton-approx`. Now Adam goes a step further, and only keeps the diagonal of $J^T J$. This quantity is readily available in deep learning in the form of the gradient of the weights, and makes the inversion of $H$ trivial. As a result, it at least provides some estimate of the curvature of the individual weights, but neglects their correlations.
 
 Interestingly, Adam does not perform a full inversion via $\text{diag}(J^T J)$, but uses the component-wise square root.
 This effectively yields $\sqrt{\text{diag}(J^T J)} \approx \sqrt{\text{diag}(J^2)} \approx \text{diag}(J)$.
-Thus, Adam moves along $\Delta \approx \text{sign}(-J)$, approximately performing the a step of fixed size along all dimensions.
+Thus, Adam moves along $\Delta \approx \text{sign}(-J)$, approximately performing a step of fixed size along all dimensions.
 
 In practice, Adam introduces a few more tricks by computing the gradient $J^T$ as well 
 as the squared gradient with _momentum_, an averaging of both quantities over the course of the iterations of the optimization.
-This makes the estimates more robust, which is crucial: a normalization with a erroneously small entry of the gradient could otherwise lead to an explosion. Adam additionally adds a small constant when dividing, and the square-root likewise helps to mitigate overshoot.
+This makes the estimates more robust, which is crucial: a normalization with an erroneously small entry of the gradient could otherwise lead to an explosion. Adam additionally adds a small constant when dividing, and the square-root likewise helps to mitigate overshoot.
 
 To summarize: Adam makes use of a first-order update with a diagonal approximation of the Hessian for normalization. It additionally employs momentum for stabilization.
 
 ## Gradient Descent
 
 To arrive at gradient descent (GD) optimization, we now take the final step
-to assume $H=1$ in $- \lambda \frac{J^T}{H}$. This leaves us with the update $\Delta = - \lambda J^T$.
+to assume $H=1$ in $- \lambda \frac{J^T}{H}$. This leaves us with an update consisting of a scaled gradient $\Delta = - \lambda J^T$.
 
 ![gd direction pic](resources/overview-optconv-gd.png)
 
@@ -340,10 +340,9 @@ Like above for Newton's method in equation {eq}`newton-step-size-conv` we have a
 that dominates the loss for small enough $\lambda$.
 In this case, using the upper bound $L(x+\lambda \Delta) \le L(x) -  \frac{ \lambda^2}{2} | J|^2$
 we can choose $\lambda \le \frac{1}{\mathcal L}$ to ensure convergence.
-This unfortunately does not help us in practice, as for all common usage of GD in deep learning $\mathcal L$ is not known.
+This unfortunately does not help us in practice, as for all common usage of GD in deep learning $\mathcal L$ is not known. It is still good to know that a Lipschitz constant for the gradient would theoretically provide us with convergence guarantees for GD.
 
-However, it is good to know that a Lipschitz constant for the gradient would theoretically provide us with convergence guarantees for GD.
-This concludes our tour of classical optimizers and the relation to deep learning methods. It's worth noting that we've focused on non-stochastic algorithms here for clarity, as the proofs would become significantly more involved for stochastic algorithms.
+This concludes our tour of classical optimizers and the relation to deep learning methods. It's worth noting that we've focused on non-stochastic algorithms here for clarity, as the proofs would become more involved for stochastic algorithms.
 
 ---
 

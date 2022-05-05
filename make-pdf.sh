@@ -42,7 +42,9 @@ pdflatex book
 pdflatex book
 
 # for convenience, archive results in main dir
-mv book.pdf ../../book-pdflatex.pdf
+mv book.pdf ../../pbfl-book-pdflatex.pdf
 tar czvf ../../pbdl-latex-for-arxiv.tar.gz *
+cd ../..
+ls -l ./pbfl-book-pdflatex.pdf ./pbdl-latex-for-arxiv.tar.gz
 
 
