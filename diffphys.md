@@ -109,11 +109,11 @@ of the chain of function compositions of the $\mathcal P_i$ at some current stat
 E.g., for two of them
 
 $$
-    \frac{ \partial (\mathcal P_1 \circ \mathcal P_2) }{ \partial \mathbf{u} }|_{\mathbf{u}^n}
+    \frac{ \partial (\mathcal P_1 \circ \mathcal P_2) }{ \partial \mathbf{u} } \Big|_{\mathbf{u}^n}
     = 
-    \frac{ \partial \mathcal P_1 }{ \partial \mathbf{u} }|_{\mathcal P_2(\mathbf{u}^n)}
+    \frac{ \partial \mathcal P_1 }{ \partial \mathbf{u} } \big|_{\mathcal P_2(\mathbf{u}^n)}
     \ 
-    \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} }|_{\mathbf{u}^n} \ , 
+    \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} } \big|_{\mathbf{u}^n} \ , 
 $$
 
 which is just the vector valued version of the "classic" chain rule

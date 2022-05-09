@@ -17,7 +17,7 @@ $$ (learn-base)
 
 where $y^*$ denotes reference or "ground truth" solutions.
 $f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
-with the help of some variant of an error function $e(y,y^*)$, where $y=f(x;\theta)$ is the output
+with the help of some variant of a loss function $L(y,y^*)$, where $y=f(x;\theta)$ is the output
 of the NN.
 This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
@@ -28,10 +28,9 @@ $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
 with a stochastic gradient descent (SGD) optimizer of choice, e.g. Adam {cite}`kingma2014adam`.
-We'll rely on auto-diff to compute the gradient of a scalar loss $L$ w.r.t. the weights, $\partial L / \partial \theta$,
-We will also assume that $e$ denotes a _scalar_ error function (also
-called cost, or objective function).
-It is crucial for the efficient calculation of gradients that this function is scalar.
+We'll rely on auto-diff to compute the gradient of a _scalar_ loss $L$ w.r.t. the weights, $\partial L / \partial \theta$.
+It is crucial for the calculation of gradients that this function is scalar,
+and the loss function is often also called "error", "cost", or "objective" function.
 
 <!-- general goal, minimize E for e(x,y) ... cf. eq. 8.1 from DLbook 
 introduce scalar loss, always(!) scalar...  (also called *cost* or *objective* function) -->

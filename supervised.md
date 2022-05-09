@@ -21,12 +21,12 @@ but instead we obtain it via a minimization problem:
 by adjusting the weights $\theta$ of our NN representation of $f$ such that
 
 $$
-\text{arg min}_{\theta} \sum_i (f(x_i ; \theta)-y^*_i)^2 .
+\text{arg min}_{\theta} \sum_i \Big(f(x_i ; \theta)-y^*_i \Big)^2 .
 $$ (supervised-training)
 
 This will give us $\theta$ such that $f(x;\theta) =  y \approx y^*$ as accurately as possible given
 our choice of $f$ and the hyperparameters for training. Note that above we've assumed 
-the simplest case of an $L^2$ loss. A more general version would use an error metric $e(x,y)$
+the simplest case of an $L^2$ loss. A more general version would use an error metric $e(x,y)$ in the loss $L$
 to be minimized via $\text{arg min}_{\theta} \sum_i e( f(x_i ; \theta) , y^*_i) )$. The choice
 of a suitable metric is a topic we will get back to later on.
 

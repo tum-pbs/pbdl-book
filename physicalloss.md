@@ -44,7 +44,7 @@ therefore help to _pin down_ the solution in certain places.
 Now our training objective becomes
 
 $$
-\text{arg min}_{\theta} \ \alpha_0 \sum_i \big( f(x_i ; \theta)-y_i \big)^2 + \alpha_1 R(x_i) ,
+\text{arg min}_{\theta} \ \alpha_0 \sum_i \big( f(x_i ; \theta)-y^*_i \big)^2 + \alpha_1 R(x_i) ,
 $$ (physloss-training)
 
 where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 
