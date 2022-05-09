@@ -20,13 +20,16 @@ We have a scalar loss function $L(x): \mathbb R^N \rightarrow \mathbb R$, the op
 and $\Delta$ denotes a step in $x$. Different intermediate update steps in $x$ are denoted by a subscript,
 e.g., as $x_n$ or $x_k$.
 
-In the  following, we often need inversions, i.e. a division by a certain quantity. For vectors $a$ and $b$,
-We define $\frac{a}{b} \equiv b^{-1}a$. 
-When $a$ and $b$ are vectors, the result is a matrix obtained with one of the two equivalent formulations below:
+In the  following, we often need inversions, i.e. a division by a certain quantity. 
+For matrices $A$ and $B$, we define $\frac{A}{B} \equiv B^{-1} A$. 
+When $a$ and $b$ are vectors, the result is a matrix obtained with one of the two formulations below. 
+We'll specify which one to use:
 
 $$
-\frac{a}{b} \equiv \frac{a a^T}{a^T b } \equiv \frac{a b^T }{b^T b} 
+\frac{a}{b} \equiv \frac{a a^T}{a^T b } \text{  or  } \frac{a}{b} \equiv \frac{a b^T }{b^T b} 
 $$ (vector-division)
+
+% note, both divide by a scalar ; a a^T gives a symmetric matrix, a b^T not
 
 % Only in this one chapter, the derivatives of $L(x)$ w.r.t. $x$ will be denoted by $'$. We won't use this in any other chapter, but as we're only dealing with derivatives of $x$ here, it will make some parts below a lot clearer.
 %So, applying $\partial / \partial x$ once yields $L' \equiv J(x)$. As $J$ is a row vector, the gradient (column vector) $\nabla L$ is given by $J^T$. Applying $\partial / \partial x$ again gives the Hessian matrix $L'' \equiv H(x)$ And the third $\partial / \partial x$ gives the third derivative tensor $L''' \equiv K(x)$, which we luckily never need to compute as a full tensor, but which is required for some of the derivations below.
@@ -118,8 +121,8 @@ For this we have to allow for a variable step size.
 Thus, as a next step for Newton's method we
 introduce a variable step size $\lambda$ which gives the iteration 
 $x_{n+1} = x_n + \lambda \Delta = x_n - \lambda \frac{J^T}{H}$.
-As illustrated in the picture below, this is especially helpful is $L$ is not exactly
-a parabola, and a small $H$ might overshoot in undesirable ways. The the far left in this example:
+As illustrated in the picture below, this is especially helpful if $L$ is not exactly
+a parabola, and a small $H$ might overshoot in undesirable ways. The far left in this example:
 
 ![newton lambda step pic](resources/overview-optconv-adap.png)
 
@@ -190,18 +193,20 @@ To conclude, we've shown that Newton's method with an adaptive step size provabl
 
 Next, we will revisit three popular algorithms derived from Newton's method.
 
-### Broyden's method
+## Broyden's method
 
 The first approach to approximate $H$ is to make a very rough guess,
-namely to start with the identity $H_0=1$,
+namely to start with the identity matrix $H_0=\mathbf{1}$,
 and then iterate to update $H_n$ via a finite difference approximation. 
+For Broyden's method, we use the vector division $\frac{a}{b} \equiv \frac{a b^T }{b^T b}$.
+
 For simplifying the finite difference, we'll additionally 
 assume that we already have reached $J(x_n)=0$ at the current position $x_n$.
 This is of course not necessarily true, but yields the following, nicely reduced expression
 to modify $H$ over the course of the optimization:
 
 $$
-    H_{n+1} = H_n + \frac{J(x_{n+1})}{\Delta}
+    H_{n+1} = H_n + \frac{J(x_{n+1})^T}{\Delta}
 $$
 
 As before, we use a step of $\Delta = -\frac{J^T}{H}$ for $x$, and the denominator comes from the finite difference
@@ -230,6 +235,7 @@ $$
   H_{n+1} = H_{n} + \frac{  J(x_{n+1}) - J(x_{n}) }{\Delta_n} - \frac{H_n \Delta_n}{\Delta_n}
 $$
 
+For BFGS above, we've used the vector division $\frac{a}{b} \equiv \frac{a a^T }{a^T b}$.
 In practice, BFGS also makes use of a line search to determine the step size $\lambda$.
 Due to the large size of $H$, commonly employed variants of BFGS also make use of reduced
 representations of $H$ to save memory. Nonetheless, the core step of updating the Hessian
@@ -301,7 +307,7 @@ In practice, Adam introduces a few more tricks by computing the gradient $J^T$ a
 as the squared gradient with _momentum_, an averaging of both quantities over the course of the iterations of the optimization.
 This makes the estimates more robust, which is crucial: a normalization with an erroneously small entry of the gradient could otherwise lead to an explosion. Adam additionally adds a small constant when dividing, and the square-root likewise helps to mitigate overshoot.
 
-To summarize: Adam makes use of a first-order update with a diagonal approximation of the Hessian for normalization. It additionally employs momentum for stabilization.
+To summarize: Adam makes use of a first-order update with a diagonal Gauss-Newton approximation of the Hessian for normalization. It additionally employs momentum for stabilization.
 
 ## Gradient Descent
 
@@ -338,11 +344,14 @@ $$\begin{aligned}
 
 Like above for Newton's method in equation {eq}`newton-step-size-conv` we have a negative linear term
 that dominates the loss for small enough $\lambda$.
-In this case, using the upper bound $L(x+\lambda \Delta) \le L(x) -  \frac{ \lambda^2}{2} | J|^2$
-we can choose $\lambda \le \frac{1}{\mathcal L}$ to ensure convergence.
-This unfortunately does not help us in practice, as for all common usage of GD in deep learning $\mathcal L$ is not known. It is still good to know that a Lipschitz constant for the gradient would theoretically provide us with convergence guarantees for GD.
+In combination, we have the following upper bound due to the Lipschitz condition in the first line
+$L(x+\lambda \Delta) \le L(x) - \lambda |J|^2 +  \frac{ \lambda^2 \mathcal L}{2} | J|^2 $.
+By choosing $\lambda \le \frac{1}{\mathcal L}$, we can simplify these terms further, and can an upper bound that depends on $J$ squared: $L(x+\lambda \Delta) \le L(x) -  \frac{ \lambda}{2} | J|^2$
+and thus ensures convergence.
 
-This concludes our tour of classical optimizers and the relation to deep learning methods. It's worth noting that we've focused on non-stochastic algorithms here for clarity, as the proofs would become more involved for stochastic algorithms.
+This result unfortunately does not help us much in practice, as for all common usage of GD in deep learning $\mathcal L$ is not known. It is still good to know that a Lipschitz constant for the gradient would theoretically provide us with convergence guarantees for GD.
+
+With this we conclude our tour of classical optimizers and their relation to deep learning methods. It's worth noting that we've focused on non-stochastic algorithms here for clarity, as the proofs would become more involved for stochastic algorithms.
 
 ---
 
