@@ -71,8 +71,7 @@ with the goals of training with DP.
 However, the noise is typically undirected, and hence not as accurate as training with 
 the actual evolutions of simulations. Hence, this noise can be a good starting point 
 for training setups that tend to overfit. However, if possible, it is preferable to incorporate the
-actual solver in th
-e training loop via a DP approach.
+actual solver in the training loop via a DP approach.
 
 ---
 
