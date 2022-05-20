@@ -44,7 +44,7 @@ therefore help to _pin down_ the solution in certain places.
 Now our training objective becomes
 
 $$
-\text{arg min}_{\theta} \ \alpha_0 \sum_i \big( f(x_i ; \theta)-y^*_i \big)^2 + \alpha_1 R(x_i) ,
+\text{arg min}_{\theta} \ \sum_i \alpha_0 \big( f(x_i ; \theta)-y^*_i \big)^2 + \alpha_1 R(x_i) ,
 $$ (physloss-training)
 
 where $\alpha_{0,1}$ denote hyperparameters that scale the contribution of the supervised term and 
@@ -100,7 +100,7 @@ Nicely enough, in this case we don't even need additional supervised samples, an
 An example implementation can be found in this [code repository](https://github.com/tum-pbs/CG-Solver-in-the-Loop).
 
 Overall, this variant 1 has a lot in common with _differentiable physics_ training (it's basically a subset). As we'll discuss differentiable physics in a lot more detail
-in {doc}`diffphys` and after, we'll focus on the direct NN representation (variant 2) from now on. 
+in {doc}`diffphys` and after, we'll focus on direct NN representations (variant 2) from now on. 
 
 ---
 
@@ -147,5 +147,6 @@ For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we ca
 The approach above gives us a method to include physical equations into DL learning as a soft constraint: the residual loss.
 Typically, this setup is suitable for _inverse problems_, where we have certain measurements or observations
 for which we want to find a PDE solution. Because of the high cost of the reconstruction (to be 
-demonstrated in the following), the solution manifold shouldn't be overly complex. E.g., it is not possible 
-to capture a wide range of solutions, such as with the previous supervised airfoil example, with such a physical residual loss.
+demonstrated in the following), the solution manifold shouldn't be overly complex. E.g., it is typically not possible 
+to capture a wide range of solutions, such as with the previous supervised airfoil example, by only using a physical residual loss.
+

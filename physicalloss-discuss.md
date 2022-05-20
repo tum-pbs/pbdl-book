@@ -68,5 +68,7 @@ goals of the next sections.
 - Largely incompatible with _classical_ numerical methods.
 - Accuracy of derivatives relies on learned representation.
 
-Next, let's look at how we can leverage numerical methods to improve the DL accuracy and efficiency
+To address these issues,
+we'll next look at how we can leverage existing numerical methods to improve the DL process
 by making use of differentiable solvers.
+

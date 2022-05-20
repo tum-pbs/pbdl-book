@@ -89,7 +89,7 @@ $$ \begin{aligned}
 \end{aligned} $$
 %
 where, as above, $d$ denotes the number of components in $\mathbf{u}$. As $\mathcal P$ maps one value of
-$\mathbf{u}$ to another, the Jacobian is square and symmetric here. Of course this isn't necessarily the case
+$\mathbf{u}$ to another, the Jacobian is square here. Of course this isn't necessarily the case
 for general model equations, but non-square Jacobian matrices would not cause any problems for differentiable 
 simulations.
 
@@ -97,7 +97,7 @@ In practice, we rely on the _reverse mode_ differentiation that all modern DL
 frameworks provide, and focus on computing a matrix vector product of the Jacobian transpose
 with a vector $\mathbf{a}$, i.e. the expression: 
 $
-    ( \frac{\partial \mathcal P_i }{ \partial \mathbf{u} } )^T \mathbf{a}
+    \big( \frac{\partial \mathcal P_i }{ \partial \mathbf{u} } \big)^T \mathbf{a}
 $. 
 If we'd need to construct and store all full Jacobian matrices that we encounter during training, 
 this would cause huge memory overheads and unnecessarily slow down training.
@@ -117,7 +117,7 @@ $$
 $$
 
 which is just the vector valued version of the "classic" chain rule
-$f(g(x))' = f'(g(x)) g'(x)$, and directly extends for larger numbers of composited functions, i.e. $i>2$.
+$f\big(g(x)\big)' = f'\big(g(x)\big) g'(x)$, and directly extends for larger numbers of composited functions, i.e. $i>2$.
 
 Here, the derivatives for $\mathcal P_1$ and $\mathcal P_2$ are still Jacobian matrices, but knowing that 
 at the "end" of the chain we have our scalar loss (cf. {doc}`overview`), the right-most Jacobian will invariably
