@@ -57,7 +57,7 @@ Then we also need the _Lagrange form_, which yields an exact solution for a $\xi
 
 $$L(x+\Delta) = L + J \Delta + \frac{1}{2} H(\xi) \Delta^2$$
 
-In several instances we'll make use of the fundamental theorem of calculus, repeated here for completeness:   ￼
+In several instances we'll make use of the fundamental theorem of calculus, repeated here for completeness:   
 
 $$f(x+\Delta) = f(x) \int_0^1 \text{d}s ~ f'(x+s \Delta) \Delta \ . $$
 
@@ -128,7 +128,7 @@ a parabola, and a small $H$ might overshoot in undesirable ways. The far left in
 
 To make statements about convergence, we need some fundamental assumptions: convexity and smoothness
 of our loss function. Then we'll focus on showing that the loss decreases, and 
-that we move along a sequence of smaller sets ￼$\forall x ~ L(x)<L(x_n)$
+that we move along a sequence of smaller sets $\forall x ~ L(x)<L(x_n)$
 with lower loss values.
 
 First, we apply the fundamental theorem to L
@@ -249,7 +249,7 @@ for solving classical non-linear optimization problems.
 Another attractive variant of Newton's method can be derived by
 restricting $L$ to be a classical $L^2$ loss. This gives the _Gauss-Newton_ (GN) algorithm.
 Thus, we still use $\Delta = - \frac{J^T}{H}$ , but 
-rely on a squared loss of the form $L=|f|^2$￼ for an arbitrary $f(x)$.
+rely on a squared loss of the form $L=|f|^2$ for an arbitrary $f(x)$.
 The derivatives of $f$ are denoted by $J_f, H_f$, in contrast to the
 generic $J,H$ for $L$, as before.
 Due to the chain rule, we have $J=2~f^T J_f$. 
@@ -296,8 +296,8 @@ $$
     H \approx \sqrt{\text{diag}(J^TJ)}
 $$ (h-approx-adam)
 
-This is a very rough approximation of the true Hessian. We're simply using the squared, first derivatives here, and in general, of course, ￼$\Big( \frac{\partial f}{\partial x} \Big)^2 \ne \frac{\partial^2 f}{\partial x^2}$.
-This only holds for the first-order approximation from Gauss-Newton, i.e., the first term of￼equation {eq}`gauss-newton-approx`. Now Adam goes a step further, and only keeps the diagonal of $J^T J$. This quantity is readily available in deep learning in the form of the gradient of the weights, and makes the inversion of $H$ trivial. As a result, it at least provides some estimate of the curvature of the individual weights, but neglects their correlations.
+This is a very rough approximation of the true Hessian. We're simply using the squared, first derivatives here, and in general, of course, $\Big( \frac{\partial f}{\partial x} \Big)^2 \ne \frac{\partial^2 f}{\partial x^2}$.
+This only holds for the first-order approximation from Gauss-Newton, i.e., the first term of equation {eq}`gauss-newton-approx`. Now Adam goes a step further, and only keeps the diagonal of $J^T J$. This quantity is readily available in deep learning in the form of the gradient of the weights, and makes the inversion of $H$ trivial. As a result, it at least provides some estimate of the curvature of the individual weights, but neglects their correlations.
 
 Interestingly, Adam does not perform a full inversion via $\text{diag}(J^T J)$, but uses the component-wise square root.
 This effectively yields $\sqrt{\text{diag}(J^T J)} \approx \sqrt{\text{diag}(J^2)} \approx \text{diag}(J)$.
@@ -340,7 +340,7 @@ $$\begin{aligned}
 
 %      & \le - \frac{ \lambda}{2} | J|^2
 % thus: $L(x+\Delta) \le L(x) -\lambda |J|^2 +  \frac{ \lambda^2 \mathcal L}{2} | J|^2$
-% (Plus NNs not convex… plus ReLU not twice diff.able, H is zero everywhere and undefined in some places)
+% (Plus NNs not convex... plus ReLU not twice diff.able, H is zero everywhere and undefined in some places)
 
 Like above for Newton's method in equation {eq}`newton-step-size-conv` we have a negative linear term
 that dominates the loss for small enough $\lambda$.
