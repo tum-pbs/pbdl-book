@@ -73,7 +73,7 @@ The corresponding fields are either d-dimensional vector fields, for instance $\
 or scalar $\mathbf{p}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}$.
 The components of a vector are typically denoted by $x,y,z$ subscripts, i.e.,
 $\mathbf{v} = (v_x, v_y, v_z)^T$ for $d=3$, while
-positions are denoted by $\mathbf{x} \in \Omega$.
+positions are denoted by $\mathbf{p} \in \Omega$.
 
 To obtain unique solutions for $\mathcal P^*$ we need to specify suitable
 initial conditions, typically for all quantities of interest at $t=0$,
