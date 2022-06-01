@@ -32,7 +32,8 @@ The resulting methods have a huge potential to improve what can be done with num
 
 # What's new?
 
-* For readers familiar with v0.1 of this text, the brand new chapter on improved learning methods for physics problems is highly recommended: starting with https://www.physicsbaseddeeplearning.org/physgrad.html
+* For readers familiar with v0.1 of this text, the [extended section on differentiable physics training](http://physicsbaseddeeplearning.org/diffphys-examples.html)  and the
+brand new chapter on [improved learning methods for physics problems](http://physicsbaseddeeplearning.org/diffphys-examples.html) are highly recommended starting points.
 
 
 # Teasers

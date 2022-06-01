@@ -24,7 +24,8 @@ change what computer simulations can achieve.
 
 ```{note} 
 _What's new in v0.2?_
-For readers familiar with v0.1 of this text, the brand new chapter on improved learning methods for physics problems is highly recommended: starting with {doc}`physgrad`.
+For readers familiar with v0.1 of this text, the extended section {doc}`diffphys-examples` and the
+brand new chapter on improved learning methods for physics problems (starting with {doc}`physgrad`) are highly recommended starting points.
 ```
 
 ---
