@@ -24,7 +24,7 @@ The DP approach as described in the previous chapters. A network produces an inp
 This setup can be seen as the network receiving information about how it's output influences the outcome of the PDE solver. I.e., the gradient will provide information how to produce an NN output that minimizes the loss. 
 Similar to the previously described _physical losses_ (from {doc}`physicalloss`), this can mean upholding a conservation law.
 
-## Switching the Order 
+## Switching the order 
 
 However, with DP, there's no real reason to be limited to this setup. E.g., we could imagine a swap of the NN and DP components, giving the following structure:
 
@@ -40,7 +40,7 @@ In this case the PDE solver essentially represents an _on-the-fly_ data generato
 
 However, this version does not leverage the gradient information from a differentiable solver, which is why the following variant is much more interesting.
 
-## Recurrent Evaluation
+## Recurrent evaluation
 
 In general, there's no combination of NN layers and DP operators that is _forbidden_ (as long as their dimensions are compatible). One that makes particular sense is to "unroll" the iterations of a time stepping process of a simulator, and let the state of a system be influenced by an NN.
 
@@ -62,7 +62,7 @@ DP setups with many time steps can be difficult to train: the gradients need to 
 ![Divider](resources/divider4.jpg)
 
 
-## Composition of NN and Solver
+## Composition of NN and solver
 
 One question that we have ignored so far is how the merge the output of the NN into the iterative solving process. In the images above, it looks like the NN $f$ produces a full state of the physical system, that is used as input to $\mathcal P$. That means for a state $x(t+j \Delta t)$ at step $j$, the NN yields an intermediate state $\tilde x(t+j \Delta t) = f(x(t+j \Delta t); \theta)$, with which the solver produces the new state for the following step:
 $x(t+ (j+1) \Delta t) = \mathcal P(\tilde x(t+j \Delta t))$.
@@ -74,7 +74,7 @@ In the simplest case, we can define $\circ$ to be an addition, in which case $\t
 In general, we can use any differentiable operator for $\circ$, it could be a multiplication or an integration scheme. Similar to the loss function, this choice is problem dependent, but an addition is usually a good starting point.
 
 
-## In Equation Form
+## In equation form
 
 Next, we'll formalize the descriptions of the previous paragraphs. Specifically,
 we'll answer the question: 
@@ -116,7 +116,7 @@ In terms of implementation, all deep learning frameworks will re-use the _overla
 
 
 
-## Backpropagation through Solver Steps
+## Backpropagation through solver steps
 
 Now that we have all this machinery set up, a good question to ask is:
 *"How much does training with a differentiable physics simulator really improve things?
@@ -171,7 +171,7 @@ evolution of the system.
 
 ---
 
-## Complex Examples
+## Complex examples
 
 The following sections will give code examples of more complex cases to 
 show what can be achieved via differentiable physics training.
