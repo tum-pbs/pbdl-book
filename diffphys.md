@@ -287,9 +287,9 @@ $d_i(t+\Delta t) = \mathcal P ( d_i(t), \mathbf{u}(t), t + \Delta t)$, which
 gives the following:
 
 $$ \begin{aligned}
-    & d_i(t+\Delta t) = d_i - u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \text{ with }  \\
-    & u_i^+ = \text{min}(u_i \Delta t / \Delta x,0) \\
-    & u_i^- = \text{max}(u_i \Delta t / \Delta x,0)
+    & d_i(t+\Delta t) = d_i - \Delta t \big[ u_i^+ (d_{i+1} - d_{i}) +  u_i^- (d_{i} - d_{i-1}) \big] \text{ with }  \\
+    & u_i^+ = \text{min}(u_i / \Delta x,0) \\
+    & u_i^- = \text{max}(u_i / \Delta x,0)
 \end{aligned} $$
 
 ```{figure} resources/diffphys-advect1d.jpg
