@@ -345,8 +345,8 @@ $$\begin{aligned}
 Like above for Newton's method in equation {eq}`newton-step-size-conv` we have a negative linear term
 that dominates the loss for small enough $\lambda$.
 In combination, we have the following upper bound due to the Lipschitz condition in the first line
-$L(x+\lambda \Delta) \le L(x) - \lambda |J|^2 +  \frac{ \lambda^2 \mathcal L}{2} | J|^2 $.
-By choosing $\lambda \le \frac{1}{\mathcal L}$, we can simplify these terms further, and can an upper bound that depends on $J$ squared: $L(x+\lambda \Delta) \le L(x) -  \frac{ \lambda}{2} | J|^2$
+$L(x+\Delta) \le L(x) - \lambda |J|^2 +  \frac{ \lambda^2 \mathcal L}{2} | J|^2 $.
+By choosing $\lambda \le \frac{1}{\mathcal L}$, we can simplify these terms further, and can an upper bound that depends on $J$ squared: $L(x+\Delta) \le L(x) -  \frac{ \lambda}{2} | J|^2$
 and thus ensures convergence.
 
 This result unfortunately does not help us much in practice, as for all common usage of GD in deep learning $\mathcal L$ is not known. It is still good to know that a Lipschitz constant for the gradient would theoretically provide us with convergence guarantees for GD.
