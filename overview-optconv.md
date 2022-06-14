@@ -51,15 +51,15 @@ We'll need a few tools for the derivations below, which are summarized here for 
 
 Not surprisingly, we'll need some Taylor-series expansions. With the notation above it reads: 
 
-$$L(x+\Delta) = L + J \Delta + \frac{1}{2} H \Delta^2 + \cdots$$
+$$L(x+\Delta) = L + J^T \Delta + \frac{1}{2} H \Delta^2 + \cdots$$
 
 Then we also need the _Lagrange form_, which yields an exact solution for a $\xi$ from the interval $[x, x+\Delta]$:
 
-$$L(x+\Delta) = L + J \Delta + \frac{1}{2} H(\xi) \Delta^2$$
+$$L(x+\Delta) = L + J^T \Delta + \frac{1}{2} H(\xi) \Delta^2$$
 
 In several instances we'll make use of the fundamental theorem of calculus, repeated here for completeness:   
 
-$$f(x+\Delta) = f(x) \int_0^1 \text{d}s ~ f'(x+s \Delta) \Delta \ . $$
+$$f(x+\Delta) = f(x) + \int_0^1 \text{d}s ~ f'(x+s \Delta) \Delta \ . $$
 
 In addition, we'll make use of Lipschitz-continuity with constant $\mathcal L$:
 $|f(x+\Delta) + f(x)|\le \mathcal L \Delta$, and the well-known Cauchy-Schwartz inequality: 
@@ -89,12 +89,12 @@ $\Delta_n^* = x^* - x_n$ denote the step from a current $x_n$ to the optimum, as
 ![newton x-* pic](resources/overview-optconv-minimum.png)
 
 Assuming differentiability of $J$, 
-we can perform the Lagrange expansion of $J$ at $x^*$:
+we can perform the Lagrange expansion of $J^T$ at $x^*$:
 
 $$\begin{aligned}
-    0 = J(x^*)     &= J(x_n) + H(x_n) \Delta^*_n + \frac{1}{2} K (\xi_n ){\Delta^*_n}^2
+    0 = J^T(x^*)     &= J^T(x_n) + H(x_n) \Delta^*_n + \frac{1}{2} K (\xi_n ){\Delta^*_n}^2
         \\
-       \frac{J}{H} &= -\frac{K}{2H}{\Delta^*_n}^2
+       \frac{J^T}{H} &= -\frac{K}{2H}{\Delta^*_n}^2 - \Delta^*_n
 \end{aligned}$$
 
 In the second line, we've already divided by $H$, and dropped $(x_n)$ and $(\xi_n )$ to shorten the notation.
@@ -102,9 +102,9 @@ When we insert this into $\Delta_n^*$ we get:
 
 $$\begin{aligned}
     {\Delta^*_{n+1}} &= x^* - x_{n+1} \\
-    &= x^* - \big(   x_n - \frac{J}{H} \big)  \\
+    &= x^* - \big(   x_n - \frac{J^T}{H} \big)  \\
     &=  \Delta^*_n  - \frac{K}{2H} {\Delta^*_n}^2  - \Delta^*_n \\
-    &=  \frac{K}{2H} {\Delta^*_n}^2 
+    &=  - \frac{K}{2H} {\Delta^*_n}^2 
 \end{aligned}$$
 
 % simple: insert $\frac{J}{H}$ from above, re-arrange
@@ -134,16 +134,16 @@ with lower loss values.
 First, we apply the fundamental theorem to L
 
 $$
-    L(x + \lambda \Delta) = L + \int_0^1 \text{ds}~ J(x + s \lambda \Delta) \lambda \Delta \ ,
+    L(x + \lambda \Delta) = L + \int_0^1 \text{ds}~ J^T(x + s \lambda \Delta) \lambda \Delta \ ,
 $$
 
 and likewise express $J$ around this location with it:
 
 $$\begin{aligned}
-    J(x + s \lambda \Delta) &= J + \int_0^1 \text{dt}~ H(x + s t \lambda \Delta) s \lambda \Delta
+    J^T(x + s \lambda \Delta) &= J^T + \int_0^1 \text{dt}~ H(x + s t \lambda \Delta) s \lambda \Delta
 \end{aligned}$$
 
-Inserting this $J$ into $L$ yields:
+Inserting this $J^T$ into $L$ yields:
 
 $$\begin{aligned}
     L(x + \lambda \Delta) - L(x) 
@@ -210,7 +210,7 @@ $$
 $$
 
 As before, we use a step of $\Delta = -\frac{J^T}{H}$ for $x$, and the denominator comes from the finite difference
-$\frac{ J(x_{n+1})^T - J(x_{n}) }{\Delta}$ with the assumption that the current Jacobian is zero.
+$\frac{ J(x_{n+1})^T - J(x_{n})^T }{\Delta}$ with the assumption that the current Jacobian is zero.
 Keep in mind, that $\Delta$ is a vector here (see the vector division above), so the finite difference gives a matrix of size $N \times N$ that can be added to $H_n$.
 
 Broyden's method has the advantage that we never have to compute a full Hessian, 
@@ -229,13 +229,13 @@ gives a full approximation of $H$. We could try to perform some kind of averagin
 this would strongly deteriorate the existing content in $H_{n}$. Hence, we subtract
 only the existing entries in $H_{n}$ along the current step $\Delta$. 
 This makes sense, as the finite difference approximation yields exactly the estimate along
-$\Delta$. In combination, these changes give an update step for $H$ of:
+$\Delta$. In combination, using the vector division $\frac{a}{b} \equiv \frac{a a^T }{a^T b}$, 
+these changes give an update step for $H$ of:
 
 $$
-  H_{n+1} = H_{n} + \frac{  J(x_{n+1}) - J(x_{n}) }{\Delta_n} - \frac{H_n \Delta_n}{\Delta_n}
+  H_{n+1} = H_{n} + \frac{  J(x_{n+1})^T - J(x_{n})^T }{\Delta_n} - \frac{H_n \Delta_n}{\Delta_n}
 $$
 
-For BFGS above, we've used the vector division $\frac{a}{b} \equiv \frac{a a^T }{a^T b}$.
 In practice, BFGS also makes use of a line search to determine the step size $\lambda$.
 Due to the large size of $H$, commonly employed variants of BFGS also make use of reduced
 representations of $H$ to save memory. Nonetheless, the core step of updating the Hessian
@@ -269,11 +269,11 @@ Here the remaining $J_f^T J_f$ term of the first order approximation can be simp
 to our focus on an $L^2$ loss: $J_f= J / (2 f^T) $ and $|f|^2 = L$.
 
 The last line of equation {eq}`gauss-newton-approx` means we are basically approximating the Hessian with $J$ squared. This is reasonable in many scenarios, and inserting it into our update step above gives the
-Gauss-Newton update $\Delta_{\text{GN}} \approx -\frac{J}{J^T J}$.
+Gauss-Newton update $\Delta_{\text{GN}} \approx -\frac{J^T}{J^T J}$.
 
 Looking at this update, it essentially employs a step of the form  
 $\Delta_{\text{GN}} \approx -\frac{1}{J}$, i.e., 
-the update is based on an approximate inverse of the Jacobian of $L$.
+the update is based on an approximate inverse of the Jacobian of $L.$
 This inverse gives an approximately equal step size in all parameters, and
 as such provides an interesting building block that we will revisit in later chapters.
 In the form above, it still means we have to invert a large matrix,
