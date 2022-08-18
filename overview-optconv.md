@@ -51,11 +51,11 @@ We'll need a few tools for the derivations below, which are summarized here for 
 
 Not surprisingly, we'll need some Taylor-series expansions. With the notation above it reads: 
 
-$$L(x+\Delta) = L + J^T \Delta + \frac{1}{2} H \Delta^2 + \cdots$$
+$$L(x+\Delta) = L + J \Delta + \frac{1}{2} H \Delta^2 + \cdots$$
 
 Then we also need the _Lagrange form_, which yields an exact solution for a $\xi$ from the interval $[x, x+\Delta]$:
 
-$$L(x+\Delta) = L + J^T \Delta + \frac{1}{2} H(\xi) \Delta^2$$
+$$L(x+\Delta) = L + J \Delta + \frac{1}{2} H(\xi) \Delta^2$$
 
 In several instances we'll make use of the fundamental theorem of calculus, repeated here for completeness:   
 
@@ -134,27 +134,27 @@ with lower loss values.
 First, we apply the fundamental theorem to L
 
 $$
-    L(x + \lambda \Delta) = L + \int_0^1 \text{ds}~ J^T(x + s \lambda \Delta) \lambda \Delta \ ,
+    L(x + \lambda \Delta) = L + \int_0^1 \text{ds}~ J(x + s \lambda \Delta) \lambda \Delta \ ,
 $$
 
 and likewise express $J$ around this location with it:
 
 $$\begin{aligned}
-    J^T(x + s \lambda \Delta) &= J^T + \int_0^1 \text{dt}~ H(x + s t \lambda \Delta) s \lambda \Delta
+    J(x + s \lambda \Delta) = J + s \lambda \Delta^T \int_0^1 \text{dt}~ H(x + s t \lambda \Delta) 
 \end{aligned}$$
 
 Inserting this $J^T$ into $L$ yields:
 
 $$\begin{aligned}
     L(x + \lambda \Delta) - L(x) 
-        &=  \int_0^1 \text{d}s \Big[    J^T + \int_0^1 \text{d}t~ H(x + s t \lambda \Delta) ~ s \lambda \Delta  \Big]^T  \lambda \Delta   \\
+        &=  \int_0^1 \text{d}s \Big[    J + s \lambda \Delta^T  \int_0^1 \text{d}t~ H(x + s t \lambda \Delta)   \Big]^T  \lambda \Delta   \\
         &=  \int_0^1 \text{d}s \Big[   -H \Delta + \int_0^1 \text{d}t H(x + s t \lambda \Delta) ~ s \lambda \Delta  \Big]^T  \lambda \Delta    \\
         &=  \int_0^1 \text{d}s  \int_0^1 \text{d}t \big[  -H \Delta + H(x + s t \lambda \Delta) ~ s \lambda \Delta  \big]^T  \lambda \Delta    \\
         &=  \int_0^1 \text{d}s  \int_0^1 \text{d}t \big[  -H \Delta (1+\lambda s) + [ H(x + s t \lambda \Delta) - H ] ~ s \lambda \Delta  \big]^T  \lambda \Delta    \\
         &=  -(H\Delta)^T \big( 1+\frac{\lambda}{2} \big) \lambda \Delta  +  \lambda^2  \int_0^1 \text{d}s ~ s  \int_0^1 \text{d}t \big[ [ H(x + s t \lambda \Delta) - H ] ~ \Delta  \big]^T  \Delta    \\
 \end{aligned}$$ (newton-step-size-conv1)
 
-Here we've first used $\Delta = - J^T/H$, and moved it into the integral in the third line.
+Here we've first used $\Delta = - J^T/H$, and moved it into the integral in the third line, alongside the $s \lambda \Delta$ term.
 Line four factors out $H \Delta$. This allows us to evaluate the integral for the first term
 $ -H \Delta (1+\lambda s)$ in the last line of equation {eq}`newton-step-size-conv1` above.
 
