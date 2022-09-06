@@ -21,11 +21,15 @@ fileList = [
 	]
 
 #fileList = [ "physgrad-code.ipynb"] # debug, only 1 file
+#fileList = [ "t1.ipynb" ] # debug
 
 
 # main
 
 for fnOut in fileList:
+	if not os.path.isfile(fnOut):
+		print("Error: "+fnOut+" not found!"); exit(1)
+
 	# create backups
 	fn0 = fnOut[:-5] + "bak"
 	fn = fn0 + "0"; cnt = 0
@@ -47,6 +51,7 @@ for fnOut in fileList:
 	#print(d.keys()) #print(d["cells"][0].keys())
 
 	# remove TF / pytorch warnings, build list of regular expressions to search for
+	# double check, redundant with removing stderr cells (cf delE)
 	res = []
 	res.append( re.compile(r"WARNING:tensorflow:") )
 	res.append( re.compile(r"UserWarning:") )
@@ -90,16 +95,26 @@ for fnOut in fileList:
 					deletes = deletes+1
 					#print( d[t][i]["source"][j] +"\n >>> \n" +d2 )
 
+			delE = [] # collect whole entries (sections) to delete
+
 			#print(len( d[t][i]["outputs"] ))
 			for j in range(len( d[t][i]["outputs"] )):
 				#print(type( d[t][i]["outputs"][j] ))
 				#print( d[t][i]["outputs"][j].keys() )
 
+				# search for error stderr cells
+				if d[t][i]["outputs"][j]["output_type"]=="stream":
+					#print("output j name: "+ format( d[t][i]["outputs"][j]["name"] ) )
+					#print("output j: "+ format( d[t][i]["outputs"][j] ) )
+					if d[t][i]["outputs"][j]["name"]=="stderr":
+						print("stderr found! len text "+ format(len( d[t][i]["outputs"][j]["text"]) ) +", removing entry "+format(j) )
+						delE.append(j) # remove the whole stderr entry
+
 				# images
 				if d[t][i]["outputs"][j]["output_type"]=="stream":
-					#print("len "+  len( d[t][i]["outputs"][j]["text"] ) )
+					#print("len "+  format(len( d[t][i]["outputs"][j]["text"] )) )
 
-					dell = [] # collect entries to delete
+					dell = [] # collect lines to delete
 					for k in range(  len( d[t][i]["outputs"][j]["text"] )  ):
 						#print(" tout "+   d[t][i]["outputs"][j]["text"][k] ) # debug , print all lines
 						nums = []; all_good = True
@@ -117,8 +132,17 @@ for fnOut in fileList:
 
 					for dl in dell:
 						d[t][i]["outputs"][j]["text"].remove(dl)
+				#print("len after "+format( len( d[t][i]["outputs"][j]["text"] )) + " A") # debug
 
-					#print("len after "+format( len( d[t][i]["outputs"][j]["text"] )) + " A") # debug
+			# afterwards (potentially remove whole entries)
+			# if len(delE)>0:
+			# 	print("len bef "+format( len( d[t][i]["outputs"] )) + " A " + format(delE)) # debug
+			for de in delE:
+				#print(type(d[t][i]["outputs"])); print(de)
+				d[t][i]["outputs"].pop(de) # remove array element
+				deletes+=1
+			# if len(delE)>0:
+			# 	print("len after "+format( len( d[t][i]["outputs"] )) + " A") # debug
 
 	if deletes==0:
 		print("Warning: Nothing found in "+fn+"!")
