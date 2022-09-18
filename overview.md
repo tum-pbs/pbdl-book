@@ -119,7 +119,7 @@ where a solver targets cases from a certain well-defined problem
 domain repeatedly, it can for instance make a lot of sense to once invest 
 significant resources to train
 a neural network that supports the repeated solves. Based on the
-domain-specific specialization of this network, such a hybrid
+domain-specific specialization of this network, such a hybrid solver
 could vastly outperform traditional, generic solvers. And despite
 the many open questions, first publications have demonstrated
 that this goal is not overly far away {cite}`um2020sol,kochkov2021`. 
