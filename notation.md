@@ -22,7 +22,7 @@
 
 ## Summary of the most important abbreviations:
 
-| ABbreviation | Meaning |
+| Abbreviation | Meaning |
 | --- | --- |
 | BNN  | Bayesian neural network |
 | CNN  | Convolutional neural network |

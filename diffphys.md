@@ -227,7 +227,7 @@ Once things are working with GD, we can relatively easily switch to better optim
 an NN into the picture, hence it's always a good starting point.
 To make things easier to read below, we'll omit the transpose of the Jacobians in the following. 
 Unfortunately, the Jacobian is defined this way, but we actually never need the un-transposed one.
-Keep in mind that in practice we're dealing with tranposed Jacobians $\big( \frac{ \partial a }{ \partial b} \big)^T$
+Keep in mind that in practice we're dealing with transposed Jacobians $\big( \frac{ \partial a }{ \partial b} \big)^T$
 that are "abbreviated" by $\frac{ \partial a }{ \partial b}$.
 
 As the discretized velocity field $\mathbf{u}$ contains all our degrees of freedom,
@@ -341,7 +341,7 @@ e.g., one could try to insert equation {eq}`eq:advection` at time $t-\Delta t$
 into equation {eq}`eq:advection` at time $t$ and repeat this process recursively until
 we have a single expression relating $d^{~0}$ to the targets. However, thanks
 to the linear nature of the Jacobians, we treat each advection step, i.e.,
-each invocation of our PDE $\mathcal P$ as a seperate, modular
+each invocation of our PDE $\mathcal P$ as a separate, modular
 operation. And each of these invocations follows the procedure described 
 in the previous section.
 
@@ -380,7 +380,7 @@ at first, but looking closely, each line simply adds an additional Jacobian for 
 This follows from the chain rule, as shown in the two-operator case above.
 So the terms of the sum contain a lot of similar Jacobians, and in practice can be computed efficiently
 by backtracing through the sequence of computational steps that resulted from the forward evaluation of our PDE.
-(Note that, as mentioned above, we've omitted the tranpose of the Jacobians here.)
+(Note that, as mentioned above, we've omitted the transpose of the Jacobians here.)
 
 This structure also makes clear that the process is very similar to the regular training
 process of an NN: the evaluations of these Jacobian vector products from nested function calls
