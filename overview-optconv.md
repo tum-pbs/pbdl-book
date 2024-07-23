@@ -63,7 +63,7 @@ $$f(x+\Delta) = f(x) + \int_0^1 \text{d}s ~ f'(x+s \Delta) \Delta \ . $$
 
 In addition, we'll make use of Lipschitz-continuity with constant $\mathcal L$:
 $|f(x+\Delta) + f(x)|\le \mathcal L \Delta$, and the well-known Cauchy-Schwartz inequality: 
-$ u^T v < |u| \cdot |v| $.
+$ u^T v \le |u| \cdot |v| $.
 
 ## Newton's method
 
