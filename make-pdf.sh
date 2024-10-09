@@ -10,7 +10,6 @@ echo
 echo WARNING - still requires one manual quit of first pdf/latex pass, use shift-x to quit
 echo
 
-PYT=python3.7
 PYT=python3
 
 # warning - modifies notebooks!
@@ -18,9 +17,21 @@ ${PYT} json-cleanup-for-pdf.py
 
 # clean / remove _build dir ?
 
-# GEN!
+/Users/thuerey/Library/Python/3.9/bin/jupyter-book build . 
+xelatex book
+
+exit # sufficient for newer jupyter book versions
+
+
+
+
+
+
+# old "pre" GEN
 #/Users/thuerey/Library/Python/3.7/bin/jupyter-book build . --builder pdflatex
-/Users/thuerey/Library/Python/3.9/bin/jupyter-book build . --builder pdflatex
+#/Users/thuerey/Library/Python/3.9/bin/jupyter-book build . --builder pdflatex
+
+# old cleanup
 
 cd _build/latex
 #mv book.pdf book-xetex.pdf # not necessary, failed anyway
