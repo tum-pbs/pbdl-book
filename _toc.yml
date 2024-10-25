@@ -17,6 +17,7 @@ parts:
 - caption: Physical Losses
   chapters:
   - file: physicalloss.md
+  - file: physicalloss-div.ipynb
   - file: physicalloss-code.ipynb
   - file: physicalloss-discuss.md
 - caption: Differentiable Physics

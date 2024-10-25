@@ -109,7 +109,6 @@ in {doc}`diffphys` and after, we'll focus on direct NN representations (variant 
 The second variant of employing physical residuals as soft constraints 
 instead uses fully connected NNs to represent $\mathbf{u}$. This _physics-informed_ approach was popularized by Raissi et al. {cite}`raissi2019pinn`, and has some interesting pros and cons that we'll outline in the following. We will target  this  physics-informed version (variant 2) in the following code examples and discussions.
 
-
 The central idea here is that the aforementioned general function $f$ that we're after in our learning problems
 can also be used to obtain a representation of a physical field, e.g., a field $\mathbf{u}$ that satisfies $R=0$. This means $\mathbf{u}(\mathbf{x})$ will 
 be turned into $\mathbf{u}(\mathbf{x}, \theta)$ where we choose the NN parameters $\theta$ such that a desired $\mathbf{u}$ is 
@@ -144,9 +143,13 @@ For higher order derivatives, such as $\frac{\partial^2 u}{\partial x^2}$, we ca
 
 ## Summary so far
 
-The approach above gives us a method to include physical equations into DL learning as a soft constraint: the residual loss.
+The v2 approach above gives us a method to include physical equations into DL learning as a soft constraint: the residual loss.
 Typically, this setup is suitable for _inverse problems_, where we have certain measurements or observations
-for which we want to find a PDE solution. Because of the high cost of the reconstruction (to be 
-demonstrated in the following), the solution manifold shouldn't be overly complex. E.g., it is typically not possible 
-to capture a wide range of solutions, such as with the previous supervised airfoil example, by only using a physical residual loss.
+for which we want to find a PDE solution. Because of the ill-posedness of the optimization and learning problem,
+and the high cost of the reconstruction (to be 
+demonstrated in the following), the solution manifold shouldn't be overly complex for these PINN approaches. 
+E.g., it is typically very involved to capture a wide range of solutions, such as with the previous supervised airfoil example.
+
+Next, we'll demonstrate these concepts with code: first, we'll show how learning the Helmholtz decomposition works out in 
+practice with a v1-approach. Afterwards, we'll illustrate the PINN-approaches with a practical example.
 
