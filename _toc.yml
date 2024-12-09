@@ -10,10 +10,11 @@ parts:
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
     - file: overview-optconv.md
+- caption: Supervised Training
+  chapters:
   - file: supervised.md
-    sections:
-    - file: supervised-airfoils.ipynb
-    - file: supervised-discuss.md
+  - file: supervised-airfoils.ipynb
+  - file: supervised-discuss.md
 - caption: Physical Losses
   chapters:
   - file: physicalloss.md
@@ -32,6 +33,12 @@ parts:
   - file: diffphys-code-sol.ipynb
   - file: diffphys-code-control.ipynb
   - file: diffphys-discuss.md
+- caption: Probabilistic Learning
+  chapters:
+  - file: probmodels-intro.md
+  - file: probmodels-ddpm-fm.ipynb
+  - file: bayesian-intro.md
+  - file: bayesian-code.ipynb
 - caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
@@ -45,10 +52,6 @@ parts:
   - file: physgrad-hig.md
   - file: physgrad-hig-code.ipynb
   - file: physgrad-discuss.md
-- caption: PBDL and Uncertainty
-  chapters:
-  - file: bayesian-intro.md
-  - file: bayesian-code.ipynb
 - caption: Fast Forward Topics
   chapters:
   - file: others-intro.md
