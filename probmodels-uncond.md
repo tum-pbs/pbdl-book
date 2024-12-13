@@ -1,4 +1,4 @@
-How to Train Unconditionally Stable Autoregressive Neural Operators
+Unconditional Stablility
 =======================
 
 The results of the previous section, for time predictions with diffusion models, and earilier ones ({doc}`diffphys-discuss`)
@@ -25,7 +25,7 @@ For each sequences in both data sets, three training runs of each architecture a
 As a first comparison, we'll train three network architectures with an identical U-Net architecture, that use different stabilization techniques. This comparison shows that it is possible to successfully achieve the task "unconditional stability" in different ways:
 - Unrolled training (_U-Net-ut_) where gradients are backpropagated through multiple time steps during training.
 - Networks trained on a single prediction step with added training noise (_U-Net-tn_). This technique is known to improve stability by reducing data shift, as the added noise emulates errors that accumulate during inference.
-- Autoregressive conditional diffusion models (ACDM). A denoising diffusion model is conditioned on the previous time step and iteratively refines noise to create a prediction for the next step, as shown in {doc}`probmodels-time.ipynb`. 
+- Autoregressive conditional diffusion models (ACDM). A denoising diffusion model is conditioned on the previous time step and iteratively refines noise to create a prediction for the next step, as shown in {doc}`probmodels-time`. 
 
 NT_DEBUG, todo, more ACDM discussion below!
     images from : 2024-08-05-long-rollout-www/Long Rollouts/imgs/
@@ -59,7 +59,7 @@ Figure 2 lists the percentage of stable runs for a range of ablation networks on
 
 ```{figure} resources/probmodels-uncond03-ma.png
 ---
-height: 240px
+height: 210px
 name: probmodels-uncond03-ma
 ---
 Percentage of stable runs on the Tra-ext data set for different ablations of unrolled training.
@@ -80,7 +80,7 @@ it can substantially impact the stability of autoregressive networks. This is si
 
 ```{figure} resources/probmodels-uncond04a.png
 ---
-height: 240px
+height: 210px
 name: probmodels-uncond04a
 ---
 Percentage of stable runs and training time for different combinations of rollout length and batch size for the Tra-ext data set. Grey configurations are omitted due to memory limitations (mem) or due to high computational demands (-).
@@ -88,7 +88,7 @@ Percentage of stable runs and training time for different combinations of rollou
 
 ```{figure} resources/probmodels-uncond04b.png
 ---
-height: 240px
+height: 210px
 name: probmodels-uncond04b
 ---
 Percentage of stable runs and training time for rollout length and batch size for the Inc-high data set. Grey again indicates out-of-memory (mem) or overly high computations (-).
@@ -98,7 +98,7 @@ This shows that increasing the batch size is more expensive in terms of training
 
 ```{figure} resources/probmodels-uncond05.png
 ---
-height: 240px
+height: 180px
 name: probmodels-uncond05
 ---
 Training time for different combinations of rollout length and batch size to on the Tra-ext data set (left) and the Inc-high data set (right). Only configurations that to lead to highly stable networks (stable run percentage >= 89%) are shown.

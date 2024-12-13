@@ -34,3 +34,12 @@ html:
   use_issues_button: true
   use_repository_button: true
   favicon: "favicon.ico"
+
+# for $$ equations in text
+parse:
+  myst_dmath_double_inline: true
+
+sphinx:
+  extra_extensions:
+    - sphinx_proof
+

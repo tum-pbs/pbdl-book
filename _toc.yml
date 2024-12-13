@@ -37,8 +37,8 @@ parts:
   chapters:
   - file: probmodels-intro.md
   - file: probmodels-ddpm-fm.ipynb
-  - file: bayesian-intro.md
-  - file: bayesian-code.ipynb
+  - file: probmodels-time.ipynb
+  - file: probmodels-uncond.md
 - caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
