@@ -2,9 +2,9 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: Physics-based Deep Learning
-author: N. Thuerey, P. Holl, M. Mueller, P. Schnell, F. Trost, K. Um
+author: N. Thuerey, B. Holzschuh, P. Holl, G. Kohl, P. Schnell, F. Trost
 logo: resources/logo.jpg
-copyright: "2021,2022"
+copyright: "2021 - 2025"
 only_build_toc_files: true
 
 launch_buttons:
