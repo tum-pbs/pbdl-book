@@ -13,6 +13,7 @@ parts:
 - caption: Supervised Training
   chapters:
   - file: supervised.md
+  - file: supervised-arch.md
   - file: supervised-airfoils.ipynb
   - file: supervised-discuss.md
 - caption: Physical Losses
@@ -45,6 +46,9 @@ parts:
   chapters:
   - file: reinflearn-intro.md
   - file: reinflearn-code.ipynb
+- caption: Graph Networks
+  chapters:
+  - file: graphs.md
 - caption: Improved Gradients
   chapters:
   - file: physgrad.md

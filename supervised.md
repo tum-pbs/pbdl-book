@@ -1,14 +1,12 @@
 Supervised Training
 =======================
 
-_Supervised_ here essentially means: "doing things the old fashioned way". Old fashioned in the context of 
-deep learning (DL), of course, so it's still fairly new. 
-Also, "old fashioned" doesn't always mean bad - it's just that later on we'll discuss ways to train networks that clearly outperform approaches using supervised training.
-
-Nonetheless, "supervised training" is a starting point for all projects one would encounter in the context of DL, and
-hence it is worth studying. Also, while it typically yields inferior results to approaches that more tightly 
+_Supervised training_ is a starting point for all projects one would encounter in the context of deep learning, and hence it is worth studying. 
+And while it can yield inferior results to approaches that more tightly 
 couple with physics, it can be the only choice in certain application scenarios where no good
 model equations exist.
+In this chapter, we'll also go over the basics of different neural network _architectures_. Next to training
+methodology, this is an imporant choice.
 
 ## Problem setting
 
