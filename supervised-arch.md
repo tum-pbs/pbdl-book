@@ -3,13 +3,21 @@ Neural Network Architectures
 
 The connectivity of the individual "neurons" in a neural network has a substantial influence on the capabilities of a network consisting of a large number of them. Over the course of many years, several key architectures have emerged as particularly useful choices, and in the following we'll go over the main considerations for choosing an architecture. Our focus is to introduce ways of incorporating PDE-based models (the "physics"), rather than the subtleties of NN architectures, and hence this section will be kept relatively brief.
 
+```{figure} resources/arch01.jpg
+---
+height: 110px
+name: arch01-overview
+---
+We'll discuss a range of architecture, from regular convolutions over graph- and particle-based convolutions to newer attention-based variants.
+```
+
 # Spatial Arrangement
 
 A first, fundamental aspect to consider for choosing an architecture (and for ruling out unsuitable options) is the spatial arrangement of the data samples. 
 We can distinguish four cases here: 
 
 1. No spatial arrangement,
-2. A regular spacing on a grid (_structured),
+2. A regular spacing on a grid (_structured_),
 3. An irregular arrangement (_unstructured_), and
 4. Irregular positions without connectivity (_particle_ / _point_-based).
 
@@ -32,8 +40,8 @@ The most important aspect of different architectures then is the question of the
 
 |             | Grid            | Unstructured      | Points            | Non-spatial |
 |-------------|-----------------|-------------------|-------------------|-------------|
-| Local       | CNN , ResNet    | GNN               | CConv             | -           |
-| Global      |                 |                   |                   |  MLP        |
+| **Local**   | CNN , ResNet    | GNN               | CConv             | -           |
+| **Global**  |                 |                   |                   |  MLP        |
 | - Hierarchy | U-Net, Dilation | Multi-scale GNN   | Multi-scale CConv | -           |
 | - Spectral  | FNO             | Spectral GNN      | (-)               | -           |
 | - Sequence  | Transformer     | Graph Transformer | Point Trafo.      | -           |
@@ -55,15 +63,31 @@ The most natural start for making use of spatially arranged data is to employ a 
 Cartesian grid, but could be e deformed and adaptive grid {cite}`chen2021highacc`. The only requirement is a grid-like connectivity of the samples, even if 
 they have an irregular spacing. 
 
+```{figure} resources/arch05.jpg
+---
+height: 180px
+name: arch04-defogrids-conv
+---
+A 3x3 convolution (orange) shown for differently deformed regular multi-block grids.
+```
+
 For unstructured data, graph-based neural networks (GNNs) are a good choice. While they're often discussed in terms of _message-passing_ operations,
-the main approach (and most algorithms) from the grid world directly transfer: the basic operation of a message-passing
-step on a GNN is the same as a convolution on a grid. And hierarchies can be build in very similar ways to grids. Hence, while we'll primarily discuss
-grids below, keep in mind that the approaches carry over to GNNs. As dealing with graph structures makes the implementation more
-complicated, we'll go into more detail here later on in {doc}`graphs`.
+they share a lot of similarities with structured grids: the basic operation of a message-passing step on a GNN is the same as a convolution on a grid {cite}``. 
+And hierarchies can likewise be constructed by graph coarsening. Hence, while we'll primarily discuss grids below, keep in mind that the approaches 
+carry over to GNNs. As dealing with graph structures makes the implementation more complicated, we won't go into details until later on in {doc}`graphs`.
+
+```{figure} resources/arch02.jpg
+---
+height: 240px
+name: arch02-convolutions
+---
+Convolutions (and hierarchies) work very similarly irrespective of the structure of the data. Convolutions apply to grids, graphs and point-samples, as shown above. 
+Likewise, the concepts discussed for grid-based algorithms in this book carry over to graphs and point collections.
+```
 
 Finally, point-wise (Lagrangian) samples can be seen as unstructured grids without connectivity. However, it can be worth explicitly treating
 them in this way for improved learning and inference performance. Nonetheless, the two main ideas of convolutions and hierarchies carry over
-to Lagrangian data.
+to Lagrangian data: continuous convolution kernels are a suitable tool, and neighborhood based coarsening yields hierarchies {cite}`prantl2022guaranteed`.
 
 # Hierarchies
 
@@ -81,17 +105,26 @@ CNNs is an interesting one. Over time, two fundamental approaches have been esta
 _hierarchical_ networks via pooling (U-Nets {cite}`ronneberger2015unet`), and sparse, point wise samples with enlarged spacing (Dilation {cite}`yu2015dilate`). They both reach
 the goal of establishing a global receptive field, but have a few interesting differences under the hood.
 
+```{figure} resources/arch03.jpg
+---
+height: 200px
+name: arch03-hierarchy
+---
+A 3x3 convolution shown for a pooling-based hierarchy (left), and a dilation-based convolution (right). Not that in both cases the convolutions cover larger ranges of the input data. However, the hierarchy processes $O(log N)$ less data, while the dilation processes the full input with larger strides. Hence the latter has an increased cost due to the larger number of sample points, and the less regular data access.
+```
+
 * U-Nets are based on _pooling_ operations. Akin to a geometric multigrid hierarchy, the spatial samples are downsampled to coarser and
 coarser grids, and upsampled in the later half of the network. This means that even if we keep the kernel size of a convolution fixed, the 
-convolution will be able to "look" further in terms of physical space due to the previous downsampling operation. While the different 
-re-sampling methods (mean, average, point-wise ...) have a minor effect, a crucial ingredient for U-Net are _skip connection_. The connect
+convolution will be able to "look" further in terms of physical space due to the previous downsampling operation. 
+The number of sample points decreases logaritmically, making convolutions on lower hierarchy levels very efficient.
+While the different re-sampling methods (mean, average, point-wise ...) have a minor effect, a crucial ingredient for U-Net are _skip connection_. They connect
 the earlier layers of the first half directly with the second half via feature concatenation. This turns out to be crucial to avoid 
 a loss of information. Typically, the deepest "bottle-neck" layer with the coarsest representation has trouble storing all details 
 of the finest one. Providing this information explicitly via a skip-connection is crucial for improving accuracy.
 
 * Dilation in the form of _dilated convolutions_ places the sampling points for convolutions further apart. Hence instead of, e.g., looking at a 3x3 neighborhood, 
 a convolution considers a 5x5 neighborhood but only includes 3x3 samples when calculating the convolution. The other samples in-between the used points are
-typically simply ignored.
+typically simply ignored. In contrast to a hierarchy, the number of sample points remains constant.
 
 While both approaches reach the goal, and can perform very well, there's an interesting tradeoff: U-Nets take a bit more effort to implement, but can be much faster. The reason for the performance boost is the sub-optimal memory access of the dilated convolutions: they skip through memory with a large stride, which gives a slower performance. The U-Nets, on the other had, basically precompute a compressed memory representation in the form of a coarse grid. Convolutions on this coarse grid are then highly efficient to compute. However, this requires slightly more effort to implement in the form of adding appropriate pooling layers (dilated convolutions can be as easy to implement as replacing the call to the regular convolution with a dilated one). The implementation effort of a U-Net can pay off significantly in the long run, when a trained network should be deployed in an application.
 
@@ -100,7 +133,7 @@ Note that this difference is not present for graph nets: here the memory access 
 
 # Spectral methods
 
-A fundamentally different avenue for establishing global receptive fields is provided by spectral methods, typically making use of Fourier transforms to transfer spatial data to the frequency domain. The most popular approach from this class of methods are _Fourier Neural Operators_ (FNOs) {cite}`fno20xx`. An interesting aspect is the promise of a continuous representation via the functional representation, where a word of caution is appropriate: the function spaces are typically truncated, so it is often questionable whether the frequency representation really yields suitable solutions beyond the resolution of the training data.
+A fundamentally different avenue for establishing global receptive fields is provided by spectral methods, typically making use of Fourier transforms to transfer spatial data to the frequency domain. The most popular approach from this class of methods are _Fourier Neural Operators_ (FNOs) {cite}`li2021fno`. An interesting aspect is the promise of a continuous representation via the functional representation, where a word of caution is appropriate: the function spaces are typically truncated, so it is often questionable whether the frequency representation really yields suitable solutions beyond the resolution of the training data.
 
 In the following, however, we'll focus on the aspect of receptive fields in conjunction with performance aspects. Here, FNO-like methods have an interesting behavior: they modify frequency information with a dense layer. As the frequency signal after a Fourier transform would have the same size as the input, the dense layer works on a set of the $M$ largest frequencies. For a two dimensional input that means $M^2$ modes, and the corresponding dense layer thus requires $M^4$ parameters.
 
@@ -108,6 +141,7 @@ An inherent advantage and consequence of the frequency domain is that all basis 
 
 Unfortunately, they're not well suited for higher dimensional problems: Moving from two to three dimensions increases the size of the frequencies to be handled to $M^3$. For the dense layer, this means $M^6$ parameters, a cubic increase. In contrast, a regular convolution with kernel size $K$ requires $K^2$ weights in 2D, and $K^3$ in 3D. Thus, architectures like CNNs require much fewer weights when being applied to 3D problems, and correspondingly, FNOs are not recommended for 3D (or higher dimensional) problems.
 
+![Divider](resources/divider2.jpg)
 
 # Attention and Transformers 
 
@@ -122,6 +156,9 @@ This Transformer architecture was shown to scale extremely well to networks with
 This bottleneck can be addressed with _linear attention_: it changes the algorithm above to multiply Q and (K^T V) instead, applying a non-linearity (e.g., an exponential) to both parts beforehand. This avoids the  $N \times N$ matrix and scales linearly in $N$. However, this improvement comes at the cost of a more approximative attention vector.
 
 An interesting aspect of Transformer architectures is also that they've been applied to structured as well as unstructured inputs. I.e., they've been used for graphs, points as well as grid-based data. In all cases the differences primarily lie in how the tokens are constructed. The attention is typically still "dense" in the token space. This is a clear limitation: for problems with a known spatial structure, discarding this information will inevitably need to be compensated for, e.g., with a larger weight count or lower inference accuracy. Nonetheless, Transformers are an extremely active field within DL, and clearly a potential contender for future NN algorithms.
+
+
+![Divider](resources/divider7.jpg)
 
 
 # Summary of Architectures
