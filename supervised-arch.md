@@ -139,7 +139,22 @@ In the following, however, we'll focus on the aspect of receptive fields in conj
 
 An inherent advantage and consequence of the frequency domain is that all basis functions have global support. That means despite only working with a subset of all frequencies, FNOs can process (and modify) all parts of an input signal. This natural treatment of **global dependencies** is a inherent advantage of spectral methods.
 
-Unfortunately, they're not well suited for higher dimensional problems: Moving from two to three dimensions increases the size of the frequencies to be handled to $M^3$. For the dense layer, this means $M^6$ parameters, a cubic increase. In contrast, a regular convolution with kernel size $K$ requires $K^2$ weights in 2D, and $K^3$ in 3D. Thus, architectures like CNNs require much fewer weights when being applied to 3D problems, and correspondingly, FNOs are not recommended for 3D (or higher dimensional) problems.
+```{figure} resources/arch06-fno.jpg
+---
+height: 200px
+name: arch06-fno
+---
+Spatial convolutions (left, kernel in orange) and frequency processing in FNOs (right, coverage of dense layer in yellow). Not only do FNOs scale less well in 3D (**6th** instead of 5th power), their constant is also proportional to the domain size, and hence typically larger for FNOs.
+```
+
+Unfortunately, they're not well suited for higher dimensional problems: Moving from two to three dimensions increases the size of the frequencies to be handled to $M^3$. For the dense layer, this means $M^6$ parameters, a cubic increase. For convolutions, there's no huge difference in 2D:
+ a regular convolution with kernel size $K$ requires $K^2$ weights in 2D, and induces another $O(K^2)$ scaling for processing features, in total $O(K^4)$.
+However, in 3D regular convolutions scale much better: in 3D only the kernel size increases to $K^3$, giving an overall complexity of $O(K^5)$ in 3D. 
+Thus, the exponent is 5 instead of 6.
+
+To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 >> K^5$. Thus, FNOs in 3D require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights when being applied to 3D problems, and in conjunction with hierarchies can still handle global dependencies efficiently.
+
+<br>
 
 ![Divider](resources/divider2.jpg)
 
