@@ -17,7 +17,7 @@ ${PYT} json-cleanup-for-pdf.py
 
 # clean / remove _build dir ?
 
-/Users/thuerey/Library/Python/3.9/bin/jupyter-book build . 
+/Users/thuerey/Library/Python/3.9/bin/jupyter-book build .  --builder pdflatex
 xelatex book
 
 exit # sufficient for newer jupyter book versions

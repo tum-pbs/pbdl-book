@@ -5,13 +5,13 @@ The connectivity of the individual "neurons" in a neural network has a substanti
 
 ```{figure} resources/arch01.jpg
 ---
-height: 110px
+height: 100px
 name: arch01-overview
 ---
 We'll discuss a range of architecture, from regular convolutions over graph- and particle-based convolutions to newer attention-based variants.
 ```
 
-# Spatial Arrangement
+## Spatial Arrangement
 
 A first, fundamental aspect to consider for choosing an architecture (and for ruling out unsuitable options) is the spatial arrangement of the data samples. 
 We can distinguish four cases here: 
@@ -33,7 +33,7 @@ Note that _physics-informed neural networks_ (PINNs) also fall into this categor
 
 Even when focusing on dense layers, this still leaves a few choices concerning the number of layers, their size, and activations. The other three cases have the same choices, and these hyperparameters of the architectures are typically determined over the course of training runs. Hence, we'll focus on the remaining three cases with spatial information in the following, as differences can have a profound impact here. So, below we'll focus on cases where we have a "computational domain" for a region of interest, in which the samples are located.
 
-# Local vs Global
+## Local vs Global
 
 The most important aspect of different architectures then is the question of the receptive field: this means for any single sample in our domain, which neighborhood of other sample points can influence the solution at this point. This is similar to classic considerations for PDE solving, where denoting a PDE as hyperbolic indicates its local, wave-like behavior in contrast to an elliptic one with global behavior. Certain NN architectures such as the classic convolutional neural networks (CNNs) support only local influences and receptive fields, while hierarchies with pooling expand these receptive field to effectively global ones. An interest variant here are spectral architectures like FNOs, which provide global receptive fields at the expense of other aspects. In addition Transformers (with attention mechanisms), provide a more complicated but scalable alternative here.
 
@@ -57,7 +57,7 @@ If your data has primarily **local** influences, choosing an architecture with s
 Vice versa, trying to approximate a **global** influence with a limited receptive field will be an unsolvable task, and most likely introduce substantial errors.
 ```
 
-# Regular, unstructured and point-wise data
+## Regular, unstructured and point-wise data
 
 The most natural start for making use of spatially arranged data is to employ a regular grid. Note that it doesn't have to be a
 Cartesian grid, but could be e deformed and adaptive grid {cite}`chen2021highacc`. The only requirement is a grid-like connectivity of the samples, even if 
@@ -89,7 +89,7 @@ Finally, point-wise (Lagrangian) samples can be seen as unstructured grids witho
 them in this way for improved learning and inference performance. Nonetheless, the two main ideas of convolutions and hierarchies carry over
 to Lagrangian data: continuous convolution kernels are a suitable tool, and neighborhood based coarsening yields hierarchies {cite}`prantl2022guaranteed`.
 
-# Hierarchies
+## Hierarchies
 
 A powerful and natural tool to work with **local** dependencies are convolutional layers. The corresponding neural networks (CNNs) are 
 a classic building block of deep learning, and very well researched and supported throughout. They are comparatively easy to 
@@ -131,7 +131,7 @@ While both approaches reach the goal, and can perform very well, there's an inte
 Note that this difference is not present for graph nets: here the memory access is always irregular, and dilation is unpopular as the strides would be costly to compute on general graphs. Hence, hierarchies in the form of multi-scale GNNs are highly recommended if global dependencies exist in the data.
 
 
-# Spectral methods
+## Spectral methods
 
 A fundamentally different avenue for establishing global receptive fields is provided by spectral methods, typically making use of Fourier transforms to transfer spatial data to the frequency domain. The most popular approach from this class of methods are _Fourier Neural Operators_ (FNOs) {cite}`li2021fno`. An interesting aspect is the promise of a continuous representation via the functional representation, where a word of caution is appropriate: the function spaces are typically truncated, so it is often questionable whether the frequency representation really yields suitable solutions beyond the resolution of the training data.
 
@@ -152,13 +152,13 @@ Unfortunately, they're not well suited for higher dimensional problems: Moving f
 However, in 3D regular convolutions scale much better: in 3D only the kernel size increases to $K^3$, giving an overall complexity of $O(K^5)$ in 3D. 
 Thus, the exponent is 5 instead of 6.
 
-To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 >> K^5$. Thus, FNOs in 3D require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights when being applied to 3D problems, and in conjunction with hierarchies can still handle global dependencies efficiently.
+To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 \gg K^5$. Thus, FNOs in 3D require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights when being applied to 3D problems, and in conjunction with hierarchies can still handle global dependencies efficiently.
 
 <br>
 
 ![Divider](resources/divider2.jpg)
 
-# Attention and Transformers 
+## Attention and Transformers 
 
 A newer and exciting develpoment in the deep learning field are attention mechanisms. They've been hugely successful in the form of _Transformers_ for processing language and natural images, and bear promise for physics-related problems. However, it's still open, whether they're really generally preferable over more "classic" architectures. The following section  will give an overview of the main pros and cons.
 
@@ -176,7 +176,7 @@ An interesting aspect of Transformer architectures is also that they've been app
 ![Divider](resources/divider7.jpg)
 
 
-# Summary of Architectures
+## Summary of Architectures
 
 The paragraphs above have given an overview over several fundamental considerations when choosing a neural network architecture for a physics-related problem. To re-cap, the
 main consideration when choosing an architecture is knowledge local or global dependencies in the data. Tailoring an architecture to this difference can have a big impact. 
