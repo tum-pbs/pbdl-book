@@ -39,6 +39,7 @@ parts:
   - file: probmodels-intro.md
   - file: probmodels-ddpm-fm.ipynb
   - file: probmodels-phys.md
+  - file: probmodels-sbisim.ipynb
   - file: probmodels-time.ipynb
   - file: probmodels-uncond.md
   - file: probmodels-graph.md
