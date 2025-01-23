@@ -5,7 +5,7 @@ Similar to classical numerics, regular grids are ideal for certain situations, b
 
 Many simulation problems like fluid flows are often poorly represented by a single mean solution. E.g., for many practical applications involving turbulence, it is crucial to **access the full distribution of possible flow states**, from which relevant statistics (e.g., RMS and two-point correlations) can be derived. This is where diffusion models can leverage their strengths: instead of having to simulate a lengthy transient phase to converge towards an equilibrium state, diffusion models can completely skip the transient warm-up, and directly produce the desired samples. Hence, this allows for computing the relevant flow statistics very efficiently compared to classic solvers.
 
-## Diffusion Graph Nets 
+## Diffusion Graph Nodes 
 
 In the following, we'll demonstrate these capabilities based on the _diffusion graph net_ (DGN) approach {cite}`lino2024dgn`, the full source code for which [can be found here](https://github.com/tum-pbs/dgn4cfd/).
 
@@ -148,7 +148,7 @@ Unlike in conventional VGAEs, the condition encoder is necessary because, at inf
 
 Let's directly turn to a complex case to illustrate the capabilities of DGN. (A more basic case will be studied in the Jupyter notebook on the following page.)
 
-The \dataset{Wing} experiments of the DGN project target wings in 3D turbulent flow, characterized by detailed vortices that form and dissipate on the wing surface.  This task is particularly challenging due to the high-dimensional, chaotic nature of turbulence and its inherent multi-scale interactions across a wide range of scales.
+The Wing experiments of the DGN project target wings in 3D turbulent flow, characterized by detailed vortices that form and dissipate on the wing surface.  This task is particularly challenging due to the high-dimensional, chaotic nature of turbulence and its inherent multi-scale interactions across a wide range of scales.
 The geometry of the wings varies in terms of relative thickness, taper ratio, sweep angle, and twist angle. 
 These simulations are computationally expensive, and using GNNs allows us to concentrate computational effort on the wing's surface, avoiding the need for costly volumetric fields. A regular grid around the wing would require over $10^5$ cells, in contrast to approximately 7,000 nodes for the surface mesh representation. The surface pressure can be used to determine both the aerodynamic performance of the wing and its structural requirements.
 Fast access to the probabilistic distribution of these quantities would be highly valuable for aerodynamic modeling tasks. 
@@ -181,11 +181,11 @@ with a distance of $\textbf{1.95 ± 0.89}$, while DGN follows with $2.12 ± 0.90
 ## Computational Performance
 
 While comparisons between runtimes of different implementations always should be taken with a grain of salt.
-Nonetheless, for the \dataset{Wing} experiments, the ground-truth simulator, running on 8 CPU threads, required 2,989 minutes to simulate the initial transient phase plus 2,500 equilibrium states. This duration is just enough to obtain a well converged variance. In contrast, the LDGN model took only 49 minutes on 8 CPU threads and 2.43 minutes on a single GPU to generate 3,000 samples.
+Nonetheless, for the Wing experiments, the ground-truth simulator, running on 8 CPU threads, required 2,989 minutes to simulate the initial transient phase plus 2,500 equilibrium states. This duration is just enough to obtain a well converged variance. In contrast, the LDGN model took only 49 minutes on 8 CPU threads and 2.43 minutes on a single GPU to generate 3,000 samples.
 If we consider the generation of a single converged state (for use as an initial condition in another simulator, for example), the speedup is four orders of magnitude on the CPU, and five orders of magnitude on the GPU. 
 Thanks to its latent space, the LDGN model is not only more accurate, but also $8\times$ faster than the DGN model, while requiring only about 55\% more training time. 
 These significant efficiency advantages suggest that graph-based diffusion models can be particularly valuable in scenarios where computational costs are otherwise prohibitive.
 
-These results indicate that diffusion modeling in the context of unstructured simulations represent a significant step towards leveraging probablistic methods in real-world engineering applications.
+These results indicate that diffusion modeling in the context of unstructured simulations represent a significant step towards leveraging probabilistic methods in real-world engineering applications.
 To highlight the aspects of DGN and its implementation, we now turn to a simpler test case that can be analyzed in detail within a Jupyter notebook.
 
