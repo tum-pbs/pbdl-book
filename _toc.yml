@@ -43,6 +43,7 @@ parts:
   - file: probmodels-time.ipynb
   - file: probmodels-uncond.md
   - file: probmodels-graph.md
+  - file: probmodels-graph-ellipse.ipynb
 - caption: Reinforcement Learning
   chapters:
   - file: reinflearn-intro.md
