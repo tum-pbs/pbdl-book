@@ -7,25 +7,23 @@ name: pbdl-logo-large
 ---
 ```
 
-Welcome to the _Physics-based Deep Learning Book_ (v0.2) 👋
+Welcome to the _Physics-based Deep Learning Book_ (v0.3, the _GenAI_ edition) 👋
 
 **TL;DR**: 
 This document contains a practical and comprehensive introduction of everything
 related to deep learning in the context of physical simulations.
 As much as possible, all topics come with hands-on code examples in the 
 form of Jupyter notebooks to quickly get started.
-Beyond standard _supervised_ learning from data, we'll look at _physical loss_ constraints, 
-more tightly coupled learning algorithms with _differentiable simulations_, 
-training algorithms tailored to physics problems,
+Beyond standard _supervised_ learning from data, 
+we'll look at _physical loss_ constraints and _differentiable simulations_, 
+diffusion-based approaches for _probabilistic, generative models_,
 as well as 
-reinforcement learning and uncertainty modeling.
-We live in exciting times: these methods have a huge potential to fundamentally 
-change what computer simulations can achieve.
+reinforcement learning and neural network architectures.
+We live in exciting times: these methods have a huge potential to fundamentally change what humans can achieve via computer simulations.
 
 ```{note} 
-_What's new in v0.2?_
-For readers familiar with v0.1 of this text, the extended section {doc}`diffphys-examples` and the
-brand new chapter on improved learning methods for physics problems (starting with {doc}`physgrad`) are highly recommended starting points.
+_What's new in v0.3?_
+Most importantly, this version has a large new chapter on generative modeling, offering a deep dive into topics such as denoising, flow-matching, autoregressive learning, the integration of physics-based constraints, and diffusion-based graph networks. Additionally, a new section explores neural architectures tailored for physics simulations, while all code examples have been updated to use the latest frameworks.
 ```
 
 ---
@@ -34,13 +32,13 @@ brand new chapter on improved learning methods for physics problems (starting wi
 
 As a _sneak preview_, the next chapters will show:
 
-- How to train networks to infer a fluid flow around shapes like airfoils, and estimate the uncertainty of the prediction. This gives a _surrogate model_ that replaces a traditional numerical simulation.
+- How to train neural networks to [predict the fluid flow around airfoils with diffusion modeling](probmodels-ddpm-fm). This gives a probabilistic _surrogate model_ that replaces and outperforms  traditional simulators.
 
-- How to use model equations as residuals to train networks that represent solutions, and how to improve upon these residual constraints by using _differentiable simulations_.
+- How to use model equations as residuals to train networks that [represent solutions](diffphys-dpvspinn), and how to improve upon these residual constraints by using [differentiable simulations](diffphys-code-sol).
 
-- How to more tightly interact with a full simulator for _inverse problems_. E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging simulators in the training loop.
+- How to more tightly interact with a full simulator for [inverse problems](diffphys-code-control). E.g., we'll demonstrate how to circumvent the convergence problems of standard reinforcement learning techniques by leveraging [simulators in the training loop](reinflearn-code).
 
-- We'll also discuss the importance of _inversion_ for the update steps, and how higher-order information can be used to speed up convergence, and obtain more accurate neural networks.
+- We'll also discuss the importance of [choosing the right network architecture](supervised-arch): whether to consider global or local interactions, continuous or discrete representations, and structured versus unstructured graph meshes.
 
 Throughout this text,
 we will introduce different approaches for introducing physical models
@@ -87,21 +85,22 @@ Some visual examples of numerically simulated time sequences. In this book, we e
 
 This project would not have been possible without the help of many people who contributed. Thanks to everyone 🙏 Here's an alphabetical list:
 
+- [Benjamin Holzschuh](https://ge.in.tum.de/about/)
 - [Philipp Holl](https://ge.in.tum.de/about/philipp-holl/)
-- [Maximilian Mueller](https://ge.in.tum.de/)
+- [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
+- [Mario Lino](https://ge.in.tum.de/about/mario-lino/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
-- [Felix Trost](https://ge.in.tum.de/)
+- [Felix Trost](https://ge.in.tum.de/about/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
-- [Kiwon Um](https://ge.in.tum.de/about/kiwon/)
+
 
 Additional thanks go to 
-Georg Kohl for the nice divider images (cf. {cite}`kohl2020lsim`), 
-Li-Wei Chen for the airfoil data image, 
-and to 
-Chloe Paillard for proofreading parts of the document.
+Li-Wei Chen, 
+Maximilian Mueller,
+Chloe Paillard,
+Kiwon Um,
+and all github contributors!
 
-% future:
-% - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
 
 ## Citation
 
@@ -109,10 +108,11 @@ If you find this book useful, please cite it via:
 ```
 @book{thuerey2021pbdl,
   title={Physics-based Deep Learning},
-  author={Nils Thuerey and Philipp Holl and Maximilian Mueller and Patrick Schnell and Felix Trost and Kiwon Um},
+  author={N. Thuerey and B. Holzschuh  and P. Holl  and G. Kohl  and M. Lino  andP. Schnell  and F. Trost},
   url={https://physicsbaseddeeplearning.org},
   year={2021},
   publisher={WWW}
 }
 ```
+
 
