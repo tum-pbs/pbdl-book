@@ -210,7 +210,7 @@ and this text will illustrate the new ways that DL offers to tackle it.
 _Physics simulations_ are a huge field, and we won't be able to cover all possible types of physical models and simulations.
 
 ```{note} Rather, the focus of this book lies on:
-- Dense _Field-based simulations_ (no Lagrangian methods)
+- Dense _field-based simulations_ (no Lagrangian methods)
 - Combinations with _deep learning_ (plenty of other interesting ML techniques exist, but won't be discussed here)
 - Experiments are left as an _outlook_ (i.e., replacing synthetic data with real-world observations)
 ```
