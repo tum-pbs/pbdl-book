@@ -89,6 +89,7 @@ This project would not have been possible without the help of many people who co
 - [Philipp Holl](https://ge.in.tum.de/about/philipp-holl/)
 - [Georg Kohl](https://ge.in.tum.de/about/georg-kohl/)
 - [Mario Lino](https://ge.in.tum.de/about/mario-lino/)
+- [Qiang Liu](https://ge.in.tum.de/about/qiang-liu/)
 - [Patrick Schnell](https://ge.in.tum.de/about/patrick-schnell/)
 - [Felix Trost](https://ge.in.tum.de/about/)
 - [Nils Thuerey](https://ge.in.tum.de/about/n-thuerey/)
@@ -96,6 +97,7 @@ This project would not have been possible without the help of many people who co
 
 Additional thanks go to 
 Li-Wei Chen, 
+Xin Luo,
 Maximilian Mueller,
 Chloe Paillard,
 Kiwon Um,
