@@ -2,7 +2,7 @@ Optimization and Convergence
 ============================
 
 This chapter will give an overview of the derivations for different optimization algorithms.
-In contrast to other texts, we'll start with _the_ classic optimization algorithm, Newton's method,
+In contrast to other texts, we'll start with _the most classic_ optimization algorithm, Newton's method,
 derive several widely used variants from it, before coming back full circle to deep learning (DL) optimizers.
 The main goal is the put DL into the context of these classical methods. While we'll focus on DL, we will also revisit
 the classical algorithms for improved learning algorithms later on in this book. Physics simulations exaggerate the difficulties caused by neural networks, which is why the topics below have a particular relevance for physics-based learning tasks.

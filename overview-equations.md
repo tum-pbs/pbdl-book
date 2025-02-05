@@ -1,25 +1,22 @@
 Models and Equations
 ============================
 
-Below we'll give a brief (really _very_ brief!) intro to deep learning, primarily to introduce the notation.
+Below we'll give a _very_ brief intro to deep learning, primarily to introduce the notation.
 In addition we'll discuss some _model equations_ below. Note that we'll avoid using _model_ to denote trained neural networks, in contrast to some other texts and APIs. These will be called "NNs" or "networks". A "model" will typically denote a set of model equations for a physical effect, usually PDEs. 
 
 ## Deep learning and neural networks
 
-In this book we focus on the connection with physical
-models, and there are lots of great introductions to deep learning. 
-Hence, we'll keep it short: 
-the goal in deep learning is to approximate an unknown function
+The goal in deep learning is to approximate an unknown function
 
 $$
 f^*(x) = y^* , 
 $$ (learn-base) 
 
-where $y^*$ denotes reference or "ground truth" solutions.
-$f^*(x)$ should be approximated with an NN representation $f(x;\theta)$. We typically determine $f$ 
+where $y^*$ denotes reference or "ground truth" solutions, and 
+$f^*(x)$ should be approximated with an NN $f(x;\theta)$. We typically determine $f$ 
 with the help of some variant of a loss function $L(y,y^*)$, where $y=f(x;\theta)$ is the output
 of the NN.
-This gives a minimization problem to find $f(x;\theta)$ such that $e$ is minimized.
+This gives a minimization problem to find $f(x;\theta)$ such that $L$ is minimized.
 In the simplest case, we can use an $L^2$ error, giving
 
 $$
@@ -28,7 +25,7 @@ $$ (learn-l2)
 
 We typically optimize, i.e. _train_, 
 with a stochastic gradient descent (SGD) optimizer of choice, e.g. Adam {cite}`kingma2014adam`.
-We'll rely on auto-diff to compute the gradient of a _scalar_ loss $L$ w.r.t. the weights, $\partial L / \partial \theta$.
+We'll rely on auto-diff to compute the gradient of the _scalar_ loss $L$ w.r.t. the weights, $\partial L / \partial \theta$.
 It is crucial for the calculation of gradients that this function is scalar,
 and the loss function is often also called "error", "cost", or "objective" function.
 
@@ -38,14 +35,14 @@ introduce scalar loss, always(!) scalar...  (also called *cost* or *objective* f
 For training we distinguish: the **training** data set drawn from some distribution, 
 the **validation** set (from the same distribution, but different data),
 and **test** data sets with _some_ different distribution than the training one.
-The latter distinction is important. For the test set we want 
+The latter distinction is important. For testing, we usually want 
 _out of distribution_ (OOD) data to check how well our trained model generalizes.
 Note that this gives a huge range of possibilities for the test data set: 
 from tiny changes that will certainly work,
 up to completely different inputs that are essentially guaranteed to fail. 
 There's no gold standard, but test data should be generated with care.
 
-Enough for now - if all the above wasn't totally obvious for you, we very strongly recommend to 
+If the overview above wasn't obvious for you, we strongly recommend to 
 read chapters 6 to 9 of the [Deep Learning book](https://www.deeplearningbook.org),
 especially the sections about [MLPs](https://www.deeplearningbook.org/contents/mlp.html) 
 and "Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.html).
@@ -53,7 +50,7 @@ and "Conv-Nets", i.e. [CNNs](https://www.deeplearningbook.org/contents/convnets.
 ```{note} Classification vs Regression
 
 The classic ML distinction between _classification_ and _regression_ problems is not so important here:
-we only deal with _regression_ problems in the following.
+we only deal with _regression_ problems in the following. 
 
 ```
 
@@ -66,8 +63,19 @@ Also interesting: from a math standpoint ''just'' non-linear optimization ...
 
 The following section will give a brief outlook for the model equations
 we'll be using later on in the DL examples.
-We typically target continuous PDEs denoted by $\mathcal P^*$
-whose solution is of interest in a spatial domain $\Omega \subset \mathbb{R}^d$ in $d \in {1,2,3} $ dimensions.
+We typically target a continuous PDE operator denoted by $\mathcal P^*$,
+which maps inputs $\mathcal U$ to $\mathcal V$, where in the most general case $\mathcal U, \mathcal V$
+are both infinite dimensional Banach spaces, i.e. $\mathcal P^*: \mathcal U \rightarrow \mathcal V$.
+
+```{admonition} Learned solution operators vs traditional ones
+:class: tip
+Later on, the goal will be to learn $\mathcal P^*$ (or parts of it) with a neural network. A
+variety of different names are used in research: learned surrogates / hybrid simulators or emulators, 
+Neural operators or solvers, autoregressive models (if timesteps are involved), to name a few.
+```
+
+In practice, 
+the solution of interest lies in a spatial domain $\Omega \subset \mathbb{R}^d$ in $d \in {1,2,3} $ dimensions.
 In addition, we often consider a time evolution for a finite time interval $t \in \mathbb{R}^{+}$.
 The corresponding fields are either d-dimensional vector fields, for instance $\mathbf{u}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}^d$, 
 or scalar $\mathbf{p}: \mathbb{R}^d \times \mathbb{R}^{+} \rightarrow \mathbb{R}$.
@@ -79,12 +87,11 @@ To obtain unique solutions for $\mathcal P^*$ we need to specify suitable
 initial conditions, typically for all quantities of interest at $t=0$,
 and boundary conditions for the boundary of $\Omega$, denoted by $\Gamma$ in 
 the following.
-
 $\mathcal P^*$ denotes
-a continuous formulation, where we make mild assumptions about
+a continuous formulation, where we need to make mild assumptions about
 its continuity, we will typically assume that first and second derivatives exist.
 
-We can then use numerical methods to obtain approximations 
+Traditionally, we can use numerical methods to obtain approximations 
 of a smooth function such as $\mathcal P^*$ via discretization. 
 These invariably introduce discretization errors, which we'd like to keep as small as possible.
 These errors can be measured in terms of the deviation from the exact analytical solution, 
@@ -127,7 +134,7 @@ and the abbreviations used in: {doc}`notation`.
 %This yields $\vc{} \in \mathbb{R}^{d \times d_{s,x} \times d_{s,y} \times d_{s,z} }$ and $\vr{} \in \mathbb{R}^{d \times d_{r,x} \times d_{r,y} \times d_{r,z} }$
 %Typically, $d_{r,i} > d_{s,i}$ and $d_{z}=1$ for $d=2$.
 
-We solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
+With numerical simulations we solve a discretized PDE $\mathcal{P}$ by performing steps of size $\Delta t$.
 The solution can be expressed as a function of $\mathbf{u}$ and its derivatives:
 $\mathbf{u}(\mathbf{x},t+\Delta t) = 
 \mathcal{P}( \mathbf{u}_{x}, \mathbf{u}_{xx}, ... \mathbf{u}_{xx...x} )$, where

@@ -236,7 +236,7 @@ give introductions into the differentiable simulation framework _Φ<sub>Flow</su
 Thus after going through these examples, you should have a good overview of what's available in current APIs, such that
 the best one can be selected for new tasks.
 
-As we're (in most Jupyter notebook examples) dealing with stochastic optimizations, many of the following code examples will produce slightly different results each time they're run. This is fairly common with NN training, but it's important to keep in mind when executing the code. It also means that the numbers discussed in the text might not exactly match the numbers you'll see after re-running the examples.
+As we're  dealing with stochastic optimizations in most of the Jupyter notebooks, many of the following code examples will produce slightly different results each time they're run. This is fairly common with NN training, but it's important to keep in mind when executing the code. It also means that the numbers discussed in the text might not exactly match the numbers you'll see after re-running the examples.
 
 <!-- ## A brief history of PBDL in the context of Fluids
 First: Tompson, seminal...
