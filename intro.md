@@ -32,7 +32,7 @@ Most importantly, this version has a large new chapter on generative modeling, o
 
 As a _sneak preview_, the next chapters will show:
 
-- How to train neural networks to [predict the fluid flow around airfoils with diffusion modeling](probmodels-ddpm-fm). This gives a probabilistic _surrogate model_ that replaces and outperforms  traditional simulators.
+- How to train neural networks to [predict the fluid flow around airfoils with diffusion modeling](probmodels-ddpm-fm). This gives a probabilistic _surrogate model_ that replaces and outperforms traditional simulators.
 
 - How to use model equations as residuals to train networks that [represent solutions](diffphys-dpvspinn), and how to improve upon these residual constraints by using [differentiable simulations](diffphys-code-sol).
 

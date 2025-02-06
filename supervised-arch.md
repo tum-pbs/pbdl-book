@@ -1,7 +1,7 @@
 Neural Network Architectures
 =======================
 
-The connectivity of the individual "neurons" in a neural network has a substantial influence on the capabilities of a network consisting of a large number of them. Over the course of many years, several key architectures have emerged as particularly useful choices, and in the following we'll go over the main considerations for choosing an architecture. Our focus is to introduce ways of incorporating PDE-based models (the "physics"), rather than the subtleties of NN architectures, and hence this section will be kept relatively brief.
+The connectivity of the individual "neurons" in a neural network has a substantial influence on the capabilities of the network. Typical ones consist of a large number of these connected "neuron" units. Over the course of many years, several key architectures have emerged as particularly useful choices, and in the following we'll go over the main considerations for choosing an architecture. Our focus is to introduce ways of incorporating PDE-based models (the "physics"), rather than the subtleties of NN architectures.
 
 ```{figure} resources/arch01.jpg
 ---
@@ -13,30 +13,33 @@ We'll discuss a range of architecture, from regular convolutions over graph- and
 
 ## Spatial Arrangement
 
-A first, fundamental aspect to consider for choosing an architecture (and for ruling out unsuitable options) is the spatial arrangement of the data samples. 
-We can distinguish four cases here: 
+A first, fundamental aspect to consider for choosing an architecture in the context of physics simulations 
+(and for ruling out unsuitable options) is the spatial arrangement of the data samples. 
+We can distinguish four main cases: 
 
 1. No spatial arrangement,
 2. A regular spacing on a grid (_structured_),
 3. An irregular arrangement (_unstructured_), and
 4. Irregular positions without connectivity (_particle_ / _point_-based).
 
-For certain problems, there is no spatial information or arrangement (case 1). E.g., predicting the temporal evolution of temperature and pressure of a single measurement probe over time does not involve any spatial dimension. The opposite case are probes placed on a perfect grid (case 2), or at arbitrary locations (3). The last variant (case 4) is a slightly special case of the third one, where no clear or persistent links between sample points are known. This can, e.g., be the case for particle-based representations of turbulent fluids, where neighborhood change quickly over time.
+For certain problems, there is no spatial information or arrangement (case 1). E.g., predicting the temporal evolution of temperature and pressure of a single measurement probe over time does not involve any spatial dimension. The opposite case are probes placed on a nicely aligned grid (case 2), or at arbitrary locations (3). The last variant (case 4) is a slightly special case of the third one, where no clear or persistent links between sample points are known. This can, e.g., be the case for particle-based representations of turbulent fluids, where neighborhood change quickly over time.
 
 ## No spatially arranged inputs
 
 The first case is a somewhat special one: without any information about spatial arrangements, only _dense_ ("fully connected" / MLP) neural networks are applicable. 
 
-If you decide to use a **neural fields** like approach where the network receives the position as input, this has the same effect: the NN will not have any direct means of querying neighbors via architectural tricks ("inductive biases"). In all these cases, the building blocks below won't be applicable, and it's worth considering whether you can introduce more structure via a discretization.
+If you decide to use a **neural fields** approach where the network receives the position as input, this has the same effect: the NN will not have any direct means of querying neighbors via architectural tricks ("inductive biases"). In this case, the building blocks below won't be applicable, and it's worth considering whether you can introduce more structure via a discretization.
 
-Note that _physics-informed neural networks_ (PINNs) also fall into this category. We'll go into more detail here later on ({doc}`diffphys`), but generally it's advisable to consider switching to an approach that employs prior knowledge in the form or a discretization. This usually substantially improves inference accuracy and improves convergence. PINNs were found to be mostly unsuited for real-world problems.
+Note that _physics-informed neural networks_ (PINNs) also fall into this category. We'll go into more detail here later on ({doc}`diffphys`), but generally it's advisable to consider switching to an approach that employs prior knowledge in the form or a discretization. This usually substantially improves inference accuracy and improves convergence. That PINNs can't solve real-world problems despite many years of research points to the fundamental problems of this approach.
 
-Even when focusing on dense layers, this still leaves a few choices concerning the number of layers, their size, and activations. The other three cases have the same choices, and these hyperparameters of the architectures are typically determined over the course of training runs. Hence, we'll focus on the remaining three cases with spatial information in the following, as differences can have a profound impact here. So, below we'll focus on cases where we have a "computational domain" for a region of interest, in which the samples are located.
+Focusing on dense layers still leaves a few choices concerning the number of layers, their size, and activations. The other three cases have the same choices, and these hyperparameters of the architectures are typically determined over the course of training runs. General recommendations are that _ReLU_ and smoother variants like _GELU_ are good choices, and that the number of layers should scale together with their size.
+Next, we'll focus on the remaining three cases with spatial information in the following, as differences can have a profound impact here. So, below we target cases where we have a "computational domain" specifying the region of interest in which the samples are located.
 
 ## Local vs Global
 
-The most important aspect of different architectures then is the question of the receptive field: this means for any single sample in our domain, which neighborhood of other sample points can influence the solution at this point. This is similar to classic considerations for PDE solving, where denoting a PDE as hyperbolic indicates its local, wave-like behavior in contrast to an elliptic one with global behavior. Certain NN architectures such as the classic convolutional neural networks (CNNs) support only local influences and receptive fields, while hierarchies with pooling expand these receptive field to effectively global ones. An interest variant here are spectral architectures like FNOs, which provide global receptive fields at the expense of other aspects. In addition Transformers (with attention mechanisms), provide a more complicated but scalable alternative here.
+Probably the most important aspect of different architectures then is the question of their _receptive field_: this means for any single sample in our domain, which neighborhood of other sample points can influence the solution at this point. This is similar to classic considerations for PDE solving, where denoting a PDE as _hyperbolic_ indicates its local, wave-like behavior in contrast to an _elliptic_ one with global behavior. Certain NN architectures such as the classic convolutional neural networks (CNNs) support only local influences and receptive fields, while hierarchies with pooling expand these receptive field to effectively global ones. An interesting variant here are spectral architectures like FNOs, which provide global receptive fields at the expense of other aspects. In addition Transformers (with attention mechanisms), provide a more complicated but scalable alternative. 
 
+Thus, a fundamental distinction can be made in terms of local vs global architectures, and for the latter, how they realize the global receptive field. The following table provides a first overview, and below we'll discuss the pros and cons of each variant.
 
 |             | Grid            | Unstructured      | Points            | Non-spatial |
 |-------------|-----------------|-------------------|-------------------|-------------|
@@ -47,12 +50,11 @@ The most important aspect of different architectures then is the question of the
 | - Sequence  | Transformer     | Graph Transformer | Point Trafo.      | -           |
 
 
-Thus, a fundamental distinction should be made in terms of local vs global architectures, and for the latter, how they realize the global receptive field. The following table provides a first overview, and below we'll discuss the pros and cons of each variant.
 
 ```{note}
 Knowledge about the dependencies in your data, i.e., whether the dependencies are local or global, is important knowledge that should be leveraged. 
 
-If your data has primarily **local** influences, choosing an architecture with support for global receptive fields will most likely have negative effects on accuracy: the network will "waste" resources to try and capture global effects, or worst case approximate local effects with smoothed out global modes.
+If your data has primarily **local** influences, choosing an architecture with support for global receptive fields will most likely have negative effects on accuracy: the network will "waste" resources trying to capture global effects, or worst case approximate local effects with smoothed out global modes.
 
 Vice versa, trying to approximate a **global** influence with a limited receptive field will be an unsolvable task, and most likely introduce substantial errors.
 ```
@@ -72,9 +74,8 @@ A 3x3 convolution (orange) shown for differently deformed regular multi-block gr
 ```
 
 For unstructured data, graph-based neural networks (GNNs) are a good choice. While they're often discussed in terms of _message-passing_ operations,
-they share a lot of similarities with structured grids: the basic operation of a message-passing step on a GNN is the same as a convolution on a grid {cite}``. 
-And hierarchies can likewise be constructed by graph coarsening. Hence, while we'll primarily discuss grids below, keep in mind that the approaches 
-carry over to GNNs. As dealing with graph structures makes the implementation more complicated, we won't go into details until later on in {doc}`graphs`.
+they share a lot of similarities with structured grids: the basic operation of a message-passing step on a GNN is equivalent to a convolution on a grid {cite}`sanchez2020learning`. 
+Hierarchies can likewise be constructed by graph coarsening {cite}`lino2024dgn`. Hence, while we'll primarily discuss grids below, keep in mind that the approaches carry over to GNNs. As dealing with graph structures makes the implementation more complicated, we won't go into details until later on in {doc}`graphs`.
 
 ```{figure} resources/arch02.jpg
 ---
@@ -91,14 +92,13 @@ to Lagrangian data: continuous convolution kernels are a suitable tool, and neig
 
 ## Hierarchies
 
-A powerful and natural tool to work with **local** dependencies are convolutional layers. The corresponding neural networks (CNNs) are 
+A powerful and natural tool to work with **local** dependencies are convolutional layers on regular grids. The corresponding neural networks (CNNs) are 
 a classic building block of deep learning, and very well researched and supported throughout. They are comparatively easy to 
-train, and usually very efficiently implemented in APIs. They also provide a natural connection to classical numerics: classic discretizations
+train, and usually very efficiently implemented in APIs. They also provide a natural connection to classical numerics:  discretizations
 of differential operators such as gradient and Laplacians are often thought of in terms of "stencils", which are an equivalent of
-a convolutional layer with a set of chosen weights. E.g., consider the classic stencil for a normalized Laplacian $\nabla^2$ in 1D: $[1, -2, 1]$. 
-It can directly be mapped to a 1D convolution with kernel size 3 and a single input and output channel.
-
-[TODO, image simple and deformed grids]
+a convolutional layer with a set of specific weights. E.g., consider the classic stencil for a normalized Laplacian $\nabla^2$ in 1D: $[1, -2, 1]$. 
+It can directly be mapped to a 1D convolution with kernel size 3 and a single input and output channel. The non trainable weights of the kernel
+can be set to the coefficients of the Laplacian stencil above.
 
 Using convolutional layers is quite straight forward, but the question of how to incorporate **global** dependencies into 
 CNNs is an interesting one. Over time, two fundamental approaches have been established here in the field:
@@ -116,7 +116,7 @@ A 3x3 convolution shown for a pooling-based hierarchy (left), and a dilation-bas
 * U-Nets are based on _pooling_ operations. Akin to a geometric multigrid hierarchy, the spatial samples are downsampled to coarser and
 coarser grids, and upsampled in the later half of the network. This means that even if we keep the kernel size of a convolution fixed, the 
 convolution will be able to "look" further in terms of physical space due to the previous downsampling operation. 
-The number of sample points decreases logaritmically, making convolutions on lower hierarchy levels very efficient.
+The number of sample points decreases logarithmically, making convolutions on lower hierarchy levels very efficient.
 While the different re-sampling methods (mean, average, point-wise ...) have a minor effect, a crucial ingredient for U-Net are _skip connection_. They connect
 the earlier layers of the first half directly with the second half via feature concatenation. This turns out to be crucial to avoid 
 a loss of information. Typically, the deepest "bottle-neck" layer with the coarsest representation has trouble storing all details 
@@ -128,7 +128,7 @@ typically simply ignored. In contrast to a hierarchy, the number of sample point
 
 While both approaches reach the goal, and can perform very well, there's an interesting tradeoff: U-Nets take a bit more effort to implement, but can be much faster. The reason for the performance boost is the sub-optimal memory access of the dilated convolutions: they skip through memory with a large stride, which gives a slower performance. The U-Nets, on the other had, basically precompute a compressed memory representation in the form of a coarse grid. Convolutions on this coarse grid are then highly efficient to compute. However, this requires slightly more effort to implement in the form of adding appropriate pooling layers (dilated convolutions can be as easy to implement as replacing the call to the regular convolution with a dilated one). The implementation effort of a U-Net can pay off significantly in the long run, when a trained network should be deployed in an application.
 
-Note that this difference is not present for graph nets: here the memory access is always irregular, and dilation is unpopular as the strides would be costly to compute on general graphs. Hence, hierarchies in the form of multi-scale GNNs are highly recommended if global dependencies exist in the data.
+As mentioned above hierarchies are likewise important for graph nets. However, the question whether to "dilate or not" is not present for graph nets: here the memory access is always irregular, and dilation is unpopular as the strides would be costly to compute on general graphs. Hence, regular hierarchies in the form of multi-scale GNNs are highly recommended if global dependencies exist in the data.
 
 
 ## Spectral methods
@@ -144,7 +144,7 @@ An inherent advantage and consequence of the frequency domain is that all basis 
 height: 200px
 name: arch06-fno
 ---
-Spatial convolutions (left, kernel in orange) and frequency processing in FNOs (right, coverage of dense layer in yellow). Not only do FNOs scale less well in 3D (**6th** instead of 5th power), their constant is also proportional to the domain size, and hence typically larger for FNOs.
+Spatial convolutions (left, kernel in orange) and frequency processing in FNOs (right, coverage of dense layer in yellow). Not only do FNOs scale less well in 3D (**6th** instead of 5th power), their scaling constant is also proportional to the domain size, and hence typically larger.
 ```
 
 Unfortunately, they're not well suited for higher dimensional problems: Moving from two to three dimensions increases the size of the frequencies to be handled to $M^3$. For the dense layer, this means $M^6$ parameters, a cubic increase. For convolutions, there's no huge difference in 2D:
@@ -152,7 +152,7 @@ Unfortunately, they're not well suited for higher dimensional problems: Moving f
 However, in 3D regular convolutions scale much better: in 3D only the kernel size increases to $K^3$, giving an overall complexity of $O(K^5)$ in 3D. 
 Thus, the exponent is 5 instead of 6.
 
-To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 \gg K^5$. Thus, FNOs in 3D require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights when being applied to 3D problems, and in conjunction with hierarchies can still handle global dependencies efficiently.
+To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 \gg K^5$. Thus, FNOs would require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights, and in conjunction with hierarchies can still handle global dependencies efficiently.
 
 <br>
 
@@ -160,17 +160,17 @@ To make things worse, the frequency coverage $M$ of FNOs needs to scale with the
 
 ## Attention and Transformers 
 
-A newer and exciting develpoment in the deep learning field are attention mechanisms. They've been hugely successful in the form of _Transformers_ for processing language and natural images, and bear promise for physics-related problems. However, it's still open, whether they're really generally preferable over more "classic" architectures. The following section  will give an overview of the main pros and cons.
+A newer and exciting development in the deep learning field are attention mechanisms. They've been hugely successful in the form of _Transformers_ for processing language and natural images, and bear promise for physics-related problems. However, it's still open, whether they're really generally preferable over more "classic" architectures. The following section will give an overview of the main pros and cons.
 
-Transformers generally work in two steps: the input is encoded into _tokens_ with an encoder-decoder network. This step can take many forms, and usually primarily serves to reduce the number of inputs, e.g., to work with pieces of an image rather than individual pixels. The attention mechanism then computes a weighting for a collection if incoming tokens. This is a floating point number for each token, traditionally interpreted as indicating which parts of the input are important, and which aren't. In modern architectures, the floating point weighting of the attention are directly used to modify an input. In _self-attention_, the weighting is computed from each input towards all other input tokens. This is a mechanism to handle **global dependencies**, and hence directly fits into the discussion above. In practice, the attention is computed via three matrices: the query $Q$, the key matrix $K$, and a value matrix $V$. For $N$ tokens, the outer product $Q K^T$ produces an $N \times N$ matrix, and runs through a softmax layer, after which it is multiplied with $V$ (containing a linear projection of the input tokens) to produce the attention output vector. 
+Transformers generally work in two steps: the input is encoded into _tokens_ with an encoder-decoder network. This step can take many forms, and usually primarily serves to reduce the number of inputs, e.g., to work with pieces of an image rather than individual pixels. The attention mechanism then computes a weighting for a collection if incoming tokens. This is a floating point number for each token, traditionally interpreted as indicating which parts of the input are important, and which aren't. In modern architectures, the floating point weighting of the attention are directly used to modify an input. In _self-attention_, the weighting is computed from each input towards all other input tokens. This is a mechanism to handle **global dependencies**, and hence directly fits into the discussion above. In practice, the attention is computed via three matrices: the query $Q$, the key matrix $K$, and a value matrix $V$. For $N$ tokens, the outer product $Q K^T$ produces an $N \times N$ matrix, and runs through a Softmax layer, after which it is multiplied with $V$ (containing a linear projection of the input tokens) to produce the attention output vector. 
 
 In a Transformer architecture, the attention output is used as component of a building block: the attention is calculated and used as a residual (added to the input), stabilized with a layer normalization, and then processed in a two-layer _feed forward_ network. The latter is simply a combination of two dense layers with an activation in between. This Transformer block is applied multiple times before the final output is decoded into the original space.
 
-This Transformer architecture was shown to scale extremely well to networks with larger numbers of parameters, one of the key advantages of Transformers. Note that a large part of the weights typically ends up in the matrices of the attention, and not just in the dense layers. At the same time, attention offers a powerful way for working with global dependencies in inputs. This comes at the cost of a more complicated architecture, and an inherent difficulty of the self-attention mechanism above is that it's quadratic in the number of tokens $N$. This naturally puts a limit on the size and resolution of inputs. Under the hood, it's also surprisingly simple: the attention algorithm computes an $N \times N$ matrix, which is not too far from applying a simple dense layer (this would likewise come with an $N \times N$ weight matrix) to resolve global influences.
+This Transformer architecture was shown to scale extremely well to networks with huge numbers of parameters, one of the key advantages of Transformers. Note that a large part of the weights typically ends up in the matrices of the attention, and not just in the dense layers. At the same time, attention offers a powerful way for working with global dependencies in inputs. This comes at the cost of a more complicated architecture. An inherent problem of the self-attention mechanism above is that it's quadratic in the number of tokens $N$. This naturally puts a limit on the size and resolution of inputs. Under the hood, it's also surprisingly simple: the attention algorithm computes an $N \times N$ matrix, which is not too far from applying a simple dense layer (this would likewise come with an $N \times N$ weight matrix) to resolve global influences.
 
-This bottleneck can be addressed with _linear attention_: it changes the algorithm above to multiply Q and (K^T V) instead, applying a non-linearity (e.g., an exponential) to both parts beforehand. This avoids the  $N \times N$ matrix and scales linearly in $N$. However, this improvement comes at the cost of a more approximative attention vector.
+This bottleneck can be addressed with _linear attention_: it changes the algorithm above to multiply Q and (K^T V) instead, applying a non-linearity (e.g., an exponential) to both parts beforehand. This avoids the  $N \times N$ matrix and scales linearly in $N$. However, this improvement comes at the cost of a more approximate attention vector.
 
-An interesting aspect of Transformer architectures is also that they've been applied to structured as well as unstructured inputs. I.e., they've been used for graphs, points as well as grid-based data. In all cases the differences primarily lie in how the tokens are constructed. The attention is typically still "dense" in the token space. This is a clear limitation: for problems with a known spatial structure, discarding this information will inevitably need to be compensated for, e.g., with a larger weight count or lower inference accuracy. Nonetheless, Transformers are an extremely active field within DL, and clearly a potential contender for future NN algorithms.
+An interesting aspect of Transformer architectures is also that they've been applied to structured as well as unstructured inputs. I.e., they've been used for graphs, points as well as grid-based data. In all cases the differences primarily lie in how inputs are mapped to the tokens. The attention is typically still "dense" in the token space. This is a clear limitation: for problems with a known spatial structure, discarding this information will inevitably need to be compensated for, e.g., with a larger weight count or lower inference accuracy. Nonetheless, Transformers are an extremely active field within DL, and clearly a potential contender for future NN algorithms.
 
 
 ![Divider](resources/divider7.jpg)
@@ -179,7 +179,11 @@ An interesting aspect of Transformer architectures is also that they've been app
 ## Summary of Architectures
 
 The paragraphs above have given an overview over several fundamental considerations when choosing a neural network architecture for a physics-related problem. To re-cap, the
-main consideration when choosing an architecture is knowledge local or global dependencies in the data. Tailoring an architecture to this difference can have a big impact. 
-And while the spatial structure of the data seems to dictate certain choices, it can be worth considering to transfer the data to another data structure. E.g., to project unstructured points onto a (deformed) regular grid to potentially improve accuracy and performance.
+main consideration when choosing an architecture is knowledge about **local** or **global** dependencies in the data. Tailoring an architecture to this difference can have a big impact. 
+And while the spatial structure of the data seems to dictate choices, it can be worth considering to transfer the data to another data structure. E.g., to project unstructured points onto a (deformed) regular grid to potentially improve accuracy and performance.
 
-Also, it should be mentioned that hybrids of the _canonical_ architectures mentioned above exist: e.g., classic U-Nets with skip connections have been equipped with tricks for Transformer architectures (like attention and normalization) to yield an improved performance. E.g., an implementation of such a "modernized" U-Net can be found in {doc}`probmodels-time`.
+Also, it should be mentioned that hybrids of the _canonical_ architectures mentioned above exist: e.g., classic U-Nets with skip connections have been equipped with components of Transformer architectures (like attention and normalization) to yield an improved performance. An implementation of such a "modernized" U-Net can be found in {doc}`probmodels-time`.
+
+## Show me some code!
+
+Let's finally look at a code example that trains a neural network: we'll replace a full solver for _turbulent flows around airfoils_ with a surrogate model from {cite}`thuerey2020dfp` using a U-Net with a global receptive field as operator. 

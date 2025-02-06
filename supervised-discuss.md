@@ -1,11 +1,11 @@
 Discussion of Supervised Approaches
 =======================
 
-The previous example illustrates that we can quite easily use 
-supervised training to solve complex tasks. The main workload is
-collecting a large enough data set of examples. Once that exists, we can
-train a network to approximate the solution manifold sampled
-by these solutions, and the trained network can give us predictions
+The previous example illustrates that we 
+supervised training serves as a basis that can solve non-trivial tasks. 
+The main workload is collecting a large enough data set of examples. 
+Once that exists, we can train a network to approximate the solution manifold 
+represented by these solutions, and the trained network can give us predictions
 very quickly. There are a few important points to keep in mind when 
 using supervised training.
 
@@ -15,8 +15,8 @@ using supervised training.
 
 ### Natural starting point
 
-_Supervised training_ is the natural starting point for **any** DL project. It always,
-and we really mean **always** here, makes sense to start with a fully supervised
+_Supervised training_ is the natural starting point for **any** DL project. It 
+really **always** makes sense to start with a fully supervised
 test using as little data as possible. This will be a pure overfitting test,
 but if your network can't quickly converge and give a very good performance 
 on a single example, then there's something fundamentally wrong
@@ -29,10 +29,11 @@ setups that will make finding these fundamental problems more difficult.
 To summarize the scattered comments of the previous sections, here's a set of "golden rules"  for setting up a DL project.
 
 - Always start with a 1-sample overfitting test.
-- Check how many trainable parameters your network has.
-- Slowly increase the amount of training data (and potentially network parameters and depth).
+- Check how many trainable parameters your network has, and that your data is normalized properly.
+- Make sure the NN converges.
+- Then slowly increase the amount of training data (and potentially network parameters and depth).
 - Adjust hyperparameters (especially the learning rate).
-- Then introduce other components such as differentiable solvers or adversarial training.
+- Finally, introduce other components such as differentiable solvers or diffusion training.
 
 ```
 
@@ -75,9 +76,10 @@ height: 300px
 name: supervised-example-plot
 ---
 An example from the airfoil case of the previous section: a visualization of a training data 
-set in terms of mean u and v velocity of 2D flow fields. It nicely shows that there are no extreme outliers,
+set in terms of mean u and v velocity of 2D flow fields. 
+It nicely shows that there are no extreme outliers,
 but there are a few entries with relatively low mean u velocity on the left side. 
-A second, smaller data set is shown on top in red, showing that its samples cover the range of mean motions quite well.
+A second, smaller test data set is overlayed with red triangles, showing that its samples cover the range of mean motions well.
 ```
 
 ### Where's the magic? 🦄 
@@ -111,9 +113,11 @@ e.g., by normalization and by focusing on invariants.
 To give a more specific example: if you always train
 your networks for inputs in the range $[0\dots1]$, don't expect it to work
 with inputs of $[27\dots39]$. In certain cases it's valid to normalize
-inputs and outputs by subtracting the mean, and normalize via the standard 
+inputs and outputs by subtracting the mean, and normalizing via the standard 
 deviation or a suitable quantile (make sure this doesn't destroy important
-correlations in your data).
+correlations in your data). Looking ahead, a fast solver might be sufficient
+to handl the large offset of around $27$, so that the NN can focus on a restricted 
+input range in terms of a normalized residual.
 
 As a rule of thumb: make sure you actually train the NN on the 
 inputs that are as similar as possible to those you want to use at inference time.
@@ -124,22 +128,6 @@ it's important to actually include the simulator in the training process. Otherw
 the network might specialize on pre-computed data that differs from what is produced
 when combining the NN with the solver, i.e it will suffer from _distribution shift_.
 
-### Meshes and grids
-
-The previous airfoil example used Cartesian grids with standard 
-convolutions. These typically give the most _bang-for-the-buck_, in terms
-of performance and stability. Nonetheless, the whole discussion here of course 
-also holds for other types of convolutions, e.g., a less regular mesh
-in conjunction with graph-convolutions, or particle-based data
-with continuous convolutions (cf {doc}`others-lagrangian`). You will typically see reduced learning
-performance in exchange for improved sampling flexibility when switching to these.
-
-Finally, a word on fully-connected layers or _MLPs_ in general: we'd recommend
-to avoid these as much as possible. For any structured data, like spatial functions,
-or _field data_ in general, convolutions are preferable, and less likely to overfit.
-E.g., you'll notice that CNNs typically don't need dropout, as they're nicely
-regularized by construction. For MLPs, you typically need quite a bit to
-avoid overfitting.
 
 ![Divider](resources/divider2.jpg)
 
@@ -153,12 +141,14 @@ To summarize, supervised training has the following properties.
 - Great starting point.
 
 ❌ Con: 
-- Lots of data needed.
-- Sub-optimal performance, accuracy and generalization.
+- Lots of data needed (loading can become a bottleneck).
+- Potentially sub-optimal performance in terms of accuracy and generalization.
 - Interactions with external "processes" (such as embedding into a solver) are difficult.
 
 The next chapters will explain how to alleviate these shortcomings of supervised training.
 First, we'll look at bringing model equations into the picture via soft constraints, and afterwards
 we'll revisit the challenges of bringing together numerical simulations and learned approaches.
+Finally, we'll extend the basic approach for generative modeling with diffusion models
+and flow matching.
 
 
