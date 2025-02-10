@@ -1,7 +1,15 @@
 Supervised Training
 =======================
 
-_Supervised training_ is the central starting point for all projects in the context of deep learning. 
+We will first target a "purely" data-driven approach, in line with classic machine learning. We'll refer
+to this as a _supervised_ approach in the following, to indicate that the network is fully supervised
+by data, and to distinguish it from using physics-based losses.
+One of the central advantages of the supervised approach is that
+we obtain a _surrogate model_ (also called "emulator", or "Neural operator"), 
+i.e., a new function that mimics the behavior of the original $\mathcal{P}$. 
+
+The purely data-driven, _supervised training_ is the central starting point for 
+all projects in the context of deep learning. 
 While it can yield suboptimal results compared to approaches that more tightly 
 couple with physics, it can be the only choice in certain application scenarios 
 where no good model equations exist.
@@ -56,13 +64,10 @@ A visual overview of supervised training. It's simple, and a good starting point
 in comparison to the more complex variants we'll encounter later on.
 ```
 
-## Surrogate models
+## Looking ahead
 
-One of the central advantages of the supervised approach above is that
-we obtain a _surrogate model_ (or "emulator", or "Neural operator"), 
-i.e., a new function that mimics the behavior of the original $\mathcal{P}$. 
-The numerical approximations of PDE models for real world phenomena are often very expensive to compute. A trained
-NN on the other hand incurs a constant cost per evaluation, and is typically trivial
+The numerical approximations of PDE models for real world phenomena are often very expensive to compute. 
+A trained NN on the other hand incurs a constant cost per evaluation, and is typically trivial
 to evaluate on specialized hardware such as GPUs or NN compute units.
 
 Despite this, it's important to be careful:
@@ -73,5 +78,5 @@ All these values at least need to be momentarily stored in memory, and processed
 Nonetheless, replacing complex and expensive solvers with fast, learned approximations
 is a very attractive and interesting direction.
 
-An important decision to make at this stage is what neural network architecture to choose.
+An important decision to make at this stage is which neural network architecture to choose.
 

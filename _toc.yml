@@ -10,7 +10,7 @@ parts:
     - file: overview-burgers-forw.ipynb
     - file: overview-ns-forw.ipynb
     - file: overview-optconv.md
-- caption: Supervised Training
+- caption: Neural Surrogates and Operators
   chapters:
   - file: supervised.md
   - file: supervised-arch.md
