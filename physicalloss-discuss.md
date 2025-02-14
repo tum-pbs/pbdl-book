@@ -46,7 +46,7 @@ have to start training the NN from scratch.
 
 Thus, the physical soft constraints allow us to encode solutions to 
 PDEs with the tools of NNs. As they're more widely used, we'll focus on PINNs (v2) here:
-An inherent drawback is that they yield single solutions,
+An inherent drawback is that they typically yield single solutions or very narrow solution manifolds,
 and that they do not combine with traditional numerical techniques well. 
 In comparison to the Neural surrogates/operators from {doc}`supervised` we've made a step backwards in some way.
 

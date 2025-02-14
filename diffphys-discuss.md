@@ -1,4 +1,4 @@
-Discussion
+Discussion of Differentiable Physics
 =======================
 
 The previous sections have explained the _differentiable physics_ approach for deep learning, and have given a range of examples: from a very basic gradient calculation, all the way to complex learning setups powered by advanced simulations. This is a good time to take a step back and evaluate: in the end, the differentiable physics components of these approaches are not too complicated. They are largely based on existing numerical methods, with a focus on efficiently using those methods not only to do a forward simulation, but also to compute gradient information. 
