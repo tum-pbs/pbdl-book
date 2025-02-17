@@ -126,6 +126,8 @@ Ideally, this step is furthermore unrolled over time to stabilize the evolution 
 The resulting training will be significantly more expensive, as more weights need to be trained at once,
 and a much larger number of intermediate states needs to be processed. However, the increased 
 cost typically pays off with a reduced overall inference error.
+The following images show several time frames of an example prediction of {cite}`wiewel2020lsssubdiv`, 
+which additionally couples the learned time evolution with a numerically solved advection step. 
 
 
 ```{figure} resources/others-timeseries-lss-subdiv-prediction.jpg
@@ -133,8 +135,6 @@ cost typically pays off with a reduced overall inference error.
 height: 300px
 name: timeseries-lss-subdiv-prediction
 ---
-Several time frames of an example prediction from {cite}`wiewel2020lsssubdiv`, which additionally couples the
-learned time evolution with a numerically solved advection step. 
 The learned prediction is shown at the top, the reference simulation at the bottom.
 ```
 

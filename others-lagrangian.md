@@ -6,12 +6,13 @@ While this is straight-forward for cases such as data consisting only of integer
 for continuously changing quantities such as the temperature in a room. 
 While the previous examples have focused on aspects beyond discretization
 (and used Cartesian grids as a placeholder), the following chapter will target 
-scenarios where learning with dynamically changing and adaptive discretization has a benefit.
+scenarios where learning Neural operators with dynamically changing 
+and adaptive discretizations have a benefit.
 
 
 ## Types of computational meshes
 
-Generally speaking, we can distinguish three types of computational meshes (or "grids")
+As outlined in {doc}`supervised-arch`, we can distinguish three types of computational meshes (or "grids")
 with which discretizations are typically performed:
 
 - **structured** meshes: Structured meshes have a regular
@@ -85,7 +86,6 @@ for the next stage of convolutions. After expanding
 the size of the latent space over the course of a few layers, it is contracted again 
 to produce the desired result, e.g., an acceleration.
 
-% {cite}`prantl2019tranquil`
 
 ## Continuous convolutions
 
@@ -161,13 +161,14 @@ to reproduce such behavior.
 Nonetheless, an interesting side-effect of having a trained NN for such a liquid simulation
 by construction provides a differentiable solver. Based on a pre-trained network, the learned solver
 then supports optimization via gradient descent, e.g., w.r.t. input parameters such as viscosity.
+The following image shows an examplary _prediction_ task with continuous convolutions from {cite}`ummenhofer2019contconv`.
 
 ```{figure} resources/others-lagrangian-canyon.jpg
 ---
 name: others-lagrangian-canyon
 ---
 An example of a particle-based liquid spreading in a landscape scenario, simulated with 
-learned approach using continuous convolutions {cite}`ummenhofer2019contconv`.
+learned, continuous convolutions.
 ```
 
 ## Source code

@@ -163,12 +163,12 @@ This is a highly challenging solution manifold, and requires an extended "cyclic
 that pushes the discriminator to take all the physical parameters under consideration into account.
 Interestingly, the generator learns to produce realistic and accurate solutions despite 
 being trained purely on data, i.e. without explicit help in the form of a differentiable physics solver setup.
+The figure below shows a range of example outputs of a physically-parametrized GAN {cite}`chu2021physgan`. 
 
 ```{figure} resources/others-GANs-meaningful-fig11.jpg
 ---
 name: others-GANs-meaningful-fig11
 ---
-A range of example outputs of a physically-parametrized GAN {cite}`chu2021physgan`. 
 The network can successfully extrapolate to buoyancy settings beyond the
 range of values seen at training time.
 ```

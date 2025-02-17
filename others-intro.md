@@ -1,7 +1,7 @@
 Additional Topics
 =======================
 
-The next sections will give a shorter introduction to other topics that are highly 
+The next sections will give a shorter introduction to other classic topics that are 
 interesting in the context of physics-based deep learning. These topics (for now) do
 not come with executable notebooks, but we will still point to existing open source 
 implementations for each of them.
