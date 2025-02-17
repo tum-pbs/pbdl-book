@@ -103,14 +103,13 @@ Chloe Paillard,
 Kiwon Um,
 and all github contributors!
 
-
 ## Citation
 
 If you find this book useful, please cite it via:
 ```
 @book{thuerey2021pbdl,
   title={Physics-based Deep Learning},
-  author={N. Thuerey and B. Holzschuh  and P. Holl  and G. Kohl  and M. Lino  andP. Schnell  and F. Trost},
+  author={N. Thuerey and B. Holzschuh  and P. Holl  and G. Kohl  and M. Lino  and Q. Liu and P. Schnell  and F. Trost},
   url={https://physicsbaseddeeplearning.org},
   year={2021},
   publisher={WWW}

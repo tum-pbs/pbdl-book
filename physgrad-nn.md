@@ -126,7 +126,7 @@ The value of $\xi$ determines the conditioning of $\mathcal P$ with large $\xi$ 
 
 Here's an example of the resulting loss landscape for $y^*=(0.3, -0.5)$, $\xi=1$, $\phi=15^\circ$ that shows the entangling of the sine function for $x_1$ and linear change for $x_2$:
 
-```{figure} resources/physgrad-sin-loss.png
+```{figure} resources/physgrad-sin-loss.jpg
 ---
 height: 200px
 name: physgrad-sin-loss
@@ -137,7 +137,7 @@ Next we train a fully-connected neural network to invert this problem via equati
 We'll compare SIP training using a saddle-free Newton solver to various state-of-the-art network optimizers.
 For fairness, the best learning rate is selected independently for each optimizer.
 When choosing $\xi=1$ the problem is perfectly conditioned. In this case all network optimizers converge, with Adam having a slight advantage. This is shown in the left graph:
-```{figure} resources/physgrad-sin-time-graphs.png
+```{figure} resources/physgrad-sin-time-graphs.jpg
 ---
 height: 180px
 name: physgrad-sin-time-graphs
@@ -154,7 +154,7 @@ While the evaluation of the Hessian inherently requires more computations, the p
 By increasing $\xi$ while keeping $\phi=0$ fixed we can show how the conditioning continually influences the different methods, 
 as shown on the left here:
 
-```{figure} resources/physgrad-sin-add-graphs.png
+```{figure} resources/physgrad-sin-add-graphs.jpg
 ---
 height: 180px
 name: physgrad-sin-add-graphs
