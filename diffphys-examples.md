@@ -7,7 +7,26 @@ When using DP approaches for learning applications,
 there is a lot of flexibility w.r.t. the combination of DP and NN building blocks. 
 As some of the differences are subtle, the following section will go into more detail.
 We'll especially focus on solvers that repeat the PDE and NN evaluations multiple times,
-e.g., to compute multiple states of the physical system over time.
+e.g., to compute multiple states of the physical system over time. In classical numerics,
+this would be called an iterative time stepping method, while in the context of AI, it's
+an _autoregressive_ method.
+
+
+
+```{admonition} Hint: Correction vs Prediction
+:class: tip
+
+The problems that are best tackled with DP approaches are very fundamental. The combination of 
+a imperfect physical model and an _improvement term_ classically goes under many different names:
+_closure problems_ in fluid dynamics and turbulence, _homogenization_ or _coarse-graining_ 
+in material science, while it's called _parametrization_ in climate and weather.
+
+In the following, we'll generically denote all these tasks containing NN+solver as **correction** task, in contrast
+to pure **prediction** tasks for cases where no solver is involved at inference time.
+
+```
+
+
 
 To re-cap, here's the previous figure about combining NNs and DP operators. 
 In the figure these operators look like a loss term: they typically don't have weights,
@@ -22,7 +41,11 @@ The DP approach as described in the previous chapters. A network produces an inp
 ```
 
 This setup can be seen as the network receiving information about how it's output influences the outcome of the PDE solver. I.e., the gradient will provide information how to produce an NN output that minimizes the loss. 
-Similar to the previously described _physical losses_ (from {doc}`physicalloss`), this can mean upholding a conservation law.
+Similar to the previously described {doc}`physicalloss`, this can, e.g., mean upholding a conservation law or generally a PDE-based constraint over time.
+
+
+
+
 
 ## Switching the order 
 
@@ -36,15 +59,15 @@ name: diffphys-switch
 A PDE solver produces an output which is processed by an NN.
 ```
 
-In this case the PDE solver essentially represents an _on-the-fly_ data generator. That's not necessarily always useful: this setup could be replaced by a pre-computation of the same inputs, as the PDE solver is not influenced by the NN. Hence, there's no backpropagation through $\mathcal P$, and it could be replaced by a simple "loading" function. On the other hand, evaluating the PDE solver at training time with a randomized sampling of input parameters can lead to an excellent sampling of the data distribution of the input. If we have realistic ranges for how the inputs vary, this can improve the NN training. If implemented correctly, the solver can also alleviate the need to store and load large amounts of data, and instead produce them more quickly at training time, e.g., directly on a GPU. 
+In this case the PDE solver essentially represents an _on-the-fly_ data generator. That's not necessarily always useful: this setup could be replaced by a pre-computation of the same inputs, as the PDE solver is not influenced by the NN. Hence, there's no backpropagation through $\mathcal P$, and it could be replaced by a simple "loading" function. On the other hand, evaluating the PDE solver at training time with a randomized sampling of input parameters can lead to an excellent sampling of the data distribution of the input. If we have realistic ranges for how the inputs vary, this can improve the NN training. If implemented correctly, the solver can also alleviate the need to store and load large amounts of data, and instead produce them more quickly at training time, e.g., directly on a GPU. Recent methods explore this direction in the context of _Active Learning_.
 
-However, this version does not leverage the gradient information from a differentiable solver, which is why the following variant is much more interesting.
+However, this version does not leverage the gradient information from a differentiable solver, which is why the following variant is more interesting.
 
 ## Recurrent evaluation
 
-In general, there's no combination of NN layers and DP operators that is _forbidden_ (as long as their dimensions are compatible). One that makes particular sense is to "unroll" the iterations of a time stepping process of a simulator, and let the state of a system be influenced by an NN.
+A combination that makes particular sense is to **unroll** the iterations of a time stepping process of a simulator, and let the state of a system be influenced by an NN. (In general, there's no combination of NN layers and DP operators that is _forbidden_ (as long as their dimensions are compatible).)
 
-In this case we compute a (potentially very long) sequence of PDE solver steps in the forward pass. In-between these solver steps, an NN modifies the state of our system, which is then used to compute the next PDE solver step. During the backpropagation pass, we move backwards through all of these steps to evaluate contributions to the loss function (it can be evaluated in one or more places anywhere in the execution chain), and to backprop the gradient information through the DP and NN operators. This unrollment of solver iterations essentially gives feedback to the NN about how it's "actions" influence the state of the physical system and resulting loss. Here's a visual overview of this form of combination:
+In the case of unrolling, we compute a (potentially very long) sequence of PDE solver steps in the forward pass. In-between these solver steps, an NN modifies the state of our system, which is then used to compute the next PDE solver step. During the backpropagation pass, we move backwards through all of these steps to evaluate contributions to the loss function (it can be evaluated in one or more places anywhere in the execution chain), and to backprop the gradient information through the DP and NN operators. This unrollment of solver iterations essentially gives feedback to the NN about how it's "actions" influence the state of the physical system and resulting loss. Here's a visual overview of this form of combination:
 
 ```{figure} resources/diffphys-multistep.jpg
 ---
@@ -54,7 +77,7 @@ name: diffphys-mulitstep
 Time stepping with interleaved DP and NN operations for $k$ solver iterations. The dashed gray arrows indicate optional intermediate evaluations of loss terms (similar to the solid gray arrow for the last step $k$), and intermediate outputs of the NN are indicated with a tilde.
 ```
 
-Due to the iterative nature of this process, errors will start out very small, and then slowly increase exponentially over the course of iterations. Hence they are extremely difficult to detect in a single evaluation, e.g., with a simpler supervised training setup. Rather, it is crucial to provide feedback to the NN at training time how the errors evolve over course of the iterations. Additionally, a pre-computation of the states is not possible for such iterative cases, as the iterations depend on the state of the NN. Naturally, the NN state is unknown before training time and changes while being trained. Hence, a DP-based training is crucial in these recurrent settings to provide the NN with gradients about how its current state influences the solver iterations, and correspondingly, how the weights should be changed to better achieve the learning objectives.
+Due to the iterative nature of this process, errors will start out very small, and then (for modes with eigenvalues larger than one in the Jacobian) slowly increase exponentially over the course of iterations. Hence they are extremely difficult to detect in a single evaluation, e.g., with a simpler supervised training setup. Rather, it is crucial to provide feedback to the NN at training time how the errors evolve over course of the iterations. Additionally, a pre-computation of the states is not possible for such iterative cases, as the iterations depend on the state of the NN. Naturally, the NN state is unknown before training time and changes while being trained. This is the classic ML problem of **data shift**. Hence, a DP-based training is crucial in these recurrent settings to provide the NN with gradients about how its current state influences the solver iterations, and correspondingly, how the weights should be changed to better achieve the learning objectives.
 
 DP setups with many time steps can be difficult to train: the gradients need to backpropagate through the full chain of PDE solver evaluations and NN evaluations. Typically, each of them represents a non-linear and complex function. Hence for larger numbers of steps, the vanishing and exploding gradient problem can make training difficult. Some practical considerations for alleviating this will follow int {doc}`diffphys-code-sol`.
 
@@ -168,6 +191,9 @@ the actual evolutions of simulations. So noise can be a good starting point
 for training setups that tend to overfit. However, if possible, it is preferable to incorporate the
 actual solver in the training loop via a DP approach to give the network feedback about the time 
 evolution of the system.
+
+With the current state of affairs, generative modeling approaches (denoising diffusion or flow matching) or 
+provide a better founded approach for incorporating noise. We'll look into this topic in more detail in {doc}`probmodels-uncond`.
 
 ---
 

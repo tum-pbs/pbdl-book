@@ -6,14 +6,17 @@ methods and physical simulations we will target incorporating _differentiable
 numerical simulations_ into the learning process. In the following, we'll shorten
 these "differentiable numerical simulations of physical systems" to just "differentiable physics" (DP).
 
-The central goal of these methods is to use existing numerical solvers, and equip
+The central goal of these methods is to use existing numerical solvers
+to empower and improve AI systems.
+This requires equipping
 them with functionality to compute gradients with respect to their inputs.
 Once this is realized for all operators of a simulation, we can leverage 
 the autodiff functionality of DL frameworks with backpropagation to let gradient 
 information flow from a simulator into an NN and vice versa. This has numerous 
 advantages such as improved learning feedback and generalization, as we'll outline below.
 
-In contrast to physics-informed loss functions, it also enables handling more complex
+In contrast to the physics-informed loss functions of the previous chapter, 
+it also enables handling more complex
 solution manifolds instead of single inverse problems. 
 E.g., instead of using deep learning
 to solve single inverse problems as in the previous chapter, 
@@ -31,7 +34,7 @@ provide directions in the form of gradients to steer the learning process.
 
 ## Differentiable operators
 
-With the DP direction we build on existing numerical solvers. I.e., 
+With DP we build on _existing_ numerical solvers. I.e., 
 the approach is strongly relying on the algorithms developed in the larger field 
 of computational methods for a vast range of physical effects in our world.
 To start with, we need a continuous formulation as model for the physical effect that we'd like 
@@ -128,6 +131,7 @@ one by one.
 For the details of forward and reverse mode differentiation, please check out external materials such 
 as this [nice survey by Baydin et al.](https://arxiv.org/pdf/1502.05767.pdf).
 
+
 ## Learning via DP operators 
 
 Thus, once the operators of our simulator support computations of the Jacobian-vector 
@@ -209,7 +213,7 @@ Informally, we'd like to find a flow that deforms $d^{~0}$ through the PDE model
 The simplest way to express this goal is via an $L^2$ loss between the two states. So we want
 to minimize the loss function $L=|d(t^e) - d^{\text{target}}|^2$. 
 
-Note that as described here this inverse problem is a pure optimization task: there's no NN involved,
+Note that as described here, this inverse problem is a pure optimization task: there's no NN involved,
 and our goal is to obtain $\mathbf{u}$. We do not want to apply this velocity to other, unseen _test data_,
 as would be custom in a real learning task.
 
