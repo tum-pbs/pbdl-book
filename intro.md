@@ -10,20 +10,12 @@ name: pbdl-logo-large
 Welcome to the _Physics-based Deep Learning Book_ (v0.3, the _GenAI_ edition) 👋
 
 **TL;DR**: 
-This document contains a practical and comprehensive introduction of everything
-related to deep learning in the context of physical simulations.
-As much as possible, all topics come with hands-on code examples in the 
-form of Jupyter notebooks to quickly get started.
-Beyond standard _supervised_ learning from data, 
-we'll look at _physical loss_ constraints and _differentiable simulations_, 
-diffusion-based approaches for _probabilistic, generative models_,
-as well as 
-reinforcement learning and neural network architectures.
-We live in exciting times: these methods have a huge potential to fundamentally change what humans can achieve via computer simulations.
+This document is a hands-on, comprehensive guide to deep learning in the realm of physical simulations. Rather than just theory, we emphasize practical application: every concept is paired with interactive Jupyter notebooks to get you up and running quickly. Beyond traditional supervised learning, we dive into physical _loss-constraints_, _differentiable_ simulations, _diffusion-based_ approaches for _probabilistic generative AI_, as well as reinforcement learning and advanced neural network architectures. These foundations are paving the way for the next generation of scientific _foundation models_.
+We are living in an era of rapid transformation. These methods have the potential to redefine what’s possible in computational science.
 
 ```{note} 
 _What's new in v0.3?_
-Most importantly, this version has a large new chapter on generative modeling, offering a deep dive into topics such as denoising, flow-matching, autoregressive learning, the integration of physics-based constraints, and diffusion-based graph networks. Additionally, a new section explores neural architectures tailored for physics simulations, while all code examples have been updated to use the latest frameworks.
+This latest edition takes things even further with a major new chapter on generative modeling, covering cutting-edge techniques like denoising, flow-matching, autoregressive learning, physics-integrated constraints, and diffusion-based graph networks. We've also introduced a dedicated section on neural architectures specifically designed for physics simulations. All code examples have been updated to leverage the latest frameworks.
 ```
 
 ---
@@ -83,7 +75,7 @@ Some visual examples of numerically simulated time sequences. In this book, we e
 
 ## Thanks!
 
-This project would not have been possible without the help of many people who contributed. Thanks to everyone 🙏 Here's an alphabetical list:
+This project would not have been possible without the help of the many people who contributed to it. A big thanks to everyone 🙏 Here's an alphabetical list:
 
 - [Benjamin Holzschuh](https://ge.in.tum.de/about/)
 - [Philipp Holl](https://ge.in.tum.de/about/philipp-holl/)
@@ -116,4 +108,6 @@ If you find this book useful, please cite it via:
 }
 ```
 
+## Time to get started
 
+The future of simulation is being rewritten, and with the following tools, you’ll be at the forefront of these developments. Let’s dive in!
