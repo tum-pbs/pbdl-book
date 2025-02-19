@@ -1,11 +1,18 @@
 Generative Adversarial Networks
 =======================
 
-A fundamental problem in machine learning is to fully represent
+We've dealt with generative AI techniques and diffusion modeling 
+in detail in {doc}`probmodels-intro`.
+As outlined there, the fundamental problem to fully represent
 all possible states of a variable $\mathbf{x}$ under consideration,
-i.e. to capture its full distribution.
-For this task, _generative adversarial networks_ (GANs) were
-shown to be powerful tools in DL. They are important when the data has ambiguous solutions,
+i.e. to capture its full distribution, is a very old topic. Hence, 
+even before DDPMs&Co. there were techniques to make this possible, 
+and _generative adversarial networks_ (GANs) were
+shown to be powerful tools in this context. While they've been largely replaced
+by diffsion approaches in research, GANs use a highly interesting approach,
+and the following sections will give an introduction and show what's possible with GANs.
+
+Traditionally, GANs were employed when the data has ambiguous solutions,
 and no differentiable physics model is available to disambiguate the data. In such a case
 a supervised learning would yield an undesirable averaging that can be prevented with
 a GAN approach.
@@ -21,12 +28,12 @@ results can be highly ambiguous.
 
 ## Maximum likelihood estimation
 
-To train a GAN we have to briefly turn to classification problems.
-For these, the learning objective takes a slightly different form than the
+To train a GAN we have to briefly turn to _classification problems_, which we've managed to ignore up to now.
+For classification, the learning objective takes a slightly different form than the
 regression objective in equation {eq}`learn-l2` of {doc}`overview-equations`:
 We now want to maximize the likelihood of a learned representation
-$f$ that assigns a probability to an input $\mathbf{x}_i$ given a set of weights $\theta$. 
-This yields a maximization problem of the form 
+$f$ that assigns a probability to an input $\mathbf{x}_i$ given a set of weights $\theta$ for 
+a chosen set of $i$ distinct classes.  This yields a maximization problem of the form 
 
 $$
 \text{arg max}_{\theta} \Pi_i f(\mathbf{x}_i;\theta) ,

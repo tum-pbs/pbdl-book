@@ -47,9 +47,6 @@ parts:
   chapters:
   - file: reinflearn-intro.md
   - file: reinflearn-code.ipynb
-- caption: Graph Networks
-  chapters:
-  - file: graphs.md
 - caption: Improved Gradients
   chapters:
   - file: physgrad.md
@@ -63,8 +60,8 @@ parts:
   chapters:
   - file: others-intro.md
   - file: others-timeseries.md
-  - file: others-GANs.md
   - file: others-lagrangian.md
+  - file: others-GANs.md
 - caption: End Matter
   chapters:
   - file: outlook.md

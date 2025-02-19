@@ -75,7 +75,7 @@ A 3x3 convolution (orange) shown for differently deformed regular multi-block gr
 
 For unstructured data, graph-based neural networks (GNNs) are a good choice. While they're often discussed in terms of _message-passing_ operations,
 they share a lot of similarities with structured grids: the basic operation of a message-passing step on a GNN is equivalent to a convolution on a grid {cite}`sanchez2020learning`. 
-Hierarchies can likewise be constructed by graph coarsening {cite}`lino2024dgn`. Hence, while we'll primarily discuss grids below, keep in mind that the approaches carry over to GNNs. As dealing with graph structures makes the implementation more complicated, we won't go into details until later on in {doc}`graphs`.
+Hierarchies can likewise be constructed by graph coarsening {cite}`lino2024dgn`. Hence, while we'll primarily discuss grids below, keep in mind that the approaches carry over to GNNs. As dealing with graph structures makes the implementation more complicated, we won't go into details until later.
 
 ```{figure} resources/arch02.jpg
 ---

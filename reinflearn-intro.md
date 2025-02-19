@@ -1,7 +1,8 @@
 Introduction to Reinforcement Learning
 =======================
 
-Deep reinforcement learning, which we'll just call _reinforcement learning_ (RL) from now on, is a class of methods in the larger field of deep learning that lets an artificial intelligence agent explore the interactions with a surrounding environment. While doing this, the agent receives reward signals for its actions and tries to discern which actions contribute to higher rewards, to adapt its behavior accordingly. RL has been very successful at playing games such as Go {cite}`silver2017mastering`, and it bears promise for engineering applications such as robotics.
+Deep reinforcement learning, which we'll just call _reinforcement learning_ (RL) from now on, is a class of methods in the larger field of deep learning that takes a different viewpoint from classic "train with data" one:
+RL effectively lets an AI agent learn from interactions with an environment. While performing actions, the agent receives reward signals and tries to discern which actions contribute to higher rewards, to adapt its behavior accordingly. RL has been very successful at playing games such as Go {cite}`silver2017mastering`, and it bears promise for engineering applications such as robotics.
 
 The setup for RL generally consists of two parts: the environment and the agent. The environment receives actions $a$ from the agent while supplying it with observations in the form of states $s$, and rewards $r$. The observations represent the fraction of the information from the respective environment state that the agent is able to perceive. The rewards are given by a predefined function, usually tailored to the environment and might contain, e.g., a game score, a penalty for wrong actions or a bounty for successfully finished tasks.
 
