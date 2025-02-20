@@ -98,7 +98,7 @@ definitely the most powerful set of tools we have for non-linear problems.
 That all the details aren't fully worked out and have nicely been written up
 shouldn't stop us from including these powerful methods in our numerical toolbox.
 
-### Reconciling DL and simulations
+### Reconciling AI and simulations
 
 Taking a step back, the aim of this book is to build on all the powerful techniques that we have
 at our disposal for numerical simulations, and use them wherever we can in conjunction
@@ -108,9 +108,9 @@ As such, a central goal is to _reconcile_ the AI viewpoint with physical simulat
 ```{admonition} Goals of this document
 :class: tip
 The key aspects that we will address in the following are:
-- explain how to use deep learning techniques to solve PDE problems,
+- how to use deep learning techniques to **solve PDE** problems,
 - how to combine them with **existing knowledge** of physics,
-- without **discarding** our knowledge about numerical methods.
+- without **discarding** numerical methods.
 
 At the same time, it's worth noting what we won't be covering:
 - there's no in-depth **introduction** to deep learning and numerical simulations (there are great other works already taking care of this),

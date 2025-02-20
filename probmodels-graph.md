@@ -7,7 +7,7 @@ Many simulation problems like fluid flows are often poorly represented by a sing
 
 ## Diffusion Graph Nodes 
 
-In the following, we'll demonstrate these capabilities based on the _diffusion graph net_ (DGN) approach {cite}`lino2024dgn`, the full source code for which [can be found here](https://github.com/tum-pbs/dgn4cfd/).
+In the following, we'll demonstrate these capabilities based on the _diffusion graph net_ (DGN) approach {cite}`lino2025dgn`, the full source code for which [can be found here](https://github.com/tum-pbs/dgn4cfd/).
 
 To learn the probability distribution of dynamical states of physical systems, defined by their discretization mesh and their physical parameters,  the DDPM and flow matching frameworks can directly be applied to the mesh nodes. Additionally, DGN introduces a second model variant, which operates in a pre-trained semantic _latent space_ rather than directly in the physical space (these variants will be called LDGN).
 
