@@ -35,6 +35,10 @@ parts:
 - caption: Probabilistic Learning
   chapters:
   - file: probmodels-intro.md
+  - file: probmodels-normflow.ipynb
+  - file: probmodels-score.ipynb
+  - file: probmodels-diffusion.ipynb
+  - file: probmodels-flowmatching.ipynb
   - file: probmodels-ddpm-fm.ipynb
   - file: probmodels-phys.md
   - file: probmodels-sbisim.ipynb
