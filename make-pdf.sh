@@ -17,26 +17,9 @@ ${PYT} json-cleanup-for-pdf.py
 
 /Users/thuerey/Library/Python/3.9/bin/jupyter-book build .  --builder pdflatex
 
-#necessary fixes for jupyter-book 1.0.3 
-    #open book.tex in text editor:
-    #problem 1: replace all 
-        #begin{align} with begin{aligned}
-        #end{align} with end{aligned}
-
-    #problem 2:
-        #\begin{equation*}
-        #\begin{split}
-        #\begin{equation}  <- aligned
-            #...
-        #\end{equation}  <- aligned
-        #\end{split}
-        #\end{equation*}
-
-# manual
-#xelatex book
+# manual?
 #xelatex book
 
 # unused fixup-latex.py
-
 
 

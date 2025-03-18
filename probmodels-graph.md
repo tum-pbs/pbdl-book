@@ -38,10 +38,7 @@ $
 where $\beta_r \in (0,1)$, and $Z^0 \equiv Z(t)$. Any ${Z}^r$ can be sampled directly via:
 
 $$
-\begin{equation}
 {Z}^r =  \sqrt{\bar{\alpha}_r} {Z}^0 +  \sqrt{1-\bar{\alpha}_r} {\epsilon},
-\label{eq:noise}
-\end{equation}
 $$
 
 with $\alpha_r := 1 - \beta_r$, $\bar{\alpha}_r := \prod_{s=1}^r \alpha_s$ and ${\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$.
@@ -52,12 +49,9 @@ $
 where the mean and variance are parameterized as:
 
 $$
-\begin{equation}
 {\mu}_\theta^r = \frac{1}{\sqrt{\alpha_r}} \left( {Z}^r - \frac{\beta_r}{\sqrt{1-\bar{\alpha}_r}} {\epsilon}_\theta^r \right),
 \qquad
 {\Sigma}_\theta^r = \exp\left( \mathbf{v}_\theta^r \log \beta_r + (1-\mathbf{v}_\theta^r)\log \tilde{\beta}_r \right),
-\label{eq:mu_param}
-\end{equation}
 $$
 
 with $\tilde{\beta}_r := (1 - \bar{\alpha}_{r-1}) / (1 - \bar{\alpha}_r) \beta_r$. Here, ${\epsilon}_\theta^r \in \mathbb{R}^{|\mathcal{V}| \times F}$ predicts the noise ${\epsilon}$ in equation~(\ref{eq:noise}), and $\mathbf{v}_\theta^r \in \mathbb{R}^{|\mathcal{V}| \times F}$ interpolates between the two bounds of the process' entropy,  $\beta_r$ and $\tilde{\beta}_r$.
@@ -65,9 +59,7 @@ with $\tilde{\beta}_r := (1 - \bar{\alpha}_{r-1}) / (1 - \bar{\alpha}_r) \beta_r
 DGNs predict ${\epsilon}_\theta^r$ and $\mathbf{v}_\theta^r$ using a regular message-passing-based GNN {cite}`sanchez2020learning`. This takes ${Z}^{r-1}$ as input, and it is conditioned on graph ${\mathcal{G}}$, its node and edge features, and the diffusion step $r$:
 
 $$
-\begin{equation}
 [{\epsilon}_\theta^r, \mathbf{v}_\theta^r] \leftarrow \text{{DGN}}_\theta({Z}^{r-1}, {\mathcal{G}}, {V}_c, {E}_c, r).
-\end{equation}
 $$
 
 The _DGN_ network is trained using the loss function in equation~(\ref{eq:loss}). The full denoising process requires $R$ evaluations of the DGN to transition from ${Z}^R$ to ${Z}^0$.
@@ -75,14 +67,12 @@ The _DGN_ network is trained using the loss function in equation~(\ref{eq:loss})
 DGN follows the widely used encoder-processor-decoder GNN architecture. In addition to the node and edge encoders, our encoder includes a diffusion-step encoder, which generates a vector ${r}_\text{emb} \in \mathbb{R}^{F_\text{emb}}$ that embeds the diffusion step $r$. The node encoder processes the conditional node features ${v}_i^c$, alongside ${r}_\text{emb}$. Specifically, the diffusion-step encoder and the node encoder operate as follows:
 
 $$
-\begin{equation}
 {r}_\text{emb} \leftarrow
     \phi \circ {\small Linear} \circ {\small SinEmb} (r),
 \quad
 {v}_i \leftarrow {\small Linear} \left( \left[ \phi \circ {\small Linear} ({v}_i^c) \ | \ {r}_\text{emb} 
     \right] \right), 
 \quad \forall i \in \mathcal{V},
-\end{equation}
 $$
 
 where $\phi$ denotes the activation function and ${\small SinEmb}$ is the sinusoidal embedding function. The edge encoder applies a linear layer to the conditional edge features ${e}_{ij}^c$. 
@@ -110,9 +100,7 @@ In this configuration, the VGAE captures high-frequency information (e.g., spati
 For the VGAE, an encoder-decoder architecture is used with an additional condition encoder to handle conditioning inputs (Figure~\ref{fig:diagram}a). The condition encoder processes ${V}_c$ and ${E}_c$, encoding these into latent node features ${V}^\ell_c$ and edge features ${E}^\ell_c$ across $L$ graphs $\{{\mathcal{G}}^\ell := ({\mathcal{V}}^\ell, {\mathcal{E}}^\ell) {I}d 1 \leq \ell \leq L\}$, where ${\mathcal{G}}^1 \equiv {\mathcal{G}}$ and the size of the graphs decreases progressively, i.e., $|{\mathcal{V}}^1| > |{\mathcal{V}}^2| > \dots > |{\mathcal{V}}^L|$. This transformation begins by linearly projecting ${V}_c$ and ${E}_c$ to a $F_\text{ae}$-dimensional space and applying two message-passing layers to yield ${V}^1_c$ and ${E}^1_c$. Then, $L-1$ encoding blocks are applied sequentially:
 
 $$
-\begin{equation}
 \left[{V}^{\ell+1}_c, {E}^{\ell+1}_c \right] \leftarrow {\small MP} \circ {\small MP} \circ {\small GraphPool} \left({V}^\ell_c, {E}^\ell_c \right), \quad \text{for} \ l = 1, 2, \dots, L-1, 
-\end{equation}
 $$
 
 where _MP_ denotes a message-passing layer and _GraphPool_ denotes a graph-pooling layer (see the diagram on Figure~\ref{fig:vgae}a).
@@ -120,17 +108,13 @@ where _MP_ denotes a message-passing layer and _GraphPool_ denotes a graph-pooli
 The encoder produces two $F_L$-dimensional vectors for each node $i \in {\mathcal{V}}^L$, the mean ${\mu}_i$ and standard deviation ${\sigma}_i$ that parametrize a Gaussian distribution over the latent space. It takes as input a state ${Z}(t)$, which is linearly projected to a $F_\text{ae}$-dimensional vector space and then passed through $L-1$ sequential down-sampling blocks (message passing + graph pooling), each conditioned on the outputs of the condition encoder:
 
 $$
-\begin{equation}
     {V} \leftarrow {\small GraphPool} \circ {\small MP} \circ {\small MP} \left( {V} + {\small Linear}\left({V}^\ell_c \right), {\small Linear}\left({E}^\ell_c \right) \right), \ \text{for} \ l = 1, 2, \dots, L-1;
-\end{equation}
 $$
 
 and a bottleneck block:
 
 $$
-\begin{equation}
     {V} \leftarrow {\small MP} \circ {\small MP} \left( {V} + {\small Linear}\left({V}^L_c \right), {\small Linear}\left({E}^L_c \right) \right).
-\end{equation}
 $$
 
 The output features are passed through a node-wise MLP that returns ${\mu}_i$ and ${\sigma}_i$ for each node $i \in {\mathcal{V}}^L$. The latent variables are then computed as ${\zeta}_i = {\small BatchNorm}({\mu}_i + {\sigma}_i {\epsilon}_i$), where ${\epsilon}_i \sim \mathcal{N}(0, {I})$. Finally, the decoder mirrors the encoder, employing a symmetric architecture (replacing graph pooling by graph unpooling layers) to upsample the latent features back to the original graph ${\mathcal{G}}$ (Figure~\ref{fig:vgae}c). Its blocks are also conditioned on the outputs of the condition encoder. The message passing and the graph pooling and unpooling layers in the VGAE are the same as in the (L)DGN.
