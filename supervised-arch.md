@@ -164,7 +164,16 @@ A newer and exciting development in the deep learning field are attention mechan
 
 Transformers generally work in two steps: the input is encoded into _tokens_ with an encoder-decoder network. This step can take many forms, and usually primarily serves to reduce the number of inputs, e.g., to work with pieces of an image rather than individual pixels. The attention mechanism then computes a weighting for a collection if incoming tokens. This is a floating point number for each token, traditionally interpreted as indicating which parts of the input are important, and which aren't. In modern architectures, the floating point weighting of the attention are directly used to modify an input. In _self-attention_, the weighting is computed from each input towards all other input tokens. This is a mechanism to handle **global dependencies**, and hence directly fits into the discussion above. In practice, the attention is computed via three matrices: the query $Q$, the key matrix $K$, and a value matrix $V$. For $N$ tokens, the outer product $Q K^T$ produces an $N \times N$ matrix, and runs through a Softmax layer, after which it is multiplied with $V$ (containing a linear projection of the input tokens) to produce the attention output vector. 
 
-In a Transformer architecture, the attention output is used as component of a building block: the attention is calculated and used as a residual (added to the input), stabilized with a layer normalization, and then processed in a two-layer _feed forward_ network. The latter is simply a combination of two dense layers with an activation in between. This Transformer block is applied multiple times before the final output is decoded into the original space.
+In a Transformer architecture, the attention output is used as component of a building block: the attention is calculated and used as a residual (added to the input), stabilized with a layer normalization, and then processed in a two-layer _feed forward_ network (FFN). The latter is simply a combination of two dense layers with an activation in between. This _Transformer block_, summarized below visually, is applied multiple times before the final output is decoded into the original space.
+
+```{figure} resources/overview-arch-tblock.jpg
+---
+height: 150px
+name: overview-arch-transformer-block
+---
+Visual summary of a single transformer block. A full network repeats this structure several times to infer the result.
+```
+
 
 This Transformer architecture was shown to scale extremely well to networks with huge numbers of parameters, one of the key advantages of Transformers. Note that a large part of the weights typically ends up in the matrices of the attention, and not just in the dense layers. At the same time, attention offers a powerful way for working with global dependencies in inputs. This comes at the cost of a more complicated architecture. An inherent problem of the self-attention mechanism above is that it's quadratic in the number of tokens $N$. This naturally puts a limit on the size and resolution of inputs. Under the hood, it's also surprisingly simple: the attention algorithm computes an $N \times N$ matrix, which is not too far from applying a simple dense layer (this would likewise come with an $N \times N$ weight matrix) to resolve global influences.
 
