@@ -110,4 +110,5 @@ If you find this book useful, please cite it via:
 
 ## Time to get started
 
-The future of simulation is being rewritten, and with the following tools, you’ll be at the forefront of these developments. Let’s dive in!
+The future of simulation is being rewritten, and with the following AI and deep learning techniques, you’ll be at the forefront of these developments. Let’s dive in!
+
