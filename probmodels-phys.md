@@ -31,7 +31,7 @@ We'll focus on flow matching as a state-of-the-art approach next, and afterwards
 
 
 
-![Divider](resources/divider5.jpg)
+![Divider](resources/divider-genA.jpg)
 
 
 
@@ -133,6 +133,7 @@ $$
 The gradient backpropagation is stopped at the output of the simulator $\mathcal{P}$, as shown in {numref}`figure {number} <probphys02-control>`. 
 Before showing some examples of the capabilities of these two types of control, we'll discuss some of their properties.
 
+![Divider](resources/divider-genB.jpg)
 
 
 ### Additional Considerations 
@@ -195,7 +196,7 @@ A summary of the physics-based flow matching is given by the following bullet po
 
 
 
-![Divider](resources/divider6.jpg)
+![Divider](resources/divider-gen1.jpg)
 
 
 

@@ -12,6 +12,8 @@ As errors will accumulate over time, we can expect that network size and the tot
 
 Note that we'll focus on time steps with a **fixed length** in the following. The "unconditional stability" refers to being stable over an arbitrary number of iterative steps. The following networks could potentially trained for variable time step sizes as well, but we will focus on the "dimension" of stability of multiple, iterative network calls below.
 
+![Divider](resources/divider-gen2.jpg)
+
 ## Main Considerations for an Evaluation
 
 As shown in the previous chapter, diffusion models perform extremely well. This can be attributed to the underlying task of working with pure noise as input (e.g., for denoising or flow matching tasks). Likewise, the network architecture has only a minor influence: the network simply needs to be large enough to provide a converging iteration. For supervised  or unrolled training, we can leverage a variety of discrete and continuous neural operators. CNNs, Unets, FNOs and Transformers are popular approaches here.

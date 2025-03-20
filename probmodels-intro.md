@@ -6,7 +6,7 @@ Samples $y \sim p(y)$ drawn from the distribution should follow this probability
 
 To summarize, instead of individual solutions $y$ we're facing a large number of samples $y \sim p(y)$.
 
-![Divider](resources/divider5.jpg)
+![Divider](resources/divider-gen-full.jpg)
 
 ## Uncertainty 
 
@@ -65,6 +65,8 @@ Unfortunately, this is often intractable, as $z$ can be difficult to sample, and
 Some algorithms have been proposed to compute likelihoods, one popular one is Approximate Bayesian Computation (ABC), but all approaches are highly expensive and require a lot of expert knowledge to set up. They suffer from the _curse of dimensionality_, i.e. become very expensive when facing larger numbers of degrees of freedom. Thus,
 obtaining good approximations of the likelihood will be a topic that we'll revisit below.
 
+![Divider](resources/divider-gen4.jpg)
+
 With a function for the likelihood we can compute the 
 **distribution of the posterior**, the main quantity we're after,
 in the following way:
@@ -104,7 +106,7 @@ We'll focus on the basics, and leave the _physics-based extensions_ (i.e. includ
 
 <br>
 
-![Divider](resources/divider6.jpg)
+![Divider](resources/divider-gen6.jpg)
 
 ```{note} Historic Alternative: Bayesian Neural Networks
 
