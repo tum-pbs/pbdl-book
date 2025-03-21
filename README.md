@@ -45,14 +45,14 @@ What’s new in v0.3? This latest edition takes things even further with a major
 
 # Teasers
 
-To mention a few highlights: the book contains a notebook to train hybrid fluid flow (Navier-Stokes) solvers via differentiable physics to reduce numerical errors. Try it out:
+To mention a few highlights: the book contains a notebook to train hybrid fluid flow (Navier-Stokes) solvers via differentiable physics to reduce numerical errors. Try it out in Colab:
 https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/diffphys-code-sol.ipynb
 
-In v0.2 there's new notebook for an improved learning scheme which jointly computes update directions for neural networks and physics (via half-inverse gradients):
-https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/physgrad-hig-code.ipynb
+PBDL also has example code to train diffusion denoising and flow matching networks for RANS flow predictions around airfoils that yield uncertainty estimates. You can run the code right away here:
+https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/probmodels-ddpm-fm.ipynb
 
-It also has example code to train a Bayesian Neural Network for RANS flow predictions around airfoils that yield uncertainty estimates. You can run the code right away here:
-https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/bayesian-code.ipynb
+There's a notebook for an improved learning scheme which jointly computes update directions for neural networks and physics (via half-inverse gradients):
+https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/physgrad-hig-code.ipynb
 
 And a notebook to compare proximal policy-based reinforcement learning with physics-based learning for controlling PDEs (spoiler: the physics-aware version does better in the end). Give it a try:
 https://colab.research.google.com/github/tum-pbs/pbdl-book/blob/main/reinflearn-code.ipynb
