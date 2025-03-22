@@ -1,4 +1,4 @@
-# Welcome to the Physics-based Deep Learning book (PBDL) v0.2
+# Welcome to the Physics-based Deep Learning book (PBDL) v0.3
 
 This is the source code repository for the Jupyter book "Physics-based Deep Learning". You can find the full, readable version online at:
 [https://physicsbaseddeeplearning.org/](https://physicsbaseddeeplearning.org/)
