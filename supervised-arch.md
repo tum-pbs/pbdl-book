@@ -148,11 +148,12 @@ Spatial convolutions (left, kernel in orange) and frequency processing in FNOs (
 ```
 
 Unfortunately, they're not well suited for higher dimensional problems: Moving from two to three dimensions increases the size of the frequencies to be handled to $M^3$. For the dense layer, this means $M^6$ parameters, a cubic increase. For convolutions, there's no huge difference in 2D:
- a regular convolution with kernel size $K$ requires $K^2$ weights in 2D, and induces another $O(K^2)$ scaling for processing features, in total $O(K^4)$.
-However, in 3D regular convolutions scale much better: in 3D only the kernel size increases to $K^3$, giving an overall complexity of $O(K^5)$ in 3D. 
-Thus, the exponent is 5 instead of 6.
+ a regular convolution with kernel size $K$ requires $K^2$ weights in 2D, and induces another $O(K^2)$ scaling for processing features, in total $O(K^4 N^2)$ for a domain of sie $N^2$.
+However, as $K<<N$, regular convolutions scale much better in 3D: the kernel size increases to $K^3$, giving an overall complexity of $O(K^5 N^3)$ for a 3D domain with side length $N$. 
 
-To make things worse, the frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 \gg K^5$. Thus, FNOs would require intractable amounts of parameters, and are thus not recommendable for 3D (or higher dimensional) problems. Architectures like CNNs require much fewer weights, and in conjunction with hierarchies can still handle global dependencies efficiently.
+The frequency coverage $M$ of FNOs needs to scale with the size of the spatial domain, hence typically $M>K$ and $M^6 \gg K^5$. 
+Thus, as $K$ is typically much smaller than $N$ and $M$, and scales with an exponent of 5, CNNs will usually scale much better than FNOs with their 6th power scaling.
+They would require intractable amounts of parameters to capture finer features, and are thus not recommendable for 3D (or higher dimensional) problems. CNN-based architectures require much fewer weights, and in conjunction with hierarchies can still handle global dependencies efficiently.
 
 <br>
 

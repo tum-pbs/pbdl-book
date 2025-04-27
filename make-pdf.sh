@@ -22,4 +22,7 @@ ${PYT} json-cleanup-for-pdf.py
 
 # unused fixup-latex.py
 
+# for convenience, archive results in main dir
+#mv book.pdf ../../pbfl-book-pdflatex.pdf
+#tar czvf ../../pbdl-latex-for-arxiv.tar.gz *
 
