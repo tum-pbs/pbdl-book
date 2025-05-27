@@ -260,7 +260,7 @@ Here, the Jacobian $\frac{\partial x}{\partial y}$, which is similar to the inve
 The crucial step is the inversion, which of course requires the Jacobian matrix to be invertible. This is a problem somewhat similar to the inversion of the Hessian, and we'll revisit this issue below. However, if we can invert the Jacobian, this has some very nice properties.
 
 Note that instead of using a learning rate, here the step size is determined by the desired increase or decrease of the value of the output, $\Delta y$. Thus, we need to choose a $\Delta y$ instead of an $\eta$, but effectively has the same role: it controls the step size of the optimization.
-It the simplest case, we can compute it as a step towards the ground truth via $\Delta y = \eta ~ (y^* - y)$.
+In the simplest case, we can compute it as a step towards the ground truth via $\Delta y = \eta ~ (y^* - y)$.
 This $\Delta y$ will show up frequently in the following equations, and make them look quite different to the ones above at first sight. 
 
 
