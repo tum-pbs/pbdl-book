@@ -42,14 +42,13 @@ to simulate -- if this is missing we're in trouble. But luckily, we can
 tap into existing collections of model equations and established methods
 for discretizing continuous models.
 
-Let's assume we have a continuous formulation $\mathcal P^*(\mathbf{x}, \nu)$ of the physical quantity of 
-interest $\mathbf{u}(\mathbf{x}, t): \mathbb R^d \times \mathbb R^+ \rightarrow \mathbb R^d$,
+Let's assume we have a continuous formulation $\mathcal P^*(\mathbf{u}, \nu)$ of the physical quantity of 
+interest $\mathbf{u}(\mathbf{u}, t): \mathbb R^d \times \mathbb R^+ \rightarrow \mathbb R^d$,
 with model parameters $\nu$ (e.g., diffusion, viscosity, or conductivity constants).
 The components of $\mathbf{u}$ will be denoted by a numbered subscript, i.e.,
 $\mathbf{u} = (u_1,u_2,\dots,u_d)^T$.
-%and a corresponding discrete version that describes the evolution of this quantity over time: $\mathbf{u}_t = \mathcal P(\mathbf{x}, \mathbf{u}, t)$.
 Typically, we are interested in the temporal evolution of such a system.
-Discretization yields a formulation $\mathcal P(\mathbf{x}, \nu)$
+Discretization yields a formulation $\mathcal P(\mathbf{u}, \nu)$
 that we re-arrange to compute a future state after a time step $\Delta t$. 
 The state at $t+\Delta t$ is computed via sequence of
 operations $\mathcal P_1, \mathcal P_2 \dots \mathcal P_m$ such that
@@ -63,7 +62,7 @@ $\partial \mathcal P_i / \partial \mathbf{u}$.
 ```
 
 Note that we typically don't need derivatives 
-for all parameters of $\mathcal P(\mathbf{x}, \nu)$, e.g., 
+for all parameters of $\mathcal P(\mathbf{u}, \nu)$, e.g., 
 we omit $\nu$ in the following, assuming that this is a 
 given model parameter with which the NN should not interact. 
 Naturally, it can vary within the solution manifold that we're interested in, 
@@ -114,7 +113,7 @@ E.g., for two of them
 $$
     \frac{ \partial (\mathcal P_1 \circ \mathcal P_2) }{ \partial \mathbf{u} } \Big|_{\mathbf{u}^n}
     = 
-    \frac{ \partial \mathcal P_1 }{ \partial \mathbf{u} } \big|_{\mathcal P_2(\mathbf{u}^n)}
+    \frac{ \partial \mathcal P_1 }{ \partial \mathcal P_2 } \big|_{\mathcal P_2(\mathbf{u}^n)}
     \ 
     \frac{ \partial \mathcal P_2 }{ \partial \mathbf{u} } \big|_{\mathbf{u}^n} \ , 
 $$
