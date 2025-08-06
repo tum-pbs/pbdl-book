@@ -15,7 +15,7 @@ We are living in an era of rapid transformation. These methods have the potentia
 
 ```{note} 
 _What's new in v0.3?_
-This latest edition takes things even further with a major new chapter on generative modeling, covering cutting-edge techniques like denoising, flow-matching, autoregressive learning, physics-integrated constraints, and diffusion-based graph networks. We've also introduced a dedicated section on neural architectures specifically designed for physics simulations. All code examples have been updated to leverage the latest frameworks.
+This latest edition adds a major new chapter on generative modeling, covering powerful techniques like denoising, flow-matching, autoregressive learning, physics-integrated constraints, and diffusion-based graph networks. We've also introduced a dedicated section on neural architectures specifically designed for physics simulations. All code examples have been updated to leverage the latest frameworks.
 ```
 
 ---
